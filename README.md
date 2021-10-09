@@ -1,1 +1,1 @@
-"# BilkentClubManager" 
+# BilkentClubManager
