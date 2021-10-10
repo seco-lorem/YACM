@@ -4,7 +4,7 @@
 
 A mobile application for Bilkent University students to find clubs, engage in club activities and manage clubs for the club&#39;s board of members.
 
-_ **FEATURES** _
+ **FEATURES** 
 
 **Sign Up**
 
@@ -17,7 +17,7 @@ _ **FEATURES** _
 - Select Language
 - App Tutorial after first login
 
-_ **Tabs** _
+ **Tabs** 
 
 Feed
 
@@ -46,7 +46,7 @@ Profile
 - Personal QR Code
 - Club Administration Menu
 
-_ **Definitions** _
+ **Definitions** 
 
 1: _Club Accounts_
 
