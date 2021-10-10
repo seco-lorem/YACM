@@ -1,1 +1,1 @@
-# Yet Another Club Manager
+# YACM: Yet Another Club Manager
