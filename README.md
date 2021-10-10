@@ -52,16 +52,16 @@ Profile
 
 - _Club Posts (public)_
 
-- _Events_
-- _Announcements_
-- _Polls_
-- _Past Event Photos_
-- _Comments_
+    - _Events_
+    - _Announcements_
+    - _Polls_
+    - _Past Event Photos_
+    - _Comments_
 
 - _Club Chat (club members only)_
 
-- _Chat_
-- _Links to club posts_
+    - _Chat_
+    - _Links to club posts_
 
 _2:_ Club Administration Menu
 
