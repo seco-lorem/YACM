@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../models/theme/own_theme_fields.dart';
 import '../../util/ui_constants.dart';
 import 'sub_pages/feed/feed.dart';
-import 'sub_pages/feed/widgets/TopScroller.dart';
 import 'widgets/body_slim/BottomTabBar.dart';
 import 'widgets/body_slim/BottomTabBarItem.dart';
 import 'widgets/body_wide/head_bar.dart';
