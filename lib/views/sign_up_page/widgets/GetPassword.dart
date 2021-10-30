@@ -153,9 +153,8 @@ class GetPassword extends StatelessWidget {
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).padding.bottom +
-                    UIConstants.getPaddingVertical(context) * 2),
+            padding:
+                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: GestureDetector(
               onTap: onTap,
               child: Container(

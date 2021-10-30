@@ -122,9 +122,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   Widget pageTwo() {
-    return Column(
-      children: <Widget>[GetPhoto()],
-    );
+    return GetPhoto();
   }
 
   Widget pageThree() {
@@ -238,13 +236,14 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+    print(UIConstants.getSafeHeight(context));
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
           resizeToAvoidBottomInset: false,
-          appBar: appBar(),
+          appBar: UIConstants.getSafeWidth(context) < 500 ? appBar() : null,
           body: Stack(
             children: <Widget>[body(), bottomScroller()],
           )),

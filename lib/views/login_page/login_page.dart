@@ -65,7 +65,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 spacerHeight(),
-                LoginButton(),
+                LoginButton(
+                  onTap: () {
+                    Navigator.pushNamed(context, "/home");
+                  },
+                ),
                 SignUpText(
                   onTap: () {
                     Navigator.pushNamed(context, "/signup");

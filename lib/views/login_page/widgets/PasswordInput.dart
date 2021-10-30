@@ -32,8 +32,10 @@ class PasswordInput extends StatelessWidget {
                     style: TextStyle(
                       color: Theme.of(context).own().loginPasswordInputBorder,
                       fontWeight: FontWeight.w400,
-                      fontSize: UIConstants.getHeight(context,
-                          height: 12, multiplier: .03),
+                      fontSize: UIConstants.getHeight(
+                        context,
+                        height: 18,
+                      ),
                       decoration: TextDecoration.none,
                     ),
                   )
