@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-
 import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
 import 'controllers/theme_controller/theme_changer.dart';
-import 'views/home_page/home_page.dart';
-import 'views/login_page/login_page.dart';
-import 'views/sign_up_page/sign_up_page.dart';
 
 void main() {
   runApp(MultiProviderApp());
@@ -95,7 +91,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       locale: _locale,
       title: 'YACM',
-      home: LoginPage(),
+      home: Container(),
       theme: _themeChanger.getTheme(),
       localizationsDelegates: <LocalizationsDelegate>[
         LanguageDelegate(),
@@ -103,11 +99,7 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-      routes: {
-        "/home": (context) => HomePage(),
-        "/login": (context) => LoginPage(),
-        "/signup": (context) => SignUp()
-      },
+      routes: {},
       debugShowCheckedModeBanner: false,
     );
   }
