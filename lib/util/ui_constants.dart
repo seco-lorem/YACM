@@ -24,11 +24,8 @@ class UIConstants {
   static double getRowSpacing(BuildContext context) =>
       getSafeWidth(context) * .02;
 
-  static bool platformIsWide(BuildContext context) =>
-      MediaQuery.of(context).size.width > 800;
-
-  static bool platformIsShort(BuildContext context) =>
-      MediaQuery.of(context).size.height < 550;
+  static bool platformIsWeb(BuildContext context) =>
+      MediaQuery.of(context).size.width > 500;
 
   /// get a responsive height with minimal
   /// [height] = 18 and a [multiplier] = .025
