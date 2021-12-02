@@ -5,13 +5,14 @@ import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
 import 'controllers/theme_controller/theme_changer.dart';
+import 'models/screens/home/home_screen.dart';
 
 void main() {
   runApp(MultiProviderApp());
 }
 
-/// This class is implemented so the providers are
-/// supplied in a better scope
+// This class is implemented so the providers are
+// supplied in a better scope
 class MultiProviderApp extends StatefulWidget {
   @override
   State<MultiProviderApp> createState() => _MultiProviderAppState();
@@ -104,3 +105,24 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
+//FARUK'UN YAPTIKLARINI ÇALIŞTIRMAK İÇİN
+// void main() {
+//   runApp(const MyApp2());
+// }
+
+// class MyApp2 extends StatelessWidget {
+//   const MyApp2({Key? key}) : super(key: key);
+
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'YACM',
+//       theme: ThemeData(
+//         primaryColor: Colors.green
+//       ),
+//       home: HomeScreen(),
+//     );
+//   }
+// }
