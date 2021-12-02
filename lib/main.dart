@@ -6,8 +6,7 @@ import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
 import 'controllers/theme_controller/theme_changer.dart';
 import 'dart:io';
-
-import 'controllers/fire_base_controller/firebase_manager.dart';
+import 'controllers/firebase_manager/firebase_manager.dart';
 
 class FireStoreApp extends StatefulWidget {
   const FireStoreApp({Key? key}) : super(key: key);
