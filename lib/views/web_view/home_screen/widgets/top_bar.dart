@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../models/language/language.dart';
+import '../../../../util/helper.dart';
+
 class TopBar extends StatelessWidget {
   const TopBar({
     Key? key,
@@ -35,7 +38,22 @@ class TopBar extends StatelessWidget {
             'Notifications',
             style: TextStyle(color: Colors.black, fontSize: 14),
           ),
-          onPressed: () {},
+          onPressed: () {
+            Helper.showLoginPopUp(
+                context,
+                Language.of(context)!,
+                TextEditingController(),
+                TextEditingController(),
+                TextEditingController(),
+                PageController(),
+                TextEditingController(),
+                TextEditingController(),
+                () {},
+                () {},
+                (p0) => null,
+                ["1", "2", "3", "1", "2", "3", "1", "2", "3", "1"],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+          },
         )),
       ),
       SizedBox(
@@ -48,7 +66,13 @@ class TopBar extends StatelessWidget {
             style: TextStyle(
                 color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
           ),
-          onPressed: () {},
+          onPressed: () {
+            Helper.showChangeThemePopUp(
+                context: context,
+                themes: ["Light", "Dark"],
+                onContinue: () => Navigator.pop(context),
+                language: Language.of(context)!);
+          },
         )),
       )
     ]);

@@ -28,9 +28,9 @@ class _AppViewState extends State<AppView> {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       await Helper.showGetLanguagePopUp(
           context: context,
-          languages: ["Turkish", "English"],
+          languages: ["English", "Turkish"],
           onContinue: () => Navigator.pop(context),
-          language: _language!);
+          language: Language.of(context)!);
     });
   }
 
