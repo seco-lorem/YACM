@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart'; /*kullanmak nasip olmadı*/
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 /**
  * Methods:
@@ -128,5 +130,62 @@ class FirebaseManager {
 
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
+  }
+
+  /**
+    manager.createPost(clubName: 'ACM', postData: {
+      'postType:': 'poll',
+      'postMessage': 'test',
+      'beginDate': '2.12.2021',
+      'endDate': '8.12.2021',
+      'publishDate': '2.12.2021',
+      'commentsOn': false,
+      'commentsId': 'no',
+    }, photos: [
+      File(""),
+      File(""),
+    ]);
+   */
+  Future<void> createPost(
+      {String? clubName,
+      Map<String, dynamic>? postData,
+      List<String>? filePaths}) async {
+    // Add post document id to clubs->clubName->posts array
+    String postId = await _createPostInFirestore(clubName!, postData!);
+
+    // Add post to posts collection
+    // await _addPostPhotosToStorage(postId, filePaths!);
+  }
+
+  /**
+   * Returns the document id which will be used as post id
+   */
+  Future<String> _createPostInFirestore(
+      String clubName, Map<String, dynamic> postData) async {
+    String postId = "";
+    CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+
+    posts
+        .doc(clubName)
+        .collection('clubPosts')
+        .add({'postInfo': postData}).then((value) => (postId = value.id));
+
+    return postId;
+  }
+
+  Future<void> _addPostPhotosToStorage(
+      String postId, List<String> filePaths) async {}
+
+  /**
+   * Returns a map that can be accessed like json format
+   * Example: 
+   *      var manager = await FirebaseManager.getInstance();
+          var json = await manager.getPost('ACM', 'd55cD092RflhpUpn15nF');
+          print(json['postInfo']['postMessage']); 
+   */
+  Future<DocumentSnapshot<Map<String, dynamic>>> getPost(
+      String clubName, String postId) async {
+    var posts = await FirebaseFirestore.instance.collection('posts');
+    return posts.doc(clubName).collection('clubPosts').doc(postId).get();
   }
 }

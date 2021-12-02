@@ -5,6 +5,7 @@ import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
 import 'controllers/theme_controller/theme_changer.dart';
+import 'dart:io';
 
 import 'firebase_manager.dart';
 
@@ -14,9 +15,29 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var manager = await FirebaseManager.getInstance();
   print(await manager.getClubMemberCount('ACM'));
+
+  var json = await manager.getPost('ACM', 'd55cD092RflhpUpn15nF');
+  print(json['postInfo']['postMessage']);
+
+  /* CREATE POST EXAMPLE
+  manager.createPost(clubName: 'ACM', postData: {
+    'postType:': 'poll',
+    'postMessage': 'test',
+    'beginDate': '2.12.2021',
+    'endDate': '8.12.2021',
+    'publishDate': '2.12.2021',
+    'commentsOn': false,
+    'commentsId': 'no',
+  }, filePaths: [
+    "photoswill be done later"
+  ]);
+  */
+
+  /* REGISTER/SIGNIN USER EXAMPLE
   manager.registerUser(
       email: "enis.ozer@ug.bilkent.edu.tr", password: "123456");
-  //manager.signIn(email: "enis.ozer@ug.bilkent.edu.tr", password: "123456");
+  manager.signIn(email: "enis.ozer@ug.bilkent.edu.tr", password: "123456");
+  */
   runApp(FireStoreApp());
 }
 
