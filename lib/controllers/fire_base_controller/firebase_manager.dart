@@ -19,6 +19,7 @@ class FirebaseManager {
   /**
    * The constructor of a FirebaseManager should never be called
    * An instance can be obtained using getInstance() method
+   * Example: FirebaseManager = await FirebaseManager.getInstance();
    */
   static Future<FirebaseManager> getInstance() async {
     if (!_isInit) {
@@ -128,6 +129,11 @@ class FirebaseManager {
         .signInWithEmailAndPassword(email: email!, password: password!);
   }
 
+  /**
+   * signs out current authenticated user
+   * FirebaseManager manager = await FirebaseManager.getInstance();
+   * manager.signOut();
+  */
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
   }
@@ -149,12 +155,12 @@ class FirebaseManager {
   Future<void> createPost(
       {String? clubName,
       Map<String, dynamic>? postData,
-      List<String>? filePaths}) async {
+      List<File>? files}) async {
     // Add post document id to clubs->clubName->posts array
     String postId = await _createPostInFirestore(clubName!, postData!);
 
     // Add post to posts collection
-    // await _addPostPhotosToStorage(postId, filePaths!);
+    // await _addPostPhotosToStorage(postId, files!);
   }
 
   /**
@@ -173,8 +179,7 @@ class FirebaseManager {
     return postId;
   }
 
-  Future<void> _addPostPhotosToStorage(
-      String postId, List<String> filePaths) async {}
+  Future<void> _addPostPhotosToStorage(String postId, List<File> files) async {}
 
   /**
    * Returns a map that can be accessed like json format
@@ -185,7 +190,8 @@ class FirebaseManager {
    */
   Future<DocumentSnapshot<Map<String, dynamic>>> getPost(
       String clubName, String postId) async {
-    var posts = await FirebaseFirestore.instance.collection('posts');
+    CollectionReference<Map<String, dynamic>> posts =
+        await FirebaseFirestore.instance.collection('posts');
     return posts.doc(clubName).collection('clubPosts').doc(postId).get();
   }
 }
