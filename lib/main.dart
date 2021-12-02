@@ -6,9 +6,63 @@ import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
 import 'controllers/theme_controller/theme_changer.dart';
 
+import 'firebase_manager.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var manager = await FirebaseManager.getInstance();
+  print(await manager.getClubMemberCount('ACM'));
+  manager.registerUser(
+      email: "enis.ozer@ug.bilkent.edu.tr", password: "123456");
+  //manager.signIn(email: "enis.ozer@ug.bilkent.edu.tr", password: "123456");
+  runApp(FireStoreApp());
+}
+
+class FireStoreApp extends StatefulWidget {
+  const FireStoreApp({Key? key}) : super(key: key);
+
+  @override
+  _FireStoreAppState createState() => _FireStoreAppState();
+}
+
+class _FireStoreAppState extends State<FireStoreApp> {
+  String data = "";
+
+  String getData() {
+    return "enis";
+  }
+
+  @override
+  void initState() {
+    data = getData();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('FireStore Example'),
+        ),
+        body: Center(
+          child: Text(
+            "enis",
+            style: TextStyle(fontSize: 30),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/*
 void main() {
   runApp(MultiProviderApp());
 }
+*/
 
 /// This class is implemented so the providers are
 /// supplied in a better scope

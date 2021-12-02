@@ -1,5 +1,7 @@
-
+.flutter-plugins
+.flutter-plugins-dependencies
 .dart_tool/
+email.txt
 
 # We may consider adding more here like build directory
 # Check out https://github.com/github/gitignore/blob/master/Dart.gitignore
