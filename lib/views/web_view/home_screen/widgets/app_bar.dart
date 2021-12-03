@@ -12,7 +12,7 @@ class LeftAppBar extends StatelessWidget {
         height: MediaQuery.of(context).size.height - 150,
         padding: EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
-            color: Colors.lightGreen,
+            color: Color.fromRGBO(244, 226, 198, 1),
             borderRadius: BorderRadius.circular(0),
             boxShadow: [
               BoxShadow(
@@ -22,38 +22,40 @@ class LeftAppBar extends StatelessWidget {
             ]),
         child: Column(children: <Widget>[
           const CircleAvatar(
+            backgroundColor: Color.fromRGBO(94, 119, 3, 1),
+            radius: 50,
             backgroundImage: AssetImage('assets/emptyUser.png'),
           ),
           const Spacer(),
           MenuItem(
               title: "Home",
               ontap: () {},
-              icon: Icons.home_outlined,
-              boldIcon: Icons.home,
+              icon: Icon(Icons.home_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+              boldIcon: Icon(Icons.home, color: Color.fromRGBO(94, 119, 3, 1)),
               selected: true),
           MenuItem(
               title: "Pinned",
               ontap: () {},
-              icon: Icons.pin_drop_outlined,
-              boldIcon: Icons.pin_drop,
+              icon: Icon(Icons.pin_drop_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+              boldIcon: Icon(Icons.pin_drop, color: Color.fromRGBO(94, 119, 3, 1)),
               selected: false),
           MenuItem(
               title: "Explore",
               ontap: () {},
-              icon: Icons.home_outlined,
-              boldIcon: Icons.home,
+              icon: Icon(Icons.explore_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+              boldIcon: Icon(Icons.explore, color: Color.fromRGBO(94, 119, 3, 1)),
               selected: false),
           MenuItem(
               title: "Subscription",
               ontap: () {},
-              icon: Icons.save_outlined,
-              boldIcon: Icons.save,
+              icon: Icon(Icons.save_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+              boldIcon: Icon(Icons.save, color: Color.fromRGBO(94, 119, 3, 1)),
               selected: false),
           MenuItem(
               title: "Edit Profile",
               ontap: () {},
-              icon: Icons.home_outlined,
-              boldIcon: Icons.home,
+              icon: Icon(Icons.settings_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+              boldIcon: Icon(Icons.settings, color: Color.fromRGBO(94, 119, 3, 1)),
               selected: false),
           const Spacer()
         ]));

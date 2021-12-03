@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class MenuItem extends StatelessWidget {
   final String title;
-  final IconData icon;
-  final IconData boldIcon;
+  final Icon icon;
+  final Icon boldIcon;
   final bool selected;
   final VoidCallback ontap;
   const MenuItem(
@@ -22,7 +22,7 @@ class MenuItem extends StatelessWidget {
       title: Text(title,
           style: TextStyle(
               fontWeight: selected ? FontWeight.bold : FontWeight.normal)),
-      trailing: Icon(selected ? boldIcon : icon),
+      trailing: selected ? boldIcon : icon,
     );
   }
 }
