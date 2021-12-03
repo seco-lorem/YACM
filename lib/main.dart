@@ -5,6 +5,8 @@ import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
 import 'controllers/theme_controller/theme_changer.dart';
+import 'views/app_view/app_view.dart';
+import 'views/web_view/home_screen/home_screen.dart';
 
 void main() {
   runApp(MultiProviderApp());
@@ -91,7 +93,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       locale: _locale,
       title: 'YACM',
-      home: Container(),
+      home: AppView(),
       theme: _themeChanger.getTheme(),
       localizationsDelegates: <LocalizationsDelegate>[
         LanguageDelegate(),
@@ -99,7 +101,7 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-      routes: {},
+      routes: {"/home": (context) => HomeScreen()},
       debugShowCheckedModeBanner: false,
     );
   }

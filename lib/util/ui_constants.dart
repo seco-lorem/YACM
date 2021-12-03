@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UIConstants {
+  static double get borderRadius => 12;
   static double getSafeHeight(BuildContext context) =>
       MediaQuery.of(context).size.height -
       MediaQuery.of(context).padding.top -
