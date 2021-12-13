@@ -76,6 +76,10 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
   // ignore: prefer_function_declarations_over_variables
   onTapFunction(String postID) {}
 
+  switchTab(bool toChat) {
+    postsTab = !toChat;
+  }
+
   Widget postPreview(
           {required double size,
           required String url,
@@ -121,6 +125,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
           children: [
             Image.network(
                 'https://upload.wikimedia.org/wikipedia/tr/e/ee/Bilkent%C3%9Cniversitesi-logo.png'),
+            /*
             Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(
@@ -159,35 +164,48 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                                       ? FontWeight.normal
                                       : FontWeight.bold,
                                   fontSize: 22))))
-                ])),
-            /*Row(
+                ])),*/
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 24.0, horizontal: 12.0),
-                    child: Text("Posts",
-                        style: TextStyle(
-                          decoration: TextDecoration.none,
-                          fontSize: 48.0,
-                          fontWeight:
-                              postsTab ? FontWeight.normal : FontWeight.bold,
-                        ))),
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 24.0, horizontal: 12.0),
+                  child: TextButton(
+                      style: TextButton.styleFrom(
+                          textStyle: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontSize: 48.0,
+                        fontWeight:
+                            postsTab ? FontWeight.normal : FontWeight.bold,
+                      )),
+                      onPressed: () {
+                        print(postsTab);
+                        postsTab = true;
+                      },
+                      child: Text("Posts")),
+                ),
                 Container(
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 24.0, horizontal: 12.0),
-                    child: Text("Chat",
-                        style: TextStyle(
-                          decoration: TextDecoration.none,
-                          fontSize: 48.0,
-                          fontWeight:
-                              !postsTab ? FontWeight.normal : FontWeight.bold,
-                        ))),
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 24.0, horizontal: 12.0),
+                  child: TextButton(
+                      style: TextButton.styleFrom(
+                          textStyle: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontSize: 48.0,
+                        fontWeight:
+                            !postsTab ? FontWeight.normal : FontWeight.bold,
+                      )),
+                      onPressed: () {
+                        print(postsTab);
+                        postsTab = false;
+                      },
+                      child: Text("Chat")),
+                )
               ],
-            ),*/
+            ),
             clubPosts()
           ],
         )),
