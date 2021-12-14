@@ -91,7 +91,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
           child: SizedBox(
               width: size,
               height: size,
-              child: Image.network(url, fit: BoxFit.fill)),
+              child: Image.network(url, fit: BoxFit.cover)),
         ),
       );
 
