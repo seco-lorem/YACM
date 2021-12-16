@@ -47,29 +47,22 @@ class HomeScreen extends StatelessWidget {
               color: Color.fromRGBO(244, 226, 198, 1),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                  children: [
-                    Text(
-                      'Suggested Clubs',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 24, color: Color.fromRGBO(94, 119, 3, 1)),
-                    ),
-                    Text(
-                      'Club1',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                    ),
-                    Text(
-                      'Club2',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                    ),
-                    Text(
-                      'Club3',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                    ),
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Suggested Clubs',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 24, color: Color.fromRGBO(94, 119, 3, 1)),
+                      ),
+                      
+                      for (int i = 0; i < 20; i++) Text(
+                        'Club' + i.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

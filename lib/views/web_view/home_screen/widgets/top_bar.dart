@@ -27,7 +27,7 @@ class TopBar extends StatelessWidget {
       SizedBox(
         width: size.width - 400,
         height: 110,
-        child: Center(child: TextField(decoration: const InputDecoration(labelText: 'Search'),)),
+        child: Center(child: TextField(decoration: const InputDecoration(labelText: 'Search'),onTap: () => {},)),
       ),
       SizedBox(
         width: 100,

@@ -14,50 +14,45 @@ class LeftAppBar extends StatelessWidget {
         decoration: BoxDecoration(
             color: Color.fromRGBO(244, 226, 198, 1),
             borderRadius: BorderRadius.circular(0),
-            boxShadow: [
-              BoxShadow(
-                  offset: Offset(-2, 0),
-                  blurRadius: 30,
-                  color: Colors.black.withOpacity(0.16))
-            ]),
-        child: Column(children: <Widget>[
-          const CircleAvatar(
-            backgroundColor: Color.fromRGBO(94, 119, 3, 1),
-            radius: 50,
-            backgroundImage: AssetImage('assets/emptyUser.png'),
-          ),
-          const Spacer(),
-          MenuItem(
-              title: "Home",
-              ontap: () {},
-              icon: Icon(Icons.home_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-              boldIcon: Icon(Icons.home, color: Color.fromRGBO(94, 119, 3, 1)),
-              selected: true),
-          MenuItem(
-              title: "Pinned",
-              ontap: () {},
-              icon: Icon(Icons.pin_drop_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-              boldIcon: Icon(Icons.pin_drop, color: Color.fromRGBO(94, 119, 3, 1)),
-              selected: false),
-          MenuItem(
-              title: "Explore",
-              ontap: () {},
-              icon: Icon(Icons.explore_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-              boldIcon: Icon(Icons.explore, color: Color.fromRGBO(94, 119, 3, 1)),
-              selected: false),
-          MenuItem(
-              title: "Subscription",
-              ontap: () {},
-              icon: Icon(Icons.save_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-              boldIcon: Icon(Icons.save, color: Color.fromRGBO(94, 119, 3, 1)),
-              selected: false),
-          MenuItem(
-              title: "Edit Profile",
-              ontap: () {},
-              icon: Icon(Icons.settings_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-              boldIcon: Icon(Icons.settings, color: Color.fromRGBO(94, 119, 3, 1)),
-              selected: false),
-          const Spacer()
-        ]));
+            ),
+        child: SingleChildScrollView(
+          child: Column(children: <Widget>[
+            const CircleAvatar(
+              backgroundColor: Color.fromRGBO(94, 119, 3, 1),
+              radius: 50,
+              backgroundImage: AssetImage('assets/emptyUser.png'),
+            ),
+            MenuItem(
+                title: "Home",
+                ontap: () {},
+                icon: Icon(Icons.home_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+                boldIcon: Icon(Icons.home, color: Color.fromRGBO(94, 119, 3, 1)),
+                selected: true),
+            MenuItem(
+                title: "Pinned",
+                ontap: () {},
+                icon: Icon(Icons.pin_drop_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+                boldIcon: Icon(Icons.pin_drop, color: Color.fromRGBO(94, 119, 3, 1)),
+                selected: false),
+            MenuItem(
+                title: "Explore",
+                ontap: () {},
+                icon: Icon(Icons.explore_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+                boldIcon: Icon(Icons.explore, color: Color.fromRGBO(94, 119, 3, 1)),
+                selected: false),
+            MenuItem(
+                title: "Subscription",
+                ontap: () {},
+                icon: Icon(Icons.save_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+                boldIcon: Icon(Icons.save, color: Color.fromRGBO(94, 119, 3, 1)),
+                selected: false),
+            MenuItem(
+                title: "Edit Profile",
+                ontap: () {},
+                icon: Icon(Icons.settings_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+                boldIcon: Icon(Icons.settings, color: Color.fromRGBO(94, 119, 3, 1)),
+                selected: false),
+          ]),
+        ));
   }
 }
