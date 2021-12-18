@@ -99,18 +99,20 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
     List<Widget> postWidgets = [];
     for (int i = 0; i < posts.length; i++) {
       postWidgets.add(postPreview(
-          size: previewSize,
+          size: MediaQuery.of(context).size.width * 2 / 9,
           url: posts[i]["image"]!,
           onTap: onTapFunction,
           postId: posts[i]["id"]!));
     }
 
     return Container(
-      padding: const EdgeInsets.all(previewPadding),
-      child: Wrap(
-        children: postWidgets,
-        spacing: previewSpacing,
-        runSpacing: previewRunSpacing,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 2 / 3,
+        child: Wrap(
+          children: postWidgets,
+          //spacing: previewSpacing,
+          //runSpacing: previewRunSpacing,
+        ),
       ),
     );
   }
@@ -123,48 +125,13 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.network(
-                'https://upload.wikimedia.org/wikipedia/tr/e/ee/Bilkent%C3%9Cniversitesi-logo.png'),
-            /*
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(
-                    vertical: 24.0, horizontal: 12.0),
-                child: Text(clubDescription,
-                    style: const TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ))),
             SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  SizedBox.expand(
-                      child: InkWell(
-                          onTap: () {},
-                          child: Text("Posts",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                  fontWeight: postsTab
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  fontSize: 22)))),
-                  const VerticalDivider(
-                    color: Colors.black,
-                    thickness: 1,
-                    width: 20,
-                  ),
-                  SizedBox.expand(
-                      child: InkWell(
-                          onTap: () {},
-                          child: Text("Chat",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  fontWeight: postsTab
-                                      ? FontWeight.normal
-                                      : FontWeight.bold,
-                                  fontSize: 22))))
-                ])),*/
+              width: MediaQuery.of(context).size.width,
+              height: 250,
+              child: Image.network(
+                  'https://upload.wikimedia.org/wikipedia/tr/e/ee/Bilkent%C3%9Cniversitesi-logo.png',
+                  fit: BoxFit.fitWidth),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -181,8 +148,9 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                             postsTab ? FontWeight.normal : FontWeight.bold,
                       )),
                       onPressed: () {
-                        print(postsTab);
-                        postsTab = true;
+                        setState(() {
+                          postsTab = false;
+                        });
                       },
                       child: Text("Posts")),
                 ),
@@ -199,8 +167,9 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                             !postsTab ? FontWeight.normal : FontWeight.bold,
                       )),
                       onPressed: () {
-                        print(postsTab);
-                        postsTab = false;
+                        setState(() {
+                          postsTab = true;
+                        });
                       },
                       child: Text("Chat")),
                 )
