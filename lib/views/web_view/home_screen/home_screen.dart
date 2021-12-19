@@ -159,17 +159,57 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Text(
-                          'Suggested Clubs',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 24, color: Color.fromRGBO(94, 119, 3, 1)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 5),
+                          child: 
+                            Text(
+                              'Suggested Clubs',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 24, color: Color.fromRGBO(94, 119, 3, 1)),
+                            ),
                         ),
                         
-                        for (int i = 0; i < 20; i++) Text(
-                          'Club' + i.toString(),
+                        Text(
+                          'ACM Bilkent Club',
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                         ),
+                        Text(
+                          'Aikido Society',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
+                        Text(
+                          'Tea Club',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
+                        Text(
+                          'Arab Culture Society',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
+                        Text(
+                          'Archaeology Club',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
+                        Text(
+                          'Astronomy Society',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
+                        Text(
+                          'Literature Society',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
+                        Text(
+                          'Atelier Bilkent Society',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
+
                       ],
                     ),
                   ),
