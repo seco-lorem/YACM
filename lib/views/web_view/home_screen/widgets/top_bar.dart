@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:yacm/models/theme/own_theme_fields.dart';
 
 import '../../../../models/language/language.dart';
 import '../../../../util/helper.dart';
@@ -18,10 +20,14 @@ class TopBar extends StatelessWidget {
         width: 200,
         height: 110,
         child: Center(
-          child: Text("Yacm".toUpperCase(),
-              textAlign: TextAlign.center,
-              style:
-                  const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color.fromRGBO(94, 119, 3, 1))),
+          child: Text(
+                      "YACM",
+                      style: GoogleFonts.pacifico(
+                          color: Theme.of(context).own().yacmLogoColor,
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none),
+                    ),
         ),
       ),
       SizedBox(
@@ -51,7 +57,7 @@ class TopBar extends StatelessWidget {
                 () {},
                 () {},
                 (p0) => null,
-                ["1", "2", "3", "1", "2", "3", "1", "2", "3", "1"],
+                ["Technology", "Science", "Sports", "Gaming", "Sci-Fi", "Food", "Travel", "Economics", "Law", "Politics"],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
           },
         )),
