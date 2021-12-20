@@ -21,13 +21,13 @@ class TopBar extends StatelessWidget {
         height: 110,
         child: Center(
           child: Text(
-                      "YACM",
-                      style: GoogleFonts.pacifico(
-                          color: Theme.of(context).own().yacmLogoColor,
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.none),
-                    ),
+            "YACM",
+            style: GoogleFonts.pacifico(
+              color: Theme.of(context).own().yacmLogoColor,
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.none),
+          ),
         ),
       ),
       SizedBox(
