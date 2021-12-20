@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'widgets/app_bar.dart';
 import 'widgets/top_bar.dart';
+import 'package:yacm/models/theme/own_theme_fields.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,13 +13,40 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   int _currentIndex = 0;
+
   @override
   void dispose(){
     super.dispose();
     _pageController.dispose();
   }
+
   void changePage(){
     _pageController.jumpToPage(_currentIndex);
+  }
+
+  List<Widget> suggestedClubElements(List<String> clubNames){
+    List<Widget> elements = [];
+    elements.add(Padding(
+      padding: EdgeInsets.symmetric(vertical: 5),
+      child: Text(
+          "Suggested Clubs",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      )
+    );
+    for (String clubName in clubNames) {
+      Widget element = Padding(
+                        padding: EdgeInsets.symmetric(vertical: 3),
+                        child: Text(
+                          clubName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
+      );
+      elements.add(element);
+    }
+    return elements;
   }
   @override
   Widget build(BuildContext context) {
@@ -27,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         width: size.width,
         height: size.height,
-        color: Color.fromRGBO(244, 226, 198, 1),
+        color: Theme.of(context).own().background,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -51,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: (size.width - 400),
                       height: size.height - 150,
                       alignment: Alignment.bottomCenter,
-                      color: Color.fromRGBO(244, 226, 198, 1),
+                      color: Theme.of(context).own().background,
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -71,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: (size.width - 400),
                       height: size.height - 150,
                       alignment: Alignment.bottomCenter,
-                      color: Color.fromRGBO(244, 226, 198, 1),
+                      color: Theme.of(context).own().background,
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -91,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: (size.width - 400),
                       height: size.height - 150,
                       alignment: Alignment.bottomCenter,
-                      color: Color.fromRGBO(244, 226, 198, 1),
+                      color: Theme.of(context).own().background,
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -111,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: (size.width - 400),
                       height: size.height - 150,
                       alignment: Alignment.bottomCenter,
-                      color: Color.fromRGBO(244, 226, 198, 1),
+                      color: Theme.of(context).own().background,
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -131,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: (size.width - 400),
                       height: size.height - 150,
                       alignment: Alignment.bottomCenter,
-                      color: Color.fromRGBO(244, 226, 198, 1),
+                      color: Theme.of(context).own().background,
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -153,64 +181,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 200,
                 height: size.height - 150,
                 alignment: Alignment.topCenter,
-                color: Color.fromRGBO(244, 226, 198, 1),
+                color: Theme.of(context).own().background,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: SingleChildScrollView(
                     child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 5),
-                          child: 
-                            Text(
-                              'Suggested Clubs',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 24, color: Color.fromRGBO(94, 119, 3, 1)),
-                            ),
-                        ),
-                        
-                        Text(
-                          'ACM Bilkent Club',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                        ),
-                        Text(
-                          'Aikido Society',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                        ),
-                        Text(
-                          'Tea Club',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                        ),
-                        Text(
-                          'Arab Culture Society',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                        ),
-                        Text(
-                          'Archaeology Club',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                        ),
-                        Text(
-                          'Astronomy Society',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                        ),
-                        Text(
-                          'Literature Society',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                        ),
-                        Text(
-                          'Atelier Bilkent Society',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                        ),
-
-                      ],
+                      children: suggestedClubElements(["a","b","c","d"])
                     ),
                   ),
                 ),

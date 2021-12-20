@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yacm/models/theme/own_theme_fields.dart';
 
 import 'app_bar_menu_item.dart';
 
@@ -10,30 +11,30 @@ class LeftAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<String> titleList = ["Home", "Pinned", "Explore", "Subscription", "Edit Profile"];
-    final List<Icon> iconList = [Icon(Icons.home_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-                                 Icon(Icons.pin_drop_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-                                 Icon(Icons.explore_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-                                 Icon(Icons.save_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-                                 Icon(Icons.settings_outlined, color: Color.fromRGBO(94, 119, 3, 1))
+    final List<Icon> iconList = [Icon(Icons.home_outlined, color: Theme.of(context).own().yacmLogoColor),
+                                 Icon(Icons.pin_drop_outlined, color: Theme.of(context).own().yacmLogoColor),
+                                 Icon(Icons.explore_outlined, color: Theme.of(context).own().yacmLogoColor),
+                                 Icon(Icons.save_outlined, color: Theme.of(context).own().yacmLogoColor),
+                                 Icon(Icons.settings_outlined, color: Theme.of(context).own().yacmLogoColor)
                                  ];
-    final List<Icon> boldIconList = [Icon(Icons.home, color: Color.fromRGBO(94, 119, 3, 1)),
-                                     Icon(Icons.pin_drop, color: Color.fromRGBO(94, 119, 3, 1)),
-                                     Icon(Icons.explore, color: Color.fromRGBO(94, 119, 3, 1)),
-                                     Icon(Icons.save, color: Color.fromRGBO(94, 119, 3, 1)),
-                                     Icon(Icons.settings, color: Color.fromRGBO(94, 119, 3, 1))
+    final List<Icon> boldIconList = [Icon(Icons.home, color: Theme.of(context).own().yacmLogoColor),
+                                     Icon(Icons.pin_drop, color: Theme.of(context).own().yacmLogoColor),
+                                     Icon(Icons.explore, color: Theme.of(context).own().yacmLogoColor),
+                                     Icon(Icons.save, color: Theme.of(context).own().yacmLogoColor),
+                                     Icon(Icons.settings, color: Theme.of(context).own().yacmLogoColor)
                                      ];
     return Container(
         width: 200,
         height: MediaQuery.of(context).size.height - 150,
         padding: EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
-            color: Color.fromRGBO(244, 226, 198, 1),
+            color: Theme.of(context).own().background,
             borderRadius: BorderRadius.circular(0),
             ),
         child: SingleChildScrollView(
           child: Column(children: <Widget>[
-            const CircleAvatar(
-              backgroundColor: Color.fromRGBO(94, 119, 3, 1),
+            CircleAvatar(
+              backgroundColor: Theme.of(context).own().yacmLogoColor,
               radius: 50,
               backgroundImage: AssetImage('assets/emptyUser.png'),
             ),
