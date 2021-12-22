@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yacm/models/post/post.dart';
 import 'package:yacm/models/post/posts/event.dart';
+import 'package:yacm/router/route_names.dart';
 import 'package:yacm/util/ui_constants.dart';
 import 'package:yacm/views/common_widgets/post_widgets/grid_event_widget.dart';
 import 'package:yacm/views/common_widgets/post_widgets/grid_poll_widget.dart';
@@ -18,6 +19,7 @@ class _GridPostState extends State<GridPost> {
     if (post.type == PostType.EVENT) {
       Event _event = post as Event;
       print(_event.images);
+      Navigator.pushNamed(context, RouteNames.post + "?id=" + post.id);
     }
   }
 

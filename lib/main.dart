@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:yacm/models/user/user.dart';
+import 'package:yacm/router/route_generator.dart';
 import 'package:yacm/views/common_views/club_profile.dart';
 import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
@@ -123,6 +124,7 @@ class _MyAppState extends State<MyApp> {
       ],
       routes: {"/club_profile": (context) => ClubProfile(id: "id")},
       debugShowCheckedModeBanner: false,
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
