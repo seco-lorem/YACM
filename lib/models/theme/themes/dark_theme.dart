@@ -16,7 +16,15 @@ class DarkTheme {
         popUpClose: Colors.grey[700]!,
         popUpInterestsRadio: Colors.white,
         popUpInterestsText: Colors.white,
-        popUpHeaderText: Colors.white));
+        popUpHeaderText: Colors.white,
+        postSettings: Colors.white,
+        postSettingsText: Colors.black,
+        gridPostText: Colors.white,
+        clubProfileFooterAdd: Colors.white,
+        optionColor: Colors.white,
+        optionText: Colors.grey[700]!,
+        appBar: Colors.black,
+        appBarText: Colors.white));
 
   DarkTheme();
 

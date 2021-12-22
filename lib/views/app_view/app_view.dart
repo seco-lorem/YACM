@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:yacm/views/common_views/club_profile.dart';
+import 'package:yacm/views/common_views/profile_screen.dart';
+import 'package:yacm/views/web_view/not_logged_in/not_logged_in_view.dart';
+import 'package:yacm/views/web_view/web_view.dart';
 import '../../models/language/language.dart';
-import '../../util/helper.dart';
-import '../web_view/home_screen/home_screen.dart';
 
 class AppView extends StatefulWidget {
   const AppView({Key? key}) : super(key: key);
@@ -25,17 +26,10 @@ class _AppViewState extends State<AppView> {
   @override
   initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      await Helper.showGetLanguagePopUp(
-          context: context,
-          languages: ["English", "Turkish"],
-          onContinue: () => Navigator.pop(context),
-          language: Language.of(context)!);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return HomeScreen();
+    return ClubProfile(id:"");
   }
 }

@@ -13,6 +13,14 @@ class OwnThemeFields {
   final Color popUpInterestsText;
   final Color popUpInterestsRadio;
   final Color popUpHeaderText;
+  final Color postSettings;
+  final Color postSettingsText;
+  final Color gridPostText;
+  final Color clubProfileFooterAdd;
+  final Color optionColor;
+  final Color optionText;
+  final Color appBarText;
+  final Color appBar;
 
   const OwnThemeFields(
       {required this.background,
@@ -26,22 +34,39 @@ class OwnThemeFields {
       required this.popUpClose,
       required this.popUpInterestsRadio,
       required this.popUpInterestsText,
-      required this.popUpHeaderText});
+      required this.popUpHeaderText,
+      required this.postSettings,
+      required this.postSettingsText,
+      required this.gridPostText,
+      required this.clubProfileFooterAdd,
+      required this.optionColor,
+      required this.optionText,
+      required this.appBarText,
+      required this.appBar});
 
   factory OwnThemeFields.empty() {
     return OwnThemeFields(
-        background: Colors.black,
-        popUpBackground: Colors.black,
-        popUpTextInputColor: Colors.black,
-        inputFieldBorder: Colors.black,
-        yacmLogoColor: Colors.black,
-        popUpLogin: Colors.black,
-        popUpLoginBackground: Colors.black,
-        popUpSignUp: Colors.black,
-        popUpClose: Colors.black,
-        popUpInterestsRadio: Colors.black,
-        popUpInterestsText: Colors.black,
-        popUpHeaderText: Colors.black);
+      background: Colors.black,
+      popUpBackground: Colors.black,
+      popUpTextInputColor: Colors.black,
+      inputFieldBorder: Colors.black,
+      yacmLogoColor: Colors.black,
+      popUpLogin: Colors.black,
+      popUpLoginBackground: Colors.black,
+      popUpSignUp: Colors.black,
+      popUpClose: Colors.black,
+      popUpInterestsRadio: Colors.black,
+      popUpInterestsText: Colors.black,
+      popUpHeaderText: Colors.black,
+      postSettings: Colors.black,
+      postSettingsText: Colors.black,
+      gridPostText: Colors.black,
+      clubProfileFooterAdd: Colors.black,
+      optionColor: Colors.black,
+      optionText: Colors.black,
+      appBarText: Colors.black,
+      appBar: Colors.black,
+    );
   }
 }
 
