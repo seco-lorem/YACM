@@ -1,14 +1,25 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:yacm/views/common_views/club_profile.dart';
 import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
 import 'controllers/theme_controller/theme_changer.dart';
+import 'models/language/language.dart';
 import 'views/app_view/app_view.dart';
-import 'views/web_view/home_screen/home_screen.dart';
 
-void main() {
+void main() async {
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+          apiKey: "AIzaSyBPFKxM9MsxTQGEaQr6Q4G-PTuD4K3GdS8",
+          authDomain: "yacm-c626b.firebaseapp.com",
+          projectId: "yacm-c626b",
+          storageBucket: "yacm-c626b.appspot.com",
+          messagingSenderId: "336218459715",
+          appId: "1:336218459715:web:77d0188c6263488d6e0ef6",
+          measurementId: "G-4P9C8VHPVB"));
   runApp(MultiProviderApp());
 }
 
@@ -57,6 +68,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Locale? _locale;
+  Language? _language;
 
   @override
   void initState() {
@@ -75,6 +87,7 @@ class _MyAppState extends State<MyApp> {
     getLocale().then((locale) {
       setState(() {
         _locale = locale;
+        _language = Language.of(context);
       });
     });
     super.didChangeDependencies();
@@ -101,7 +114,7 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-      routes: {"/home": (context) => HomeScreen()},
+      routes: {"/club_profile": (context) => ClubProfile(id: "id")},
       debugShowCheckedModeBanner: false,
     );
   }

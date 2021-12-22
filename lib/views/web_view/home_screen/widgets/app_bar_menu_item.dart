@@ -17,12 +17,19 @@ class MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: ontap,
-      title: Text(title,
-          style: TextStyle(
-              fontWeight: selected ? FontWeight.bold : FontWeight.normal)),
-      trailing: selected ? boldIcon : icon,
+    return Material(
+      type: MaterialType.transparency,
+      child: ListTile(
+        selected: selected,
+        selectedTileColor: Colors.black.withOpacity(.2),
+        hoverColor: Colors.black.withOpacity(.1),
+        onTap: ontap,
+        title: Text(title,
+            style: TextStyle(
+                color: Colors.grey[700],
+                fontWeight: selected ? FontWeight.bold : FontWeight.normal)),
+        trailing: selected ? boldIcon : icon,
+      ),
     );
   }
 }

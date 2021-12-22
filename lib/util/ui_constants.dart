@@ -45,4 +45,9 @@ class UIConstants {
       UIConstants.getSafeWidth(context) * multiplier > width
           ? width
           : UIConstants.getSafeWidth(context) * multiplier;
+
+  static double getPostWidth(BuildContext context) =>
+      MediaQuery.of(context).size.width > 500
+          ? 500
+          : MediaQuery.of(context).size.width;
 }
