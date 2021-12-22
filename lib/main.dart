@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -5,50 +6,44 @@ import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
 import 'controllers/theme_controller/theme_changer.dart';
-import 'dart:io';
 import 'controllers/firebase_manager/firebase_manager.dart';
 
-class FireStoreApp extends StatefulWidget {
-  const FireStoreApp({Key? key}) : super(key: key);
+void main() async {
+  var samplePollData = {
+    "author": "Enis Özer",
+    "clubName": "ACM",
+    "commentsOn": false,
+    "message": "test",
+    "publishDate": DateTime.now(),
+    "options": ["Messi", "Ronaldo", "Griezman", "Mbappe"],
+    "votes": [50, 1, 0, 0],
+    "question": "which is best"
+  };
+  var samplePostComment = {
+    "message": "test comment",
+    "author": "Enis Özer",
+  };
+  var sampleEventData = {
+    "author": "Enis Özer",
+    "clubName": "ACM",
+    "commentsOn": false,
+    "message": "test",
+    "beginDate": DateTime.now(),
+    "endDate": DateTime.now(),
+    "publishDate": DateTime.now(),
+  };
 
-  @override
-  _FireStoreAppState createState() => _FireStoreAppState();
+  var sampleCommentData = {};
+  FirebaseManager f = await FirebaseManager.getInstance();
+  await f.signIn(email: "enis.ozer@ug.bilkent.edu.tr", password: "123456");
+  print("before");
+  print(await f.enrollToClub(clubName: "ACM"));
+  print("after");
 }
 
-class _FireStoreAppState extends State<FireStoreApp> {
-  String data = "";
-
-  String getData() {
-    return "enis";
-  }
-
-  @override
-  void initState() {
-    data = getData();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('FireStore Example'),
-        ),
-        body: Center(
-          child: Text(
-            "enis",
-            style: TextStyle(fontSize: 30),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-void main() {
+/*void main() {
   runApp(MultiProviderApp());
-}
+}*/
 
 /// This class is implemented so the providers are
 /// supplied in a better scope

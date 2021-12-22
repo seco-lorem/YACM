@@ -121,6 +121,7 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
+    firebase.firestore().collection('users').add({"deneme":"deneme"});
     const analytics = getAnalytics(app);
   </script>
 </body>
