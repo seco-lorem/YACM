@@ -61,7 +61,7 @@ class _ClubProfileState extends State<ClubProfile> {
         ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"],
         [1, 1, 1, 1, 1],
         "This is a sample question,",
-        ""),
+        "234"),
     Event(
         "author",
         "club",
@@ -76,7 +76,7 @@ class _ClubProfileState extends State<ClubProfile> {
         DateTime.now().subtract(Duration(days: 1)),
         DateTime.now().add(Duration(days: 1)),
         [],
-        ""),
+        "234"),
     Poll(
         "club",
         "club",

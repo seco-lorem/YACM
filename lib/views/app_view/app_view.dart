@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yacm/views/common_views/club_profile.dart';
+import 'package:yacm/views/common_views/profile_screen.dart';
 import 'package:yacm/views/web_view/not_logged_in/not_logged_in_view.dart';
 import 'package:yacm/views/web_view/web_view.dart';
 import '../../models/language/language.dart';
@@ -29,6 +30,6 @@ class _AppViewState extends State<AppView> {
 
   @override
   Widget build(BuildContext context) {
-    return ClubProfile(id: "");
+    return ClubProfile(id:"");
   }
 }
