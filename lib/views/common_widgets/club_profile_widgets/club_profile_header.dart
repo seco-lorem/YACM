@@ -62,7 +62,8 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
                 height: 200,
                 child: Image.network(
                   widget.url,
-                  fit: BoxFit.fitWidth,
+                  fit: BoxFit.cover, // fitWidth, // Emin değilim ama iyi gibi
+                  //                                 (Mobil için)
                 ),
               ),
             ),
