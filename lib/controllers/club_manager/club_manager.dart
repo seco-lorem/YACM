@@ -1,11 +1,12 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:yacm/controllers/firebase_manager/firebase_manager.dart';
 import 'package:yacm/controllers/message_manager/message_manager.dart';
 import 'package:yacm/controllers/post_manager/post_manager.dart';
 import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/post/post.dart';
 
-class ClubManager {
+class ClubManager extends ChangeNotifier {
   late PostManager _postManager;
   late MessageManager _messageManager;
   late FirebaseManager _firebaseManager;

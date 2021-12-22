@@ -8,6 +8,14 @@ import 'dart:io';
 ///    Related to users:
 ///
 class FirebaseManager {
+  static FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  static FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  static FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+
+  String getUserID() {
+    return FirebaseAuth.instance.currentUser!.uid;
+  }
+
   /// Returns a map that can be accessed like json format
   /// Example:
   ///      var manager = await FirebaseManager.getInstance();
@@ -203,5 +211,266 @@ class FirebaseManager {
     }
 
     return true;
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData(String id) async {
+    return await FirebaseFirestore.instance.collection("users").doc(id).get();
+  }
+
+  /// Writes the given commentData to comm
+  Future<bool> sendCommentToPost(
+      {String? postId, Map<String, dynamic>? commentData}) async {
+    try {
+      CollectionReference posts = _firebaseFirestore.collection('postComments');
+
+      await posts.doc(postId).collection("comments").add(commentData!);
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+    return true;
+  }
+
+  /// enrols current user to event
+  /// user must be signed in
+  Future<bool> enrollToEvent({String? eventId}) async {
+    try {
+      // check whether the user is signed in or not
+      if (_firebaseAuth.currentUser == null) return false;
+      String? uid = _firebaseAuth.currentUser?.uid;
+      var tmp = [uid];
+      await _firebaseFirestore
+          .collection('events')
+          .doc(eventId)
+          .update({"participants": FieldValue.arrayUnion(tmp)});
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+    return true;
+  }
+
+  /// user must be signed in otherwise
+  /// a false will be returned
+  Future<bool> enrollToClub({String? clubId}) async {
+    try {
+      // check whether the user is signed in or not
+      if (_firebaseAuth.currentUser == null) return false;
+
+      String? uid = _firebaseAuth.currentUser!.uid;
+
+      // add user id to clubs members array
+      var tmp1 = [uid];
+      await _firebaseFirestore
+          .collection('clubs')
+          .doc(clubId)
+          .update({"members": FieldValue.arrayUnion(tmp1)});
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+    return true;
+  }
+
+  /// user must be signed in otherwise
+  /// a false will be returned
+  Future<bool> leaveClub({String? clubId}) async {
+    try {
+      // check whether the user is signed in or not
+      if (_firebaseAuth.currentUser == null) return false;
+
+      String? uid = _firebaseAuth.currentUser!.uid;
+
+      // delete user id from clubs members array
+      var tmp1 = [uid];
+      await _firebaseFirestore
+          .collection('clubs')
+          .doc(clubId)
+          .update({"members": FieldValue.arrayRemove(tmp1)});
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+    return true;
+  }
+
+  /// new photo should not be null
+  Future<bool> updateClubPhoto(
+      {String? clubName, String? clubId, File? newPhoto}) async {
+    try {
+      await _firebaseStorage
+          .ref('clubProfilePhotos/${clubName}.png')
+          .putFile(newPhoto!)
+          .then((p0) async {
+        String tmp = await p0.ref.getDownloadURL();
+        await _firebaseFirestore
+            .collection('clubs')
+            .doc(clubId)
+            .update({'photoURL': tmp});
+      });
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> sendMessageToClubChat(
+      {Map<String, dynamic>? data, String? clubId}) async {
+    try {
+      // check whether the user is signed in or not
+      if (_firebaseAuth.currentUser == null) return false;
+
+      String? uid = _firebaseAuth.currentUser!.uid;
+
+      data!["sender"] = uid;
+
+      _firebaseFirestore
+          .collection("clubChats")
+          .doc(clubId)
+          .collection("messages")
+          .add(data);
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+    return true;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getClubChatMessages(
+      {required String clubId}) {
+    try {
+      return _firebaseFirestore
+          .collection('clubChats')
+          .doc(clubId)
+          .collection('messages')
+          .snapshots();
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>?> getEventPolls(
+      {String? eventPostId}) async {
+    try {
+      return _firebaseFirestore
+          .collection('eventPolls')
+          .doc(eventPostId)
+          .collection('polls')
+          .snapshots();
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>?> getEventMessages(
+      {String? eventPostId}) async {
+    try {
+      return _firebaseFirestore
+          .collection('eventMessages')
+          .doc(eventPostId)
+          .collection('messages')
+          .snapshots();
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future<bool> createEventMessage(
+      {String? eventPostId, Map<String, dynamic>? messageData}) async {
+    try {
+      _firebaseFirestore
+          .collection('eventMessages')
+          .doc(eventPostId)
+          .set(messageData!);
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> createEventPoll(
+      {String? eventPostId, Map<String, dynamic>? pollData}) async {
+    try {
+      _firebaseFirestore
+          .collection('eventPolls')
+          .doc(eventPostId)
+          .set(pollData!);
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+
+    return true;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getAllClubs() {
+    try {
+      return _firebaseFirestore.collection('clubs').snapshots();
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  /// user must be logged in to pin a post
+  /// otherwise a false is returned with no thrown exception
+  Future<bool> pinPost({String? postId}) async {
+    try {
+      if (_firebaseAuth.currentUser == null) return false;
+
+      String? uid = _firebaseAuth.currentUser?.uid;
+
+      await _firebaseFirestore.collection('posts').doc(postId).update({
+        "userPinned": FieldValue.arrayUnion([uid])
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  /// returns a list of post ids
+  /// returns the users pinned posts as a list
+  /// user must be logged in to pin a post
+  /// otherwise a false is returned with no thrown exception
+  Stream<QuerySnapshot>? getPinnedPosts() {
+    try {
+      List<String>? rtn;
+      if (_firebaseAuth.currentUser == null) return null;
+
+      String? uid = _firebaseAuth.currentUser?.uid;
+      return _firebaseFirestore
+          .collection('posts')
+          .where("userPinned", arrayContains: uid)
+          .snapshots();
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  /// returns a list of posts
+  Stream<QuerySnapshot>? getSubbedPosts() {
+    try {
+      if (_firebaseAuth.currentUser == null) return null;
+
+      String? uid = _firebaseAuth.currentUser?.uid;
+
+      return _firebaseFirestore
+          .collection('posts')
+          .where("members", arrayContains: uid)
+          .snapshots();
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
   }
 }

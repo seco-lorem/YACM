@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:yacm/controllers/firebase_manager/firebase_manager.dart';
 import 'package:yacm/controllers/message_manager/message_manager.dart';
 import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/post/post.dart';
 
-class PostManager {
+class PostManager extends ChangeNotifier {
   late MessageManager _messageManager;
   late FirebaseManager _firebaseManager;
 

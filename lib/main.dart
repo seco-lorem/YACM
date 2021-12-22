@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:yacm/models/user/user.dart';
 import 'package:yacm/views/common_views/club_profile.dart';
 import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
@@ -11,6 +13,11 @@ import 'models/language/language.dart';
 import 'views/app_view/app_view.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Hive
+    ..initFlutter()
+    ..registerAdapter(UserAdapter());
+
   await Firebase.initializeApp(
       options: FirebaseOptions(
           apiKey: "AIzaSyBPFKxM9MsxTQGEaQr6Q4G-PTuD4K3GdS8",
