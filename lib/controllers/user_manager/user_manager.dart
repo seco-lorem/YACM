@@ -35,7 +35,6 @@ class UserManager extends ChangeNotifier {
       return true;
     }
 
-    await _firebaseManager.signOut();
     _setLoading(false);
     return false;
   }

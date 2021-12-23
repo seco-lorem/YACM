@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:yacm/controllers/firebase_manager/firebase_manager.dart';
 import 'package:yacm/controllers/message_manager/message_manager.dart';
@@ -26,7 +27,8 @@ class PostManager extends ChangeNotifier {
     throw UnimplementedError();
   }
 
-  Future<List<String>> checkOverlap(DateTime begin, DateTime end) async {
+  Future<List<DocumentSnapshot>> checkOverlap(
+      DateTime begin, DateTime end) async {
     throw UnimplementedError();
   }
 }

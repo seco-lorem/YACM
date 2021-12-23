@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:universal_io/io.dart';
 import 'package:yacm/controllers/firebase_manager/firebase_manager.dart';
 import 'package:yacm/controllers/message_manager/message_manager.dart';
 import 'package:yacm/controllers/post_manager/post_manager.dart';

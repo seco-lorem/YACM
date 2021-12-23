@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_io/io.dart';
 import 'package:yacm/models/user/user.dart';
 import 'package:yacm/router/route_generator.dart';
 import 'package:yacm/views/common_views/club_profile.dart';
@@ -15,19 +16,25 @@ import 'views/app_view/app_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isIOS || Platform.isAndroid) {
+    print("in");
+    await Firebase.initializeApp();
+    print("after");
+  } else {
+    await Firebase.initializeApp(
+        options: FirebaseOptions(
+            apiKey: "AIzaSyBPFKxM9MsxTQGEaQr6Q4G-PTuD4K3GdS8",
+            authDomain: "yacm-c626b.firebaseapp.com",
+            projectId: "yacm-c626b",
+            storageBucket: "yacm-c626b.appspot.com",
+            messagingSenderId: "336218459715",
+            appId: "1:336218459715:web:77d0188c6263488d6e0ef6",
+            measurementId: "G-4P9C8VHPVB"));
+  }
   Hive
     ..initFlutter()
     ..registerAdapter(UserAdapter());
-
-  await Firebase.initializeApp(
-      options: FirebaseOptions(
-          apiKey: "AIzaSyBPFKxM9MsxTQGEaQr6Q4G-PTuD4K3GdS8",
-          authDomain: "yacm-c626b.firebaseapp.com",
-          projectId: "yacm-c626b",
-          storageBucket: "yacm-c626b.appspot.com",
-          messagingSenderId: "336218459715",
-          appId: "1:336218459715:web:77d0188c6263488d6e0ef6",
-          measurementId: "G-4P9C8VHPVB"));
+  print("before run");
   runApp(MultiProviderApp());
 }
 
@@ -122,7 +129,6 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-      routes: {"/club_profile": (context) => ClubProfile(id: "id")},
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.generateRoute,
     );

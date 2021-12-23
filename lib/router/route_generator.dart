@@ -17,7 +17,8 @@ class _GeneratePageRoute extends PageRouteBuilder {
                 Animation<double> secondaryAnimation) {
               return widget;
             },
-            transitionDuration: Duration(milliseconds: 500),
+            reverseTransitionDuration: Duration(milliseconds: 250),
+            transitionDuration: Duration(milliseconds: 250),
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,
                 Animation<double> secondaryAnimation,
@@ -25,24 +26,30 @@ class _GeneratePageRoute extends PageRouteBuilder {
               return SlideTransition(
                 textDirection: TextDirection.rtl,
                 position: Tween<Offset>(
-                  begin: Offset(1.0, 0.0),
+                  begin: Offset(-1.0, 0.0),
                   end: Offset.zero,
                 ).animate(animation),
                 child: child,
               );
             });
 }
-class RouteGenerator{
-  static Route<dynamic> generateRoute(RouteSettings settings){
+
+class RouteGenerator {
+  static Route<dynamic> generateRoute(RouteSettings settings) {
     String splitted = settings.name!.split('?')[0];
-    switch (splitted){
+    switch (splitted) {
       case RouteNames.post:
         Uri settingsUri = Uri.parse(settings.name.toString());
         final postId = settingsUri.queryParameters['id'];
         print("PostId = " + postId.toString());
-        return _GeneratePageRoute(widget: ProfileScreen(), routeName: settings.name.toString());
+        return _GeneratePageRoute(
+            widget: ProfileScreen(), routeName: settings.name.toString());
       default:
-        return _GeneratePageRoute(widget: ClubProfile(id: "",), routeName: settings.name.toString());
+        return _GeneratePageRoute(
+            widget: ClubProfile(
+              id: "",
+            ),
+            routeName: settings.name.toString());
     }
   }
 }

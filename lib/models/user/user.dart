@@ -1,4 +1,3 @@
-import 'package:firebase/firestore.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'user.g.dart';
