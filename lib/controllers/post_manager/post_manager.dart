@@ -12,23 +12,22 @@ class PostManager extends ChangeNotifier {
   PostManager(this._firebaseManager, this._messageManager);
 
   Future<bool> vetoPost(String id) async {
-    throw UnimplementedError();
+    return await _firebaseManager.vetoPost(id);
   }
 
   Future<bool> deletePost(String id) async {
-    throw UnimplementedError();
+    return await _firebaseManager.deletePost(id);
   }
 
   Future<bool> publishPost(Post post) async {
-    throw UnimplementedError();
+    return await _firebaseManager.publishPost(post);
   }
 
   Future<bool> commentPost(String id, Message message) async {
-    throw UnimplementedError();
+    return await _messageManager.sendToPost(message, id);
   }
 
-  Future<List<DocumentSnapshot>> checkOverlap(
-      DateTime begin, DateTime end) async {
-    throw UnimplementedError();
+  Future<List<QuerySnapshot>> checkOverlap(DateTime begin, DateTime end) async {
+    return await _firebaseManager.checkOverlap(begin, end);
   }
 }

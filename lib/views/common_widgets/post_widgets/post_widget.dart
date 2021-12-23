@@ -53,7 +53,7 @@ class PostWidget extends StatelessWidget {
                             TextSpan(
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {},
-                                text: post.club + " ",
+                                text: post.clubID + " ",
                                 style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,

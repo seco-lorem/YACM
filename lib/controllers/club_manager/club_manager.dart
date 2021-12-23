@@ -3,6 +3,7 @@ import 'package:universal_io/io.dart';
 import 'package:yacm/controllers/firebase_manager/firebase_manager.dart';
 import 'package:yacm/controllers/message_manager/message_manager.dart';
 import 'package:yacm/controllers/post_manager/post_manager.dart';
+import 'package:yacm/models/club/club.dart';
 import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/post/post.dart';
 
@@ -14,54 +15,55 @@ class ClubManager extends ChangeNotifier {
   ClubManager(this._firebaseManager, this._messageManager, this._postManager);
 
   Future<bool> publishPost(Post post) async {
-    throw UnimplementedError();
+    return await _postManager.publishPost(post);
   }
 
-  Future<String> startEvent() async {
-    throw UnimplementedError();
+  Future<bool> startEvent(Club club) async {
+    return _firebaseManager.startEvent(club);
   }
 
-  Future<bool> finishEvent() async {
-    throw UnimplementedError();
+  Future<bool> finishEvent(String id) async {
+    return _firebaseManager.finishEvent(id);
   }
 
   Future<bool> muteUser(String clubID, String userID) async {
-    throw UnimplementedError();
+    return await _firebaseManager.muteUser(clubID, userID);
   }
 
   Future<bool> unmuteUser(String clubID, String userID) async {
-    throw UnimplementedError();
+    return await _firebaseManager.unmuteUser(clubID, userID);
   }
 
   Future<bool> kickUser(String clubID, String userID) async {
-    throw UnimplementedError();
+    return await _firebaseManager.muteUser(clubID, userID);
   }
 
-  Future<bool> updateEnrollable(bool enrollable) async {
-    throw UnimplementedError();
+  Future<bool> updateEnrollable(String clubID, bool enrollable) async {
+    return await _firebaseManager.updateEnrollable(clubID, enrollable);
   }
 
   Future<bool> updateClubPhoto(File photo, String clubID) async {
-    throw UnimplementedError();
+    return await _firebaseManager.updateClubPhoto(
+        clubId: clubID, newPhoto: photo);
   }
 
   Future<bool> vetoPost(String postID) async {
-    throw UnimplementedError();
+    return await _postManager.vetoPost(postID);
   }
 
   Future<bool> deletePost(String postID) async {
-    throw UnimplementedError();
+    return await _postManager.deletePost(postID);
   }
 
   Future<bool> sendMessage(Message message, String clubID) async {
-    throw UnimplementedError();
+    return await _messageManager.sendToClub(message, clubID);
   }
 
   Future<bool> enrollToClub(String clubID) async {
-    throw UnimplementedError();
+    return await _firebaseManager.enrollToClub(clubId: clubID);
   }
 
   Future<bool> leaveClub(String clubID) async {
-    throw UnimplementedError();
+    return await _firebaseManager.leaveClub(clubId: clubID);
   }
 }

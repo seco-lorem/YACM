@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/post/post.dart';
 import 'package:yacm/models/post/posts/event.dart';
 import 'package:yacm/models/post/posts/poll.dart';
+import 'package:yacm/util/helper.dart';
 import 'package:yacm/views/common_widgets/club_profile_widgets/club_profile_add_post.dart';
 import 'package:yacm/views/common_widgets/club_profile_widgets/club_profile_footer.dart';
 import 'package:yacm/views/common_widgets/club_profile_widgets/club_profile_header.dart';
@@ -172,23 +172,8 @@ class _ClubProfileState extends State<ClubProfile> {
                     onPageChange: () => onPageChange()),
                 postsActive
                     ? GridPost(posts: _posts + _posts)
-                    : ClubProfileMessages(isAdmin: false, messages: [
-                        Message(
-                            "Message One Message One Message One Message One Message One Message One Message One Message One Message One Message One Message One Message One ",
-                            "Sender One",
-                            "https://image.shutterstock.com/image-photo/winter-christmas-landscape-pink-tones-600w-644773606.jpg",
-                            DateTime.now().toString()),
-                        Message(
-                            "Message Two",
-                            "Sender Two",
-                            "https://image.shutterstock.com/image-photo/view-valley-castle-hohenschwangau-600w-103574675.jpg",
-                            DateTime.now().toString()),
-                        Message(
-                            "Message Three",
-                            "Sender Three",
-                            "https://image.shutterstock.com/image-photo/fairy-forest-covered-snow-moon-600w-744558304.jpg",
-                            DateTime.now().toString()),
-                      ]),
+                    : ClubProfileMessages(
+                        isAdmin: false, messages: Helper.comments),
                 Visibility(
                   visible: !postsActive,
                   child: ClubProfileSendMessage(),

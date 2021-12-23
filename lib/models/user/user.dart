@@ -39,4 +39,32 @@ class User extends HiveObject {
     _clubs = data["clubs"] as List<String>;
     _interests = data["interests"] as List<String>;
   }
+
+  void update(Map<String, dynamic> data) {
+    for (String key in data.keys) {
+      switch (key) {
+        case "id":
+          _id = data["id"];
+          break;
+        case "mail":
+          _mail = data["mail"];
+          break;
+        case "photoURL":
+          _photoURL = data["photoURL"];
+          break;
+        case "pinnedPosts":
+          _pinnedPosts = data["pinnedPosts"];
+          break;
+        case "events":
+          _events = data["events"];
+          break;
+        case "clubs":
+          _clubs = data["clubs"];
+          break;
+        case "interests":
+          _interests = data["interests"];
+          break;
+      }
+    }
+  }
 }

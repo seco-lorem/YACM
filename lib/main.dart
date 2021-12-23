@@ -4,6 +4,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_io/io.dart';
+import 'package:yacm/controllers/club_manager/club_manager.dart';
+import 'package:yacm/controllers/firebase_manager/firebase_manager.dart';
+import 'package:yacm/controllers/hive_manager/managers/user_hive_manager.dart';
+import 'package:yacm/controllers/message_manager/message_manager.dart';
+import 'package:yacm/controllers/post_manager/post_manager.dart';
+import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/user/user.dart';
 import 'package:yacm/router/route_generator.dart';
 import 'package:yacm/views/common_views/club_profile.dart';
@@ -64,6 +70,21 @@ class _MultiProviderAppState extends State<MultiProviderApp> {
       providers: [
         ChangeNotifierProvider<ThemeChanger>(
           create: (context) => ThemeChanger(_darkMode ?? false),
+        ),
+        ChangeNotifierProvider<UserManager>(
+          create: (context) =>
+              UserManager(UserHiveManager(), FirebaseManager()),
+        ),
+        ChangeNotifierProvider<PostManager>(
+          create: (context) =>
+              PostManager(FirebaseManager(), MessageManager(FirebaseManager())),
+        ),
+        ChangeNotifierProvider<ClubManager>(
+          create: (context) => ClubManager(
+              FirebaseManager(),
+              MessageManager(FirebaseManager()),
+              PostManager(
+                  FirebaseManager(), MessageManager(FirebaseManager()))),
         )
       ],
       child: MyApp(),

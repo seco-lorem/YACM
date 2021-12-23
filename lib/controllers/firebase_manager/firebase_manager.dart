@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:universal_io/io.dart';
+import 'package:yacm/models/club/club.dart';
+import 'package:yacm/models/message/message.dart';
+import 'package:yacm/models/post/post.dart';
 
 /// Methods:
 ///    Related to clubs: getClub, getClubMemberCount
@@ -40,21 +43,32 @@ class FirebaseManager {
   ///    }
   ///  }
   Future<bool> registerUser(
-      {String? email, String? password, String userName = ""}) async {
+      {required String email,
+      required String password,
+      required List<String> interests,
+      required File photo}) async {
     UserCredential userCredential = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email!, password: password!);
+        .createUserWithEmailAndPassword(email: email, password: password);
 
     User? user = userCredential.user;
 
-    // create a user document in the users collection
+    String? photoURL;
+
+    await _firebaseStorage
+        .ref('userPhotos/${user!.uid}.png')
+        .putFile(photo)
+        .then((data) async {
+      photoURL = await data.ref.getDownloadURL();
+    });
+
     Map<String, dynamic> userData = {
-      'clubs': [],
-      'userName': userName,
-      'photoURL': 'URL',
-      'pinnedPosts': [],
-      'events': [],
-      'interests': [],
-      'uid': user!.uid
+      "id": user.uid,
+      "mail": email,
+      "photoURL": photoURL ?? "",
+      "pinnedPosts": [],
+      "events": [],
+      "clubs": [],
+      "interests": interests
     };
 
     await createUserInFirestore(userData);
@@ -217,13 +231,13 @@ class FirebaseManager {
     return await FirebaseFirestore.instance.collection("users").doc(id).get();
   }
 
-  /// Writes the given commentData to comm
+  /// Writes the given message to the given post with [postId]
   Future<bool> sendCommentToPost(
-      {String? postId, Map<String, dynamic>? commentData}) async {
+      {required String postId, required Message message}) async {
     try {
       CollectionReference posts = _firebaseFirestore.collection('postComments');
 
-      await posts.doc(postId).collection("comments").add(commentData!);
+      await posts.doc(postId).collection("comments").add(message.toMap());
     } catch (e) {
       print(e.toString());
       return false;
@@ -317,20 +331,16 @@ class FirebaseManager {
   }
 
   Future<bool> sendMessageToClubChat(
-      {Map<String, dynamic>? data, String? clubId}) async {
+      {required Message message, required String clubId}) async {
     try {
       // check whether the user is signed in or not
       if (_firebaseAuth.currentUser == null) return false;
-
-      String? uid = _firebaseAuth.currentUser!.uid;
-
-      data!["sender"] = uid;
 
       _firebaseFirestore
           .collection("clubChats")
           .doc(clubId)
           .collection("messages")
-          .add(data);
+          .add(message.toMap());
     } catch (e) {
       print(e.toString());
       return false;
@@ -441,7 +451,7 @@ class FirebaseManager {
   /// returns the users pinned posts as a list
   /// user must be logged in to pin a post
   /// otherwise a false is returned with no thrown exception
-  Stream<QuerySnapshot>? getPinnedPosts() {
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getPinnedPosts() {
     try {
       List<String>? rtn;
       if (_firebaseAuth.currentUser == null) return null;
@@ -458,7 +468,7 @@ class FirebaseManager {
   }
 
   /// returns a list of posts
-  Stream<QuerySnapshot>? getSubbedPosts() {
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getSubbedPosts() {
     try {
       if (_firebaseAuth.currentUser == null) return null;
 
@@ -472,5 +482,171 @@ class FirebaseManager {
       print(e.toString());
       return null;
     }
+  }
+
+  /// returns a list of suggested clubs
+  Future<List<Club>> getSuggestedClubs() async {
+    List<Club> clubs = [];
+    try {
+      await _firebaseFirestore
+          .collection("users")
+          .doc(_firebaseAuth.currentUser!.uid)
+          .get()
+          .then((value) {
+        Future.forEach(value.data()!["suggestedClubs"], (String id) async {
+          DocumentSnapshot<Map<String, dynamic>> club = await getClub(id);
+
+          clubs.add(Club(
+              club["id"],
+              club["advisor"],
+              club["clubPhoto"],
+              club["enrollabe"],
+              club["managers"],
+              club["members"],
+              club["mutedMembers"]));
+        });
+      });
+
+      return clubs;
+    } catch (e) {
+      print(e.toString());
+      return clubs as Future<List<Club>>;
+    }
+  }
+
+  /// starts an event to the given [club]
+  Future<bool> startEvent(Club club) async {
+    try {
+      await _firebaseFirestore.collection("events").add({
+        "clubID": club.id,
+        "participants": [],
+        "managers": club.managers,
+        "active": true
+      });
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> finishEvent(String id) async {
+    try {
+      await _firebaseFirestore
+          .collection("events")
+          .doc(id)
+          .update({"active": false});
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> muteUser(String clubID, String userID) async {
+    try {
+      await _firebaseFirestore.collection("clubs").doc(clubID).update({
+        "mutedUsers": FieldValue.arrayUnion([userID])
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> unmuteUser(String clubID, String userID) async {
+    try {
+      await _firebaseFirestore.collection("clubs").doc(clubID).update({
+        "mutedUsers": FieldValue.arrayRemove([userID])
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> updateEnrollable(String clubID, bool enrollable) async {
+    try {
+      await _firebaseFirestore
+          .collection("clubs")
+          .doc(clubID)
+          .update({"enrollable": enrollable});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> vetoPost(String postID) async {
+    try {
+      await _firebaseFirestore.collection("posts").doc(postID).delete();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deletePost(String postID) async {
+    try {
+      await _firebaseFirestore.collection("posts").doc(postID).delete();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> publishPost(Post post) async {
+    try {
+      await _firebaseFirestore.collection("posts").add(post.toMap());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<List<QuerySnapshot>> checkOverlap(DateTime begin, DateTime end) async {
+    try {
+      return await _firebaseFirestore
+          .collection("posts")
+          .startAfter([begin])
+          .endAt([end])
+          .orderBy("beginDate")
+          .orderBy("endDate")
+          .snapshots()
+          .toList();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<bool> updateUserData(Map<String, dynamic> data) async {
+    try {
+      await _firebaseFirestore
+          .collection("users")
+          .doc(_firebaseAuth.currentUser!.uid)
+          .update(data);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteNotification(String notificationID) async {
+    try {
+      await _firebaseFirestore
+          .collection("notifications")
+          .doc(notificationID)
+          .delete();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getNotifications() {
+    return _firebaseFirestore
+        .collection("notifications")
+        .where("userID", isEqualTo: _firebaseAuth.currentUser!.uid)
+        .snapshots();
   }
 }
