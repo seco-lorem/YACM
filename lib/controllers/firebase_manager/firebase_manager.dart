@@ -503,7 +503,8 @@ class FirebaseManager {
               club["enrollabe"],
               club["managers"],
               club["members"],
-              club["mutedMembers"]));
+              club["mutedMembers"],
+              club["clubName"]));
         });
       });
 

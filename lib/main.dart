@@ -12,7 +12,6 @@ import 'package:yacm/controllers/post_manager/post_manager.dart';
 import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/user/user.dart';
 import 'package:yacm/router/route_generator.dart';
-import 'package:yacm/views/common_views/club_profile.dart';
 import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
