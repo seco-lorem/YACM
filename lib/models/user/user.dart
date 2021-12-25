@@ -31,17 +31,44 @@ class User extends HiveObject {
       this._clubs, this._interests);
 
   User.fromMap(Map<String, dynamic> data) {
+    List<String> posts = [];
+    for (var data in data["pinnedPosts"]) {
+      posts.add(data);
+    }
+    List<String> events = [];
+    for (var data in data["events"]) {
+      events.add(data);
+    }
+    List<String> clubs = [];
+    for (var data in data["clubs"]) {
+      clubs.add(data);
+    }
+    List<String> interests = [];
+    for (var data in data["interests"]) {
+      interests.add(data);
+    }
     _id = data["id"];
     _mail = data["mail"];
     _photoURL = data["photoURL"];
-    _pinnedPosts = data["pinnedPosts"] as List<String>;
-    _events = data["events"] as List<String>;
-    _clubs = data["clubs"] as List<String>;
-    _interests = data["interests"] as List<String>;
+    _pinnedPosts = posts;
+    _events = events;
+    _clubs = clubs;
+    _interests = interests;
+  }
+
+  User.fromUser(User other) {
+    _id = other.id;
+    _mail = other.mail;
+    _photoURL = other.photoURL;
+    _pinnedPosts = other.pinnedPosts;
+    _events = other.events;
+    _clubs = other.clubs;
+    _interests = other.interests;
   }
 
   void update(Map<String, dynamic> data) {
     for (String key in data.keys) {
+      print(key);
       switch (key) {
         case "id":
           _id = data["id"];
@@ -53,16 +80,16 @@ class User extends HiveObject {
           _photoURL = data["photoURL"];
           break;
         case "pinnedPosts":
-          _pinnedPosts = data["pinnedPosts"];
+          _pinnedPosts = data["pinnedPosts"] as List<String>;
           break;
         case "events":
-          _events = data["events"];
+          _events = data["events"] as List<String>;
           break;
         case "clubs":
-          _clubs = data["clubs"];
+          _clubs = data["clubs"] as List<String>;
           break;
         case "interests":
-          _interests = data["interests"];
+          _interests = data["interests"] as List<String>;
           break;
       }
     }

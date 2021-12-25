@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/theme_controller/theme_changer.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
@@ -7,11 +9,15 @@ class GetTheme extends StatefulWidget {
   final Language language;
   final VoidCallback onClose;
   final VoidCallback onContine;
+  final VoidCallback? onChanged;
+  final bool? dark;
   const GetTheme(
       {Key? key,
       required this.language,
       required this.onClose,
-      required this.onContine})
+      required this.onContine,
+      this.onChanged,
+      this.dark})
       : super(key: key);
 
   @override
@@ -21,6 +27,18 @@ class GetTheme extends StatefulWidget {
 class _GetThemeState extends State<GetTheme> {
   final List<String> _themes = ["Light", "Dark"];
   int _choice = 0;
+
+  @override
+  initState() {
+    super.initState();
+    if (widget.dark != null) {
+      if (widget.dark!) {
+        _choice = 1;
+      } else {
+        _choice = 0;
+      }
+    }
+  }
 
   Widget _continueButton(VoidCallback onTap) => TextButton(
       style: ButtonStyle(
@@ -72,6 +90,9 @@ class _GetThemeState extends State<GetTheme> {
                         value: index,
                         groupValue: _choice,
                         onChanged: (value) {
+                          Provider.of<ThemeChanger>(context, listen: false)
+                              .setTheme(value == 1);
+                          widget.onChanged!();
                           setState(() {
                             _choice = index;
                           });

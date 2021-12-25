@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/theme_controller/theme_changer.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/views/web_view/home_screen/widgets/app_bar_menu_item.dart';
@@ -19,6 +21,7 @@ class SideBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ThemeChanger>(context);
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,

@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/post/post.dart';
 import 'package:yacm/models/post/posts/event.dart';
@@ -28,29 +31,35 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
           color: Theme.of(context).own().background,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: ListView.builder(
-            controller: ScrollController(),
-            itemCount: Helper.posts.length,
-            itemBuilder: (context, index) {
-              Widget _child;
-
-              if (Helper.posts[index].type == PostType.EVENT) {
-                _child = EvenWidget(
-                    language: widget.language,
-                    post: Helper.posts[index] as Event,
-                    comments: Helper.comments);
-              } else {
-                _child = PollWidget(
-                    language: widget.language,
-                    post: Helper.posts[index] as Poll,
-                    comments: Helper.comments);
+          child: StreamBuilder(
+            stream: Provider.of<UserManager>(context).getPinnedPosts(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> stream) {
+              if (stream.connectionState == ConnectionState.active) {
+                List<Widget> _posts = [
+                  SizedBox(width: MediaQuery.of(context).size.width)
+                ];
+                for (DocumentSnapshot post in stream.data!.docs) {
+                  if (post.get("type") == "event") {
+                    _posts.add(EvenWidget(
+                        language: widget.language,
+                        post: Event.fromDocumentSnapshot(post),
+                        comments: []));
+                  } else if (post.get("type") == "poll") {
+                    _posts.add(PollWidget(
+                        language: widget.language,
+                        post: Poll.fromDocumentSnapshot(post),
+                        comments: []));
+                  }
+                }
+                return SingleChildScrollView(
+                  controller: ScrollController(),
+                  child: Column(
+                    children: _posts,
+                  ),
+                );
               }
-
               return Center(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: _child,
-                ),
+                child: CircularProgressIndicator(),
               );
             },
           )),

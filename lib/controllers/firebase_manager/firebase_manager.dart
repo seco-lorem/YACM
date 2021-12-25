@@ -5,6 +5,7 @@ import 'package:universal_io/io.dart';
 import 'package:yacm/models/club/club.dart';
 import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/post/post.dart';
+import 'dart:io' as io;
 
 /// Methods:
 ///    Related to clubs: getClub, getClubMemberCount
@@ -46,7 +47,10 @@ class FirebaseManager {
       {required String email,
       required String password,
       required List<String> interests,
-      required File photo}) async {
+      required File photo,
+      required String name,
+      required String schoolID}) async {
+    print(" i am in");
     UserCredential userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
 
@@ -54,13 +58,14 @@ class FirebaseManager {
 
     String? photoURL;
 
+    print("photo upload");
     await _firebaseStorage
         .ref('userPhotos/${user!.uid}.png')
-        .putFile(photo)
+        .putFile(io.File(photo.path))
         .then((data) async {
       photoURL = await data.ref.getDownloadURL();
     });
-
+    print("done with upload");
     Map<String, dynamic> userData = {
       "id": user.uid,
       "mail": email,
@@ -68,7 +73,9 @@ class FirebaseManager {
       "pinnedPosts": [],
       "events": [],
       "clubs": [],
-      "interests": interests
+      "interests": interests,
+      "name": name,
+      "schoolID": schoolID
     };
 
     await createUserInFirestore(userData);
@@ -203,7 +210,7 @@ class FirebaseManager {
       String destination = basePath + "photo" + i.toString();
       await FirebaseStorage.instance
           .ref(destination)
-          .putFile(files[i])
+          .putFile(io.File(files[i].path))
           .then((data) async {
         String url = await data.ref.getDownloadURL();
         _photoURLs.add(url);
@@ -314,7 +321,7 @@ class FirebaseManager {
     try {
       await _firebaseStorage
           .ref('clubProfilePhotos/${clubName}.png')
-          .putFile(newPhoto!)
+          .putFile(io.File(newPhoto!.path))
           .then((p0) async {
         String tmp = await p0.ref.getDownloadURL();
         await _firebaseFirestore
@@ -322,12 +329,11 @@ class FirebaseManager {
             .doc(clubId)
             .update({'photoURL': tmp});
       });
+      return true;
     } catch (e) {
       print(e.toString());
       return false;
     }
-
-    return true;
   }
 
   Future<bool> sendMessageToClubChat(
@@ -453,7 +459,6 @@ class FirebaseManager {
   /// otherwise a false is returned with no thrown exception
   Stream<QuerySnapshot<Map<String, dynamic>>>? getPinnedPosts() {
     try {
-      List<String>? rtn;
       if (_firebaseAuth.currentUser == null) return null;
 
       String? uid = _firebaseAuth.currentUser?.uid;

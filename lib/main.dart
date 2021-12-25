@@ -22,9 +22,7 @@ import 'views/app_view/app_view.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isIOS || Platform.isAndroid) {
-    print("in");
     await Firebase.initializeApp();
-    print("after");
   } else {
     await Firebase.initializeApp(
         options: FirebaseOptions(
@@ -39,7 +37,6 @@ void main() async {
   Hive
     ..initFlutter()
     ..registerAdapter(UserAdapter());
-  print("before run");
   runApp(MultiProviderApp());
 }
 
@@ -61,6 +58,12 @@ class _MultiProviderAppState extends State<MultiProviderApp> {
     setState(() {
       _darkMode = tempDarkMode;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initVariables();
   }
 
   @override
@@ -138,6 +141,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
+    print("de");
     return MaterialApp(
       locale: _locale,
       title: 'YACM',

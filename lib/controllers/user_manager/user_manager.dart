@@ -19,7 +19,7 @@ class UserManager extends ChangeNotifier {
   UserManager(this._userHiveManager, this._firebaseManager);
 
   Future<bool> signIn(String email, String password) async {
-    _setLoading(true);
+    setLoading(true);
     bool result =
         await _firebaseManager.signIn(email: email, password: password);
 
@@ -29,38 +29,44 @@ class UserManager extends ChangeNotifier {
         await _firebaseManager.getUserData(id);
 
     if (result) {
-      User tempUser = await _userHiveManager.create(
+      User temp = await _userHiveManager.create(
           BOX_NAME, id, User.fromMap(tempData.data()!));
-      _user = tempUser;
+
+      _user = User.fromUser(temp);
       notifyListeners();
-      _setLoading(false);
+      setLoading(false);
       return true;
     }
 
-    _setLoading(false);
+    setLoading(false);
     return false;
   }
 
-  Future<bool> signUp(
-      String email, String password, List<String> interests, File photo) async {
+  Future<bool> signUp(String email, String password, List<String> interests,
+      File photo, String name, String schoolID) async {
     await _firebaseManager.registerUser(
-        email: email, password: password, interests: interests, photo: photo);
+        email: email,
+        password: password,
+        interests: interests,
+        photo: photo,
+        name: name,
+        schoolID: schoolID);
     _firebaseManager.signOut();
     return true;
   }
 
   Future<bool> signOut() async {
-    _setLoading(true);
+    setLoading(true);
     await _userHiveManager.delete(BOX_NAME, _user!.id);
     await _firebaseManager.signOut();
     _user = null;
     notifyListeners();
-    _setLoading(false);
+    setLoading(false);
     return true;
   }
 
   Future<User> update(Map<String, dynamic> data) async {
-    _setLoading(true);
+    setLoading(true);
     bool result = await _firebaseManager.updateUserData(data);
 
     if (result) {
@@ -71,7 +77,7 @@ class UserManager extends ChangeNotifier {
       notifyListeners();
     }
 
-    _setLoading(false);
+    setLoading(false);
     return _user!;
   }
 
@@ -99,7 +105,11 @@ class UserManager extends ChangeNotifier {
     return _firebaseManager.getPinnedPosts();
   }
 
-  void _setLoading(bool loading) {
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getPosts() {
+    return _firebaseManager.getPosts();
+  }
+
+  void setLoading(bool loading) {
     _loading = loading;
     notifyListeners();
   }

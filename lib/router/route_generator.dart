@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:universal_io/io.dart';
 import 'package:yacm/models/language/languages/English.dart';
 import 'package:yacm/models/language/languages/Turkish.dart';
 import 'package:yacm/router/route_names.dart';
@@ -6,6 +7,8 @@ import 'package:yacm/views/common_views/club_profile.dart';
 import 'package:yacm/views/common_views/explore_screen.dart';
 import 'package:yacm/views/common_views/home_screen.dart';
 import 'package:yacm/views/common_views/profile_screen.dart';
+import 'package:yacm/views/mobile_view/mobile_view.dart';
+import 'package:yacm/views/web_view/web_view.dart';
 
 class _GeneratePageRoute extends PageRouteBuilder {
   final Widget widget;
@@ -44,6 +47,15 @@ class RouteGenerator {
         print("PostId = " + postId.toString());
         return _GeneratePageRoute(
             widget: ProfileScreen(), routeName: settings.name.toString());
+      case RouteNames.home:
+        Widget _route;
+        if (Platform.isIOS || Platform.isAndroid) {
+          _route = MobileView();
+        } else {
+          _route = WebView();
+        }
+        return _GeneratePageRoute(
+            widget: _route, routeName: settings.name.toString());
       default:
         return _GeneratePageRoute(
             widget: ClubProfile(

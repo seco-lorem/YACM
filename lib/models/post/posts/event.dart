@@ -1,17 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../post.dart';
 
 class Event implements Post {
-  final String _author;
-  final String _clubID;
-  final bool _commentsOn;
-  final String _message;
-  final DateTime _publishDate;
-  final DateTime _beginDate;
-  final DateTime _endDate;
-  final PostType _type = PostType.EVENT;
-  final List<String> _images;
-  final List<List<String>> _prerequisites;
-  final String _id;
+  late String _author;
+  late String _clubID;
+  late bool _commentsOn;
+  late String _message;
+  late DateTime _publishDate;
+  late DateTime _beginDate;
+  late DateTime _endDate;
+  late PostType _type = PostType.EVENT;
+  late List<String> _images;
+  late List<List<String>> _prerequisites;
+  late String _id;
 
   String get author => _author;
   String get clubID => _clubID;
@@ -36,6 +38,19 @@ class Event implements Post {
       this._endDate,
       this._prerequisites,
       this._id);
+
+  Event.fromDocumentSnapshot(DocumentSnapshot data) {
+    _author = data.get("author");
+    _clubID = data.get("clubID");
+    _commentsOn = data.get("commentsOn");
+    _message = data.get("message");
+    _publishDate = data.get("publishDate");
+    _images = data.get("images");
+    _beginDate = data.get("beginDate");
+    _endDate = data.get("endDate");
+    _prerequisites = data.get("prerequisites") as List<List<String>>;
+    _id = data.get("id");
+  }
 
   Map<String, dynamic> toMap() {
     return {
