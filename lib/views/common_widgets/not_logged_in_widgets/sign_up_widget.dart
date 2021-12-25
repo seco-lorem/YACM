@@ -1,9 +1,18 @@
+import 'dart:typed_data';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:universal_io/io.dart' as u;
+import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
+import 'package:yacm/router/route_names.dart';
 import 'package:yacm/util/ui_constants.dart';
+import 'dart:io' as io;
 
 class SignUp extends StatefulWidget {
   final Language language;
@@ -24,6 +33,9 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _idController = TextEditingController();
   final PageController _pageController = PageController();
+  late UserManager _userManager;
+  u.File? _photo;
+  Uint8List? _photoForWeb;
 
   @override
   dispose() {
@@ -34,6 +46,63 @@ class _SignUpState extends State<SignUp> {
     _idController.dispose();
     _pageController.dispose();
     super.dispose();
+  }
+
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    _userManager = Provider.of<UserManager>(context);
+  }
+
+  Future<void> _signUpFunction() async {
+    if (_mailController.text.isEmpty) return;
+    if (_nameController.text.isEmpty) return;
+    if (_idController.text.isEmpty) return;
+    if (_passwordController.text.compareTo(_passwordController2.text) != 0) {
+      return;
+    }
+
+    bool result;
+
+    if (u.Platform.isIOS || u.Platform.isAndroid) {
+      result = await _userManager.signUp(
+          _mailController.text,
+          _passwordController.text,
+          _interests,
+          _photo!,
+          _nameController.text,
+          _idController.text);
+    } else {
+      result = await _userManager.signUp(
+          _mailController.text,
+          _passwordController.text,
+          _interests,
+          u.File.fromRawPath(_photoForWeb!),
+          _nameController.text,
+          _idController.text);
+    }
+
+    if (result) {
+      Navigator.popAndPushNamed(context, RouteNames.home);
+    }
+  }
+
+  Future<void> _signInFunction() async {
+    if (_mailController.text.isEmpty) return;
+    if (_passwordController.text.isEmpty) {
+      return;
+    }
+
+    _userManager.setLoading(true);
+
+    _userManager.setLoading(false);
+
+    bool result = await _userManager.signIn(
+        _mailController.text, _passwordController.text);
+
+    if (result) {
+      Navigator.popAndPushNamed(context, RouteNames.home);
+    }
   }
 
   Widget _textInputField(
@@ -239,7 +308,7 @@ class _SignUpState extends State<SignUp> {
                       maxLength: 100,
                       controller: _passwordController),
                   const SizedBox(height: 10),
-                  _loginButton(() {}),
+                  _loginButton(() => _signInFunction()),
                   const SizedBox(height: 25),
                   _dividerOr(),
                   const SizedBox(height: 20),
@@ -337,10 +406,47 @@ class _SignUpState extends State<SignUp> {
                       obscureText: true,
                       maxLength: 100,
                       controller: _passwordController2),
+                  const SizedBox(height: 10),
+                  InkWell(
+                    onTap: () async {
+                      XFile? _tempPhoto = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      print("a");
+                      if (_tempPhoto != null) {
+                        var _tempPhotoForWeb = await _tempPhoto.readAsBytes();
+                        setState(() {
+                          if (u.Platform.isIOS || u.Platform.isAndroid) {
+                            _photo = u.File(_tempPhoto.path);
+                          } else {
+                            _photoForWeb = _tempPhotoForWeb;
+                          }
+                        });
+                      }
+                    },
+                    child: Container(
+                      width: UIConstants.getWidth(context) * .9,
+                      height: UIConstants.getHeight(context,
+                          height: 400, multiplier: 0.5),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Theme.of(context).own().popUpHeaderText),
+                        borderRadius:
+                            BorderRadius.circular(UIConstants.borderRadius),
+                        color: Theme.of(context).own().popUpBackground,
+                      ),
+                      child: _photo == null && _photoForWeb == null
+                          ? Center(
+                              child: Icon(Icons.add,
+                                  color:
+                                      Theme.of(context).own().popUpHeaderText))
+                          : u.Platform.isAndroid || u.Platform.isIOS
+                              ? Image.file(io.File(_photo!.path))
+                              : Image.memory(_photoForWeb!,
+                                  fit: BoxFit.fitWidth),
+                    ),
+                  ),
                   const SizedBox(height: 20),
-                  _finish(() {
-                    Navigator.pop(context);
-                  })
+                  _finish(() => _signUpFunction())
                 ],
               ),
             ),
@@ -374,6 +480,20 @@ class _SignUpState extends State<SignUp> {
             child: IconButton(
                 onPressed: widget.onClose,
                 icon: Icon(Icons.close, color: Colors.white)),
+          ),
+          Visibility(
+            visible: _userManager.loading,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.black.withOpacity(.4),
+              child: Center(
+                  child: u.Platform.isIOS || u.Platform.isMacOS
+                      ? CupertinoActivityIndicator(
+                          radius: 30,
+                        )
+                      : CircularProgressIndicator()),
+            ),
           )
         ],
       ),

@@ -137,6 +137,7 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
               onTap: widget.onPageChange,
               child: Text("Posts",
                   style: TextStyle(
+                      color: Theme.of(context).own().yacmLogoColor,
                       fontWeight: widget.postsActive
                           ? FontWeight.bold
                           : FontWeight.normal)),
@@ -145,6 +146,7 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
               onTap: widget.onPageChange,
               child: Text("Chat",
                   style: TextStyle(
+                      color: Theme.of(context).own().yacmLogoColor,
                       fontWeight: !widget.postsActive
                           ? FontWeight.bold
                           : FontWeight.normal)),

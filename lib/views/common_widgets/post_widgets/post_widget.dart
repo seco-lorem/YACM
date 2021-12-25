@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:yacm/models/message/message.dart';
+import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/views/common_widgets/post_widgets/comment_widget.dart';
 
 import '../../../models/language/language.dart';
@@ -36,7 +37,8 @@ class PostWidget extends StatelessWidget {
               decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(
-                          width: 0, color: Color.fromRGBO(94, 119, 3, 1)))),
+                          width: 0,
+                          color: Theme.of(context).own().postWidgetDivider))),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -52,8 +54,11 @@ class PostWidget extends StatelessWidget {
                           text: TextSpan(children: [
                             TextSpan(
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {},
-                                text: post.club + " ",
+                                  ..onTap = () {
+                                    Navigator.pushNamed(
+                                        context, "/club?id=${post.clubID}");
+                                  },
+                                text: post.clubID + " ",
                                 style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,

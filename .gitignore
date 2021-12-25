@@ -3,6 +3,7 @@
 .packages
 .dart_tool/
 lib/generated_plugin_registrant.dart
+build/
 
 # We may consider adding more here like build directory
 # Check out https://github.com/github/gitignore/blob/master/Dart.gitignore

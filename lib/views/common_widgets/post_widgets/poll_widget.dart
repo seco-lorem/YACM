@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/post/posts/poll.dart';
+import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 import 'package:yacm/views/common_widgets/post_widgets/post_settings_widget.dart';
 import 'package:yacm/views/common_widgets/post_widgets/post_widget.dart';
@@ -54,7 +55,8 @@ class _PollWidgetState extends State<PollWidget> {
                 MaterialStateProperty.all(Color.fromRGBO(244, 226, 198, 1)),
             alignment: !hasVoted ? Alignment.center : Alignment.centerLeft,
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                side: BorderSide(color: Color.fromRGBO(94, 119, 3, 1)),
+                side: BorderSide(
+                    color: Theme.of(context).own().pollWidgetQuestion),
                 borderRadius:
                     BorderRadius.circular(UIConstants.borderRadius)))),
         onPressed: () {
@@ -87,7 +89,7 @@ class _PollWidgetState extends State<PollWidget> {
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromRGBO(94, 119, 3, 1))))
+                        color: Theme.of(context).own().pollWidgetOption)))
             : Stack(
                 children: [
                   AnimatedContainer(
@@ -96,8 +98,11 @@ class _PollWidgetState extends State<PollWidget> {
                         borderRadius:
                             BorderRadius.circular(UIConstants.borderRadius),
                         color: index == choice
-                            ? Color.fromRGBO(94, 119, 3, 1)
-                            : Color.fromRGBO(94, 119, 3, 1).withOpacity(.5)),
+                            ? Theme.of(context).own().pollWidgetOption
+                            : Theme.of(context)
+                                .own()
+                                .pollWidgetOption
+                                .withOpacity(.5)),
                     curve: Curves.easeIn,
                     height: height,
                     duration: const Duration(milliseconds: 250),
@@ -118,7 +123,7 @@ class _PollWidgetState extends State<PollWidget> {
         height: width * .9,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(UIConstants.borderRadius / 2),
-            color: Color.fromRGBO(224, 205, 178, 1),
+            color: Theme.of(context).own().background.withOpacity(.1),
             boxShadow: []),
         child: Column(
           children: [
@@ -137,7 +142,9 @@ class _PollWidgetState extends State<PollWidget> {
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Color.fromRGBO(94, 119, 3, 1))),
+                                  color: Theme.of(context)
+                                      .own()
+                                      .pollWidgetQuestion)),
                         ),
                       ),
                       Expanded(
@@ -164,8 +171,9 @@ class _PollWidgetState extends State<PollWidget> {
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,
-                                                    color: Color.fromRGBO(
-                                                        94, 119, 3, 1)))),
+                                                    color: Theme.of(context)
+                                                        .own()
+                                                        .pollWidgetQuestion))),
                                       ),
                                     ),
                                     _poll(index),
@@ -197,7 +205,7 @@ class _PollWidgetState extends State<PollWidget> {
                   icons: [
                     Icon(
                       Icons.attachment,
-                      color: Color.fromRGBO(94, 119, 3, 1),
+                      color: Theme.of(context).own().postWidgetIcons,
                     ),
                   ],
                   onIconTaps: [

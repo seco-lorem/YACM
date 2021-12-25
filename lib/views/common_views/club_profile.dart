@@ -1,14 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:yacm/models/message/message.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/club_manager/club_manager.dart';
+import 'package:yacm/controllers/user_manager/user_manager.dart';
+import 'package:yacm/models/club/club.dart';
 import 'package:yacm/models/post/post.dart';
 import 'package:yacm/models/post/posts/event.dart';
 import 'package:yacm/models/post/posts/poll.dart';
+import 'package:yacm/models/theme/own_theme_fields.dart';
+import 'package:yacm/util/helper.dart';
 import 'package:yacm/views/common_widgets/club_profile_widgets/club_profile_add_post.dart';
 import 'package:yacm/views/common_widgets/club_profile_widgets/club_profile_footer.dart';
 import 'package:yacm/views/common_widgets/club_profile_widgets/club_profile_header.dart';
 import 'package:yacm/views/common_widgets/club_profile_widgets/club_profile_kick_member.dart';
 import 'package:yacm/views/common_widgets/club_profile_widgets/club_profile_messages.dart';
 import 'package:yacm/views/common_widgets/club_profile_widgets/club_profile_view_members.dart';
+import 'package:yacm/views/common_widgets/post_widgets/event_widget.dart';
 import 'package:yacm/views/common_widgets/post_widgets/grid_post_widget.dart';
 
 /// This is a screen for club profile
@@ -141,122 +148,133 @@ class _ClubProfileState extends State<ClubProfile> {
         body: Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      color: Color.fromRGBO(244, 226, 198, 1),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                ClubProfileHeader(
-                    onViewMembers: () {
-                      setState(() {
-                        _viewMembersVisible = !_viewMembersVisible;
-                      });
-                    },
-                    onKickMembers: () {
-                      setState(() {
-                        _kickMembersVisible = !_kickMembersVisible;
-                      });
-                    },
-                    onCreatePost: () {
-                      setState(() {
-                        _addPostVisible = !_addPostVisible;
-                      });
-                    },
-                    url:
-                        "https://image.shutterstock.com/image-photo/winter-christmas-landscape-pink-tones-600w-644773606.jpg",
-                    isAdmin: true,
-                    description: "This is a sample description",
-                    postsActive: postsActive,
-                    onPageChange: () => onPageChange()),
-                postsActive
-                    ? GridPost(posts: _posts + _posts)
-                    : ClubProfileMessages(isAdmin: false, messages: [
-                        Message(
-                            "Message One Message One Message One Message One Message One Message One Message One Message One Message One Message One Message One Message One ",
-                            "Sender One",
-                            "https://image.shutterstock.com/image-photo/winter-christmas-landscape-pink-tones-600w-644773606.jpg",
-                            DateTime.now().toString()),
-                        Message(
-                            "Message Two",
-                            "Sender Two",
-                            "https://image.shutterstock.com/image-photo/view-valley-castle-hohenschwangau-600w-103574675.jpg",
-                            DateTime.now().toString()),
-                        Message(
-                            "Message Three",
-                            "Sender Three",
-                            "https://image.shutterstock.com/image-photo/fairy-forest-covered-snow-moon-600w-744558304.jpg",
-                            DateTime.now().toString()),
-                      ]),
+      color: Theme.of(context).own().background,
+      child: StreamBuilder(
+          stream: Provider.of<ClubManager>(context, listen: false)
+              .getClubStream(widget.id),
+          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            Club _club = Club.fromDocumentSnapshot(snapshot.data!);
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      ClubProfileHeader(
+                          onViewMembers: () {
+                            setState(() {
+                              _viewMembersVisible = !_viewMembersVisible;
+                            });
+                          },
+                          onKickMembers: () {
+                            setState(() {
+                              _kickMembersVisible = !_kickMembersVisible;
+                            });
+                          },
+                          onCreatePost: () {
+                            setState(() {
+                              _addPostVisible = !_addPostVisible;
+                            });
+                          },
+                          url: _club.clubPhoto,
+                          isAdmin: true,
+                          description: "This is a sample description",
+                          postsActive: postsActive,
+                          onPageChange: () => onPageChange()),
+                      postsActive
+                          ? StreamBuilder(
+                              stream: Provider.of<ClubManager>(context)
+                                  .getClubPosts(widget.id),
+                              builder: (context,
+                                  AsyncSnapshot<QuerySnapshot> stream) {
+                                List<Post> posts = [];
+                                if (stream.hasData) {
+                                  for (DocumentSnapshot post
+                                      in stream.data!.docs) {
+                                    if (post.get("type") == "event") {
+                                      posts.add(
+                                          Event.fromDocumentSnapshot(post));
+                                    } else if (post.get("type") == "poll") {
+                                      posts
+                                          .add(Poll.fromDocumentSnapshot(post));
+                                    }
+                                  }
+                                }
+                                return GridPost(posts: posts);
+                              },
+                            )
+                          : ClubProfileMessages(
+                              isAdmin: false, messages: Helper.comments),
+                      Visibility(
+                        visible: !postsActive,
+                        child: ClubProfileSendMessage(),
+                      )
+                    ],
+                  ),
+                ),
                 Visibility(
-                  visible: !postsActive,
-                  child: ClubProfileSendMessage(),
+                  visible: _viewMembersVisible,
+                  child: ViewMembers(members: _club.members),
+                ),
+                Visibility(
+                  visible: _kickMembersVisible,
+                  child: KickMembers(members: _members),
+                ),
+                Visibility(
+                    visible: _addPostVisible,
+                    child: AddPost(
+                        onPublish: () {},
+                        postChoice: addPostType,
+                        onPostTypeChange: () {
+                          setState(() {
+                            addPostType = !addPostType;
+                          });
+                        },
+                        photos: [],
+                        addPhoto: (index) {
+                          print(index);
+                        },
+                        options: _options,
+                        pollQuestionController: _pollQuestionController,
+                        descriptionController: _descriptionController,
+                        commentsOn: commentsOn,
+                        changeCommentsOn: (data) {
+                          setState(() {
+                            commentsOn = data;
+                          });
+                        })),
+                Visibility(
+                  visible: _addPostVisible ||
+                      _kickMembersVisible ||
+                      _viewMembersVisible,
+                  child: Positioned(
+                    right: 5,
+                    top: 5,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _descriptionController.clear();
+                          _pollQuestionController.clear();
+                          _options.forEach((TextEditingController element) {
+                            element.clear();
+                          });
+                          commentsOn = true;
+                          addPostType = true;
+                          _addPostVisible = false;
+                          _kickMembersVisible = false;
+                          _viewMembersVisible = false;
+                        });
+                      },
+                    ),
+                  ),
                 )
               ],
-            ),
-          ),
-          Visibility(
-            visible: _viewMembersVisible,
-            child: ViewMembers(members: _members.values.toList()),
-          ),
-          Visibility(
-            visible: _kickMembersVisible,
-            child: KickMembers(members: _members),
-          ),
-          Visibility(
-              visible: _addPostVisible,
-              child: AddPost(
-                  onPublish: () {},
-                  postChoice: addPostType,
-                  onPostTypeChange: () {
-                    setState(() {
-                      addPostType = !addPostType;
-                    });
-                  },
-                  photos: [],
-                  addPhoto: (index) {
-                    print(index);
-                  },
-                  options: _options,
-                  pollQuestionController: _pollQuestionController,
-                  descriptionController: _descriptionController,
-                  commentsOn: commentsOn,
-                  changeCommentsOn: (data) {
-                    setState(() {
-                      commentsOn = data;
-                    });
-                  })),
-          Visibility(
-            visible:
-                _addPostVisible || _kickMembersVisible || _viewMembersVisible,
-            child: Positioned(
-              right: 5,
-              top: 5,
-              child: IconButton(
-                icon: Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _descriptionController.clear();
-                    _pollQuestionController.clear();
-                    _options.forEach((TextEditingController element) {
-                      element.clear();
-                    });
-                    commentsOn = true;
-                    addPostType = true;
-                    _addPostVisible = false;
-                    _kickMembersVisible = false;
-                    _viewMembersVisible = false;
-                  });
-                },
-              ),
-            ),
-          )
-        ],
-      ),
+            );
+          }),
     ));
   }
 }

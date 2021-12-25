@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:universal_io/io.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 
@@ -34,7 +33,7 @@ class AddPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget _photo(int index, File? photo) {
+    Widget _photo(int index, String? photo) {
       return InkWell(
         onTap: () => addPhoto(index),
         child: Container(
@@ -45,7 +44,7 @@ class AddPost extends StatelessWidget {
             color: Colors.transparent.withOpacity(.1),
           ),
           child: photo != null
-              ? Image.file(
+              ? Image.network(
                   photo,
                   fit: BoxFit.fill,
                 )
@@ -94,7 +93,7 @@ class AddPost extends StatelessWidget {
 
       List<Widget> _returnList = [];
       for (int i = 0; i < 8; i++) {
-        _returnList.add(_photo(i, _photos[i]));
+        _returnList.add(_photo(i, null));
       }
 
       return _returnList;
@@ -109,9 +108,11 @@ class AddPost extends StatelessWidget {
             style: TextStyle(color: Colors.grey[600], fontSize: 16),
             cursorColor: Colors.grey[600],
             decoration: InputDecoration(
-                border: InputBorder.none,
-                counterText: "",
-                hintText: "Type Question")),
+              border: InputBorder.none,
+              counterText: "",
+              hintText: "Type Question",
+              hintStyle: TextStyle(color: Colors.grey[600], fontSize: 16),
+            )),
       ];
       for (int i = 0; i < 5; i++) {
         _returnList.add(Padding(
@@ -135,15 +136,18 @@ class AddPost extends StatelessWidget {
               color: Theme.of(context).own().optionColor),
         ),
         subtitle: TextField(
-            maxLength: 80,
-            textAlign: TextAlign.justify,
-            controller: descriptionController,
-            style: TextStyle(color: Colors.grey[600], fontSize: 15),
-            cursorColor: Colors.grey[600],
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                counterText: "",
-                hintText: "Type Description")),
+          maxLength: 80,
+          textAlign: TextAlign.justify,
+          controller: descriptionController,
+          style: TextStyle(color: Colors.grey[600], fontSize: 15),
+          cursorColor: Colors.grey[600],
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            counterText: "",
+            hintText: "Type Description",
+            hintStyle: TextStyle(color: Colors.grey[600], fontSize: 15),
+          ),
+        ),
       );
     }
 

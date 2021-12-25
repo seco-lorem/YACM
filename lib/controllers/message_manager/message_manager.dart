@@ -6,10 +6,12 @@ class MessageManager {
   MessageManager(this._firebaseManager);
 
   Future<bool> sendToClub(Message message, String clubID) async {
-    throw UnimplementedError();
+    return await _firebaseManager.sendMessageToClubChat(
+        message: message, clubId: clubID);
   }
 
   Future<bool> sendToPost(Message message, String postID) async {
-    throw UnimplementedError();
+    return await _firebaseManager.sendCommentToPost(
+        postId: postID, message: message);
   }
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/shared_pref_controller/sp_controller.dart';
+import 'package:yacm/controllers/theme_controller/theme_changer.dart';
+import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
+import 'package:yacm/views/common_widgets/get_theme.dart';
 
 /// This is a screen for user profile page
 /// which works both on mobile (iOS and Android) and web
@@ -17,6 +22,9 @@ class _ProfileScreenState extends State<ProfileScreen>
       TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _newPasswordController2 = TextEditingController();
+  bool changeThemeVisible = false;
+  late bool _theme = false;
+  Language? language;
 
   @override
   dispose() {
@@ -24,6 +32,25 @@ class _ProfileScreenState extends State<ProfileScreen>
     _currentPasswordController.dispose();
     _newPasswordController.dispose();
     _newPasswordController2.dispose();
+  }
+
+  void _initVariables() async {
+    bool result = await SPController.getBoolValue("darkTheme") ?? false;
+    setState(() {
+      _theme = result;
+    });
+  }
+
+  @override
+  void initState() {
+    _initVariables();
+    super.initState();
+  }
+
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    language = Language.of(context);
   }
 
   Widget _inputBox(TextEditingController controller) => Container(
@@ -104,7 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 InkWell(
                   onTap: () {},
                   child: Text(
-                    "Change Password",
+                    "Change Language",
                     style: TextStyle(
                         color: Colors.grey[700],
                         fontWeight: FontWeight.bold,
@@ -112,9 +139,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      changeThemeVisible = !changeThemeVisible;
+                    });
+                  },
                   child: Text(
-                    "Change Language",
+                    "Change Theme",
                     style: TextStyle(
                         color: Colors.grey[700],
                         fontWeight: FontWeight.bold,
@@ -134,60 +165,88 @@ class _ProfileScreenState extends State<ProfileScreen>
     super.build(context);
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.only(top: 60, right: 8, left: 8),
+        padding: EdgeInsets.only(top: 60),
         color: Theme.of(context).own().background,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            controller: ScrollController(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                ),
-                _changePhoto(),
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: UIConstants.getPostWidth(context),
-                  child: Text(
-                    "Current Password",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        color: Theme.of(context).own().yacmLogoColor,
-                        fontSize: 16),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(
+                  controller: ScrollController(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                      ),
+                      _changePhoto(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: UIConstants.getPostWidth(context),
+                        child: Text(
+                          "Current Password",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              color: Theme.of(context).own().yacmLogoColor,
+                              fontSize: 16),
+                        ),
+                      ),
+                      _inputBox(_currentPasswordController),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: UIConstants.getPostWidth(context),
+                        child: Text(
+                          "New Password",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              color: Theme.of(context).own().yacmLogoColor,
+                              fontSize: 16),
+                        ),
+                      ),
+                      _inputBox(_newPasswordController),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      _inputBox(_newPasswordController2),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      _changePassword()
+                    ],
                   ),
                 ),
-                _inputBox(_currentPasswordController),
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: UIConstants.getPostWidth(context),
-                  child: Text(
-                    "New Password",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        color: Theme.of(context).own().yacmLogoColor,
-                        fontSize: 16),
-                  ),
-                ),
-                _inputBox(_newPasswordController),
-                SizedBox(
-                  height: 5,
-                ),
-                _inputBox(_newPasswordController2),
-                SizedBox(
-                  height: 10,
-                ),
-                _changePassword()
-              ],
+              ),
             ),
-          ),
+            Visibility(
+              visible: changeThemeVisible,
+              child: GetTheme(
+                  language: language!,
+                  dark: _theme,
+                  onClose: () {
+                    setState(() {
+                      changeThemeVisible = !changeThemeVisible;
+                    });
+                  },
+                  onChanged: () {
+                    setState(() {
+                      _theme = !_theme;
+                    });
+                  },
+                  onContine: () {
+                    setState(() {
+                      changeThemeVisible = !changeThemeVisible;
+                    });
+                  }),
+            )
+          ],
         ),
       ),
     );

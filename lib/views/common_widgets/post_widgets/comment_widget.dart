@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yacm/models/theme/own_theme_fields.dart';
 
 class CommentWidget extends StatelessWidget {
   final String imageURL;
@@ -22,15 +23,18 @@ class CommentWidget extends StatelessWidget {
       trailing: Text(
         sentDate.substring(11, 16),
         textAlign: TextAlign.right,
-        style: TextStyle(color: Color.fromRGBO(94, 119, 3, 1), fontSize: 16),
+        style: TextStyle(
+            color: Theme.of(context).own().commentWidgetDate, fontSize: 16),
       ),
       title: Text(
         name,
-        style: TextStyle(color: Color.fromRGBO(94, 119, 3, 1), fontSize: 16),
+        style: TextStyle(
+            color: Theme.of(context).own().commentWidgetName, fontSize: 16),
       ),
       subtitle: Text(
         comment,
-        style: TextStyle(color: Colors.grey[600], fontSize: 14),
+        style: TextStyle(
+            color: Theme.of(context).own().commentWidgetComment, fontSize: 14),
       ),
     );
   }

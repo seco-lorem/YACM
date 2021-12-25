@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/post/posts/event.dart';
+import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 import 'package:yacm/views/common_widgets/post_widgets/post_settings_widget.dart';
 import 'package:yacm/views/common_widgets/post_widgets/post_widget.dart';
@@ -75,7 +76,7 @@ class _EvenWidgetState extends State<EvenWidget> {
         height: width,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(UIConstants.borderRadius / 2),
-            color: Color.fromRGBO(224, 205, 178, 1),
+            color: Theme.of(context).own().background,
             boxShadow: []),
         child: Column(
           children: [
@@ -136,11 +137,11 @@ class _EvenWidgetState extends State<EvenWidget> {
                   icons: [
                     Icon(
                       Icons.attachment,
-                      color: Color.fromRGBO(94, 119, 3, 1),
+                      color: Theme.of(context).own().postWidgetIcons,
                     ),
                     Icon(
                       Icons.pin_drop,
-                      color: Color.fromRGBO(94, 119, 3, 1),
+                      color: Theme.of(context).own().postWidgetIcons,
                     ),
                   ],
                   onIconTaps: [

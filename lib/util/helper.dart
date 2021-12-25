@@ -57,21 +57,25 @@ class Helper {
         "_message",
         "_senderName",
         "https://image.shutterstock.com/image-photo/view-modern-skyscrapers-abstract-architecture-600w-1323075257.jpg",
-        DateTime.now().toString()),
+        DateTime.now().toString(),
+        ""),
     Message(
         "_message",
         "_senderName",
         "https://image.shutterstock.com/image-photo/view-modern-skyscrapers-abstract-architecture-600w-1323075257.jpg",
-        DateTime.now().toString()),
+        DateTime.now().toString(),
+        ""),
     Message(
         "_message",
         "_senderName",
         "https://image.shutterstock.com/image-photo/view-modern-skyscrapers-abstract-architecture-600w-1323075257.jpg",
-        DateTime.now().toString()),
+        DateTime.now().toString(),
+        ""),
     Message(
         "_message",
         "_senderName",
         "https://image.shutterstock.com/image-photo/view-modern-skyscrapers-abstract-architecture-600w-1323075257.jpg",
-        DateTime.now().toString())
+        DateTime.now().toString(),
+        "")
   ];
 }

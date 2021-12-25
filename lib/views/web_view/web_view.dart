@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
+import 'package:yacm/router/route_names.dart';
 import 'package:yacm/views/common_views/explore_screen.dart';
 import 'package:yacm/views/common_views/home_screen.dart';
 import 'package:yacm/views/common_views/subscription_screen.dart';
@@ -122,8 +123,14 @@ class _WebViewState extends State<WebView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _body(),
+    return WillPopScope(
+      onWillPop: () async {
+        //Navigator.popAndPushNamed(context, RouteNames.home);
+        return false;
+      },
+      child: Scaffold(
+        body: _body(),
+      ),
     );
   }
 }

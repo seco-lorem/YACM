@@ -3,9 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_io/io.dart';
+import 'package:yacm/controllers/club_manager/club_manager.dart';
+import 'package:yacm/controllers/firebase_manager/firebase_manager.dart';
+import 'package:yacm/controllers/hive_manager/managers/user_hive_manager.dart';
+import 'package:yacm/controllers/message_manager/message_manager.dart';
+import 'package:yacm/controllers/post_manager/post_manager.dart';
+import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/user/user.dart';
 import 'package:yacm/router/route_generator.dart';
-import 'package:yacm/views/common_views/club_profile.dart';
 import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
@@ -15,19 +21,22 @@ import 'views/app_view/app_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isIOS || Platform.isAndroid) {
+    await Firebase.initializeApp();
+  } else {
+    await Firebase.initializeApp(
+        options: FirebaseOptions(
+            apiKey: "AIzaSyBPFKxM9MsxTQGEaQr6Q4G-PTuD4K3GdS8",
+            authDomain: "yacm-c626b.firebaseapp.com",
+            projectId: "yacm-c626b",
+            storageBucket: "yacm-c626b.appspot.com",
+            messagingSenderId: "336218459715",
+            appId: "1:336218459715:web:77d0188c6263488d6e0ef6",
+            measurementId: "G-4P9C8VHPVB"));
+  }
   Hive
     ..initFlutter()
     ..registerAdapter(UserAdapter());
-
-  await Firebase.initializeApp(
-      options: FirebaseOptions(
-          apiKey: "AIzaSyBPFKxM9MsxTQGEaQr6Q4G-PTuD4K3GdS8",
-          authDomain: "yacm-c626b.firebaseapp.com",
-          projectId: "yacm-c626b",
-          storageBucket: "yacm-c626b.appspot.com",
-          messagingSenderId: "336218459715",
-          appId: "1:336218459715:web:77d0188c6263488d6e0ef6",
-          measurementId: "G-4P9C8VHPVB"));
   runApp(MultiProviderApp());
 }
 
@@ -52,11 +61,32 @@ class _MultiProviderAppState extends State<MultiProviderApp> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    initVariables();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ThemeChanger>(
           create: (context) => ThemeChanger(_darkMode ?? false),
+        ),
+        ChangeNotifierProvider<UserManager>(
+          create: (context) =>
+              UserManager(UserHiveManager(), FirebaseManager()),
+        ),
+        ChangeNotifierProvider<PostManager>(
+          create: (context) =>
+              PostManager(FirebaseManager(), MessageManager(FirebaseManager())),
+        ),
+        ChangeNotifierProvider<ClubManager>(
+          create: (context) => ClubManager(
+              FirebaseManager(),
+              MessageManager(FirebaseManager()),
+              PostManager(
+                  FirebaseManager(), MessageManager(FirebaseManager()))),
         )
       ],
       child: MyApp(),
@@ -111,6 +141,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
+    print("de");
     return MaterialApp(
       locale: _locale,
       title: 'YACM',
@@ -122,7 +153,6 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-      routes: {"/club_profile": (context) => ClubProfile(id: "id")},
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.generateRoute,
     );

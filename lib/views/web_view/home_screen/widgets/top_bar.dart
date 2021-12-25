@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/theme_controller/theme_changer.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 import 'package:yacm/views/web_view/home_screen/widgets/app_bar_menu_item.dart';
@@ -300,6 +302,7 @@ class _TopBarState extends State<TopBar>
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ThemeChanger>(context);
     super.build(context);
     return Container(
       width: MediaQuery.of(context).size.width,
