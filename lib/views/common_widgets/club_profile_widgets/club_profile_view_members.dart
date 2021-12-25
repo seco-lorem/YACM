@@ -36,7 +36,7 @@ class ViewMembers extends StatelessWidget {
                             child: Text(
                           members[index],
                           style: TextStyle(
-                              color: Theme.of(context).own().optionColor,
+                              color: Theme.of(context).own().yacmLogoColor,
                               fontSize: 16),
                         )),
                       );

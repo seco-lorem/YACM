@@ -33,6 +33,20 @@ class FirebaseManager {
         .get();
   }
 
+  Stream<DocumentSnapshot> getClubStream(String clubID) {
+    return FirebaseFirestore.instance
+        .collection('clubs')
+        .doc(clubID)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getClubPosts(String clubID) {
+    return _firebaseFirestore
+        .collection("posts")
+        .where("clubID", isEqualTo: clubID)
+        .snapshots();
+  }
+
   ///  try {
   ///      manager.registerUser(email: 'enis.ozer@ug.bilkent.edu.tr', password: '123456');
   ///    );

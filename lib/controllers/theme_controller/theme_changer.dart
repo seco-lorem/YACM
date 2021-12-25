@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
-import '../../models/theme/themes/dark_theme.dart';
-import '../../models/theme/themes/light_theme.dart';
 import '../shared_pref_controller/sp_controller.dart';
 
 class ThemeChanger with ChangeNotifier {
@@ -11,53 +9,72 @@ class ThemeChanger with ChangeNotifier {
   static final Color customBeigeDark = Color.fromRGBO(224, 205, 178, 1);
   static final Color customDarkBlue = Color(0xff00000f);
 
+  static final ThemeData _lightThemeData = ThemeData()
+    ..addOwn(OwnThemeFields(
+      background: customBeige,
+      popUpBackground: customBeige,
+      popUpTextInputColor: Colors.grey[600]!,
+      inputFieldBorder: customGreen,
+      yacmLogoColor: customGreen,
+      popUpLogin: customBeige,
+      popUpLoginBackground: customGreen,
+      popUpSignUp: customGreen,
+      popUpClose: Colors.grey[600]!,
+      popUpInterestsRadio: customGreen,
+      popUpInterestsText: Colors.grey[600]!,
+      popUpHeaderText: customGreen,
+      postSettings: customBeige,
+      postSettingsText: customGreen,
+      gridPostText: customGreen,
+      clubProfileFooterAdd: customGreen,
+      optionColor: customGreen,
+      optionText: customBeige,
+      appBar: customGreen,
+      appBarText: customBeige,
+      commentWidgetComment: Colors.grey[700]!,
+      commentWidgetDate: customGreen,
+      commentWidgetName: customGreen,
+      pollWidgetOption: customGreen,
+      pollWidgetQuestion: customGreen,
+      postWidgetDivider: customGreen,
+      postWidgetIcons: customGreen,
+    ));
+
+  static final ThemeData _darkThemeData = ThemeData()
+    ..addOwn(OwnThemeFields(
+        background: customDarkBlue,
+        popUpBackground: customDarkBlue,
+        popUpTextInputColor: customBeige,
+        inputFieldBorder: customBeige,
+        yacmLogoColor: customBeige,
+        popUpLogin: customBeige,
+        popUpLoginBackground: customDarkBlue,
+        popUpSignUp: customBeige,
+        popUpClose: customBeige,
+        popUpInterestsRadio: customBeige,
+        popUpInterestsText: customBeige,
+        popUpHeaderText: customBeige,
+        postSettings: customBeige,
+        postSettingsText: customDarkBlue,
+        gridPostText: customBeige,
+        clubProfileFooterAdd: customBeige,
+        optionColor: customBeige,
+        optionText: customDarkBlue,
+        appBar: customDarkBlue,
+        appBarText: customBeige,
+        commentWidgetComment: customBeige,
+        commentWidgetDate: customBeige,
+        commentWidgetName: customBeige,
+        pollWidgetOption: customDarkBlue,
+        pollWidgetQuestion: customBeige,
+        postWidgetDivider: customBeige,
+        postWidgetIcons: customBeige));
+
   ThemeChanger(bool dark) {
     if (dark) {
-      _themeData = ThemeData()
-        ..addOwn(OwnThemeFields(
-            background: customDarkBlue,
-            popUpBackground: Colors.grey[850]!,
-            popUpTextInputColor: Colors.white,
-            inputFieldBorder: Colors.white,
-            yacmLogoColor: Colors.white,
-            popUpLogin: Colors.black,
-            popUpLoginBackground: Colors.white,
-            popUpSignUp: Colors.white,
-            popUpClose: Colors.grey[700]!,
-            popUpInterestsRadio: Colors.white,
-            popUpInterestsText: Colors.white,
-            popUpHeaderText: Colors.white,
-            postSettings: Colors.white,
-            postSettingsText: Colors.black,
-            gridPostText: Colors.white,
-            clubProfileFooterAdd: Colors.white,
-            optionColor: Colors.white,
-            optionText: Colors.grey[700]!,
-            appBar: Colors.black,
-            appBarText: Colors.white));
+      _themeData = _darkThemeData;
     } else {
-      _themeData = ThemeData()
-        ..addOwn(OwnThemeFields(
-            background: customBeige,
-            popUpBackground: customBeige,
-            popUpTextInputColor: Colors.grey[600]!,
-            inputFieldBorder: customGreen,
-            yacmLogoColor: customGreen,
-            popUpLogin: customBeige,
-            popUpLoginBackground: customGreen,
-            popUpSignUp: customGreen,
-            popUpClose: Colors.grey[600]!,
-            popUpInterestsRadio: customGreen,
-            popUpInterestsText: Colors.grey[600]!,
-            popUpHeaderText: customGreen,
-            postSettings: customBeige,
-            postSettingsText: customGreen,
-            gridPostText: customGreen,
-            clubProfileFooterAdd: customGreen,
-            optionColor: customGreen,
-            optionText: customBeige,
-            appBar: customGreen,
-            appBarText: customBeige));
+      _themeData = _lightThemeData;
     }
   }
 
@@ -67,52 +84,10 @@ class ThemeChanger with ChangeNotifier {
     try {
       if (dark) {
         print("dark");
-        _themeData = ThemeData()
-          ..addOwn(OwnThemeFields(
-              background: customDarkBlue,
-              popUpBackground: customDarkBlue,
-              popUpTextInputColor: customBeige,
-              inputFieldBorder: customBeige,
-              yacmLogoColor: customBeige,
-              popUpLogin: customBeige,
-              popUpLoginBackground: customDarkBlue,
-              popUpSignUp: customBeige,
-              popUpClose: customBeige,
-              popUpInterestsRadio: customBeige,
-              popUpInterestsText: customBeige,
-              popUpHeaderText: customBeige,
-              postSettings: customBeige,
-              postSettingsText: customDarkBlue,
-              gridPostText: customBeige,
-              clubProfileFooterAdd: customBeige,
-              optionColor: customBeige,
-              optionText: customBeige,
-              appBar: customDarkBlue,
-              appBarText: customBeige));
+        _themeData = _darkThemeData;
       } else {
         print("light");
-        _themeData = ThemeData()
-          ..addOwn(OwnThemeFields(
-              background: customBeige,
-              popUpBackground: customBeige,
-              popUpTextInputColor: Colors.grey[600]!,
-              inputFieldBorder: customGreen,
-              yacmLogoColor: customGreen,
-              popUpLogin: customBeige,
-              popUpLoginBackground: customGreen,
-              popUpSignUp: customGreen,
-              popUpClose: Colors.grey[600]!,
-              popUpInterestsRadio: customGreen,
-              popUpInterestsText: Colors.grey[600]!,
-              popUpHeaderText: customGreen,
-              postSettings: customBeige,
-              postSettingsText: customGreen,
-              gridPostText: customGreen,
-              clubProfileFooterAdd: customGreen,
-              optionColor: customGreen,
-              optionText: customBeige,
-              appBar: customGreen,
-              appBarText: customBeige));
+        _themeData = _lightThemeData;
       }
       SPController.setBoolValue("darkTheme", dark);
       print(_themeData);

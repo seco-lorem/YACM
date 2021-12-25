@@ -108,9 +108,11 @@ class AddPost extends StatelessWidget {
             style: TextStyle(color: Colors.grey[600], fontSize: 16),
             cursorColor: Colors.grey[600],
             decoration: InputDecoration(
-                border: InputBorder.none,
-                counterText: "",
-                hintText: "Type Question")),
+              border: InputBorder.none,
+              counterText: "",
+              hintText: "Type Question",
+              hintStyle: TextStyle(color: Colors.grey[600], fontSize: 16),
+            )),
       ];
       for (int i = 0; i < 5; i++) {
         _returnList.add(Padding(
@@ -134,15 +136,18 @@ class AddPost extends StatelessWidget {
               color: Theme.of(context).own().optionColor),
         ),
         subtitle: TextField(
-            maxLength: 80,
-            textAlign: TextAlign.justify,
-            controller: descriptionController,
-            style: TextStyle(color: Colors.grey[600], fontSize: 15),
-            cursorColor: Colors.grey[600],
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                counterText: "",
-                hintText: "Type Description")),
+          maxLength: 80,
+          textAlign: TextAlign.justify,
+          controller: descriptionController,
+          style: TextStyle(color: Colors.grey[600], fontSize: 15),
+          cursorColor: Colors.grey[600],
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            counterText: "",
+            hintText: "Type Description",
+            hintStyle: TextStyle(color: Colors.grey[600], fontSize: 15),
+          ),
+        ),
       );
     }
 

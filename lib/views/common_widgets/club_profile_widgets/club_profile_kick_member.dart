@@ -44,20 +44,25 @@ class _KickMembersState extends State<KickMembers> {
                   child: ListView.builder(
                     itemCount: widget.members.length,
                     itemBuilder: (context, index) {
-                      return CheckboxListTile(
-                          activeColor: Theme.of(context).own().optionColor,
-                          value: kicked[index],
-                          onChanged: (value) {
-                            setState(() {
-                              kicked[index] = !kicked[index];
-                            });
-                          },
-                          secondary: Text(
-                            widget.members.values.toList()[index],
-                            style: TextStyle(
-                                color: Theme.of(context).own().optionColor,
-                                fontSize: 16),
-                          ));
+                      return Theme(
+                        data: Theme.of(context).copyWith(
+                            unselectedWidgetColor:
+                                Theme.of(context).own().optionColor),
+                        child: CheckboxListTile(
+                            activeColor: Theme.of(context).own().optionColor,
+                            value: kicked[index],
+                            onChanged: (value) {
+                              setState(() {
+                                kicked[index] = !kicked[index];
+                              });
+                            },
+                            secondary: Text(
+                              widget.members.values.toList()[index],
+                              style: TextStyle(
+                                  color: Theme.of(context).own().optionColor,
+                                  fontSize: 16),
+                            )),
+                      );
                     },
                   ),
                 ),

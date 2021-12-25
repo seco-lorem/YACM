@@ -21,6 +21,13 @@ class OwnThemeFields {
   final Color optionText;
   final Color appBarText;
   final Color appBar;
+  final Color commentWidgetDate;
+  final Color commentWidgetName;
+  final Color commentWidgetComment;
+  final Color postWidgetIcons;
+  final Color postWidgetDivider;
+  final Color pollWidgetOption;
+  final Color pollWidgetQuestion;
 
   const OwnThemeFields(
       {required this.background,
@@ -42,31 +49,44 @@ class OwnThemeFields {
       required this.optionColor,
       required this.optionText,
       required this.appBarText,
-      required this.appBar});
+      required this.appBar,
+      required this.commentWidgetComment,
+      required this.commentWidgetDate,
+      required this.commentWidgetName,
+      required this.pollWidgetQuestion,
+      required this.pollWidgetOption,
+      required this.postWidgetDivider,
+      required this.postWidgetIcons});
 
   factory OwnThemeFields.empty() {
     return OwnThemeFields(
-      background: Colors.black,
-      popUpBackground: Colors.black,
-      popUpTextInputColor: Colors.black,
-      inputFieldBorder: Colors.black,
-      yacmLogoColor: Colors.black,
-      popUpLogin: Colors.black,
-      popUpLoginBackground: Colors.black,
-      popUpSignUp: Colors.black,
-      popUpClose: Colors.black,
-      popUpInterestsRadio: Colors.black,
-      popUpInterestsText: Colors.black,
-      popUpHeaderText: Colors.black,
-      postSettings: Colors.black,
-      postSettingsText: Colors.black,
-      gridPostText: Colors.black,
-      clubProfileFooterAdd: Colors.black,
-      optionColor: Colors.black,
-      optionText: Colors.black,
-      appBarText: Colors.black,
-      appBar: Colors.black,
-    );
+        background: Colors.black,
+        popUpBackground: Colors.black,
+        popUpTextInputColor: Colors.black,
+        inputFieldBorder: Colors.black,
+        yacmLogoColor: Colors.black,
+        popUpLogin: Colors.black,
+        popUpLoginBackground: Colors.black,
+        popUpSignUp: Colors.black,
+        popUpClose: Colors.black,
+        popUpInterestsRadio: Colors.black,
+        popUpInterestsText: Colors.black,
+        popUpHeaderText: Colors.black,
+        postSettings: Colors.black,
+        postSettingsText: Colors.black,
+        gridPostText: Colors.black,
+        clubProfileFooterAdd: Colors.black,
+        optionColor: Colors.black,
+        optionText: Colors.black,
+        appBarText: Colors.black,
+        appBar: Colors.black,
+        commentWidgetComment: Colors.black,
+        commentWidgetDate: Colors.black,
+        commentWidgetName: Colors.black,
+        pollWidgetQuestion: Colors.black,
+        pollWidgetOption: Colors.black,
+        postWidgetDivider: Colors.black,
+        postWidgetIcons: Colors.black);
   }
 }
 

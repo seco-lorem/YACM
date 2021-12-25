@@ -45,10 +45,17 @@ class RouteGenerator {
       case RouteNames.post:
         Uri settingsUri = Uri.parse(settings.name.toString());
         final postId = settingsUri.queryParameters['id'];
-        print("PostId = " + postId.toString());
         return _GeneratePageRoute(
             widget: PostScreen(
               postID: postId.toString(),
+            ),
+            routeName: settings.name.toString());
+      case RouteNames.club:
+        Uri settingsUri = Uri.parse(settings.name.toString());
+        final clubID = settingsUri.queryParameters['id'];
+        return _GeneratePageRoute(
+            widget: ClubProfile(
+              id: clubID.toString(),
             ),
             routeName: settings.name.toString());
       case RouteNames.home:

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
 import 'package:yacm/controllers/firebase_manager/firebase_manager.dart';
@@ -65,5 +66,13 @@ class ClubManager extends ChangeNotifier {
 
   Future<bool> leaveClub(String clubID) async {
     return await _firebaseManager.leaveClub(clubId: clubID);
+  }
+
+  Stream<DocumentSnapshot> getClubStream(String clubID) {
+    return _firebaseManager.getClubStream(clubID);
+  }
+
+  Stream<QuerySnapshot> getClubPosts(String clubID) {
+    return _firebaseManager.getClubPosts(clubID);
   }
 }
