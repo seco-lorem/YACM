@@ -95,27 +95,35 @@ class _NotLoggedInState extends State<NotLoggedIn> {
                   StreamBuilder(
                     stream: Provider.of<UserManager>(context).getPosts(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> stream) {
-                      if (stream.connectionState == ConnectionState.active) {
+                      if (stream.hasData) {
                         List<Widget> _posts = [
                           SizedBox(width: MediaQuery.of(context).size.width)
                         ];
                         for (DocumentSnapshot post in stream.data!.docs) {
                           if (post.get("type") == "event") {
-                            _posts.add(EvenWidget(
-                                language: _language!,
-                                post: Event.fromDocumentSnapshot(post),
-                                comments: []));
+                            _posts.add(Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: EvenWidget(
+                                  language: _language!,
+                                  post: Event.fromDocumentSnapshot(post),
+                                  comments: []),
+                            ));
                           } else if (post.get("type") == "poll") {
-                            _posts.add(PollWidget(
-                                language: _language!,
-                                post: Poll.fromDocumentSnapshot(post),
-                                comments: []));
+                            _posts.add(Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: PollWidget(
+                                  language: _language!,
+                                  post: Poll.fromDocumentSnapshot(post),
+                                  comments: []),
+                            ));
                           }
                         }
-                        return SingleChildScrollView(
-                          controller: ScrollController(),
-                          child: Column(
-                            children: _posts,
+                        return Expanded(
+                          child: SingleChildScrollView(
+                            controller: ScrollController(),
+                            child: Column(
+                              children: _posts,
+                            ),
                           ),
                         );
                       }

@@ -28,13 +28,21 @@ class Poll implements Post {
       this._publishDate, this._options, this._votes, this._question, this._id);
 
   Poll.fromDocumentSnapshot(DocumentSnapshot data) {
-    _author = data.get("author");
+    List<String> tempOptions = [];
+    for (String option in data.get("options")) {
+      tempOptions.add(option);
+    }
+    List<int> tempVotes = [];
+    for (int vote in data.get("votes")) {
+      tempVotes.add(vote);
+    }
+    _author = "";
     _clubID = data.get("clubID");
     _commentsOn = data.get("commentsOn");
     _message = data.get("message");
-    _publishDate = data.get("publishDate");
-    _options = data.get("options") as List<String>;
-    _votes = data.get("votes") as List<int>;
+    _publishDate = DateTime.parse(data.get("publishDate").toDate().toString());
+    _options = tempOptions;
+    _votes = tempVotes;
     _question = data.get("question");
     _id = data.get("id");
   }

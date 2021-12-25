@@ -3,6 +3,7 @@ import 'package:yacm/models/post/post.dart';
 import 'package:yacm/models/post/posts/event.dart';
 import 'package:yacm/router/route_names.dart';
 import 'package:yacm/util/ui_constants.dart';
+import 'package:yacm/views/common_views/post_screen.dart';
 import 'package:yacm/views/common_widgets/post_widgets/grid_event_widget.dart';
 import 'package:yacm/views/common_widgets/post_widgets/grid_poll_widget.dart';
 
@@ -16,11 +17,7 @@ class GridPost extends StatefulWidget {
 
 class _GridPostState extends State<GridPost> {
   void _navigateToPost(Post post) {
-    if (post.type == PostType.EVENT) {
-      Event _event = post as Event;
-      print(_event.images);
-      Navigator.pushNamed(context, RouteNames.post + "?id=" + post.id);
-    }
+    Navigator.pushNamed(context, RouteNames.post + "?id=" + post.id);
   }
 
   List<Widget> _posts() {
@@ -31,15 +28,12 @@ class _GridPostState extends State<GridPost> {
         _returnList.add(SizedBox(
           width: (UIConstants.getPostWidth(context) / 3) - 1,
           height: (UIConstants.getPostWidth(context) / 3) - 1,
-          child: Hero(
-            tag: post.id,
-            child: InkWell(
-              onTap: () {
-                _navigateToPost(post);
-              },
-              child: GridEvent(
-                event: post,
-              ),
+          child: InkWell(
+            onTap: () {
+              _navigateToPost(post);
+            },
+            child: GridEvent(
+              event: post,
             ),
           ),
         ));
@@ -47,12 +41,12 @@ class _GridPostState extends State<GridPost> {
         _returnList.add(SizedBox(
           width: (UIConstants.getPostWidth(context) / 3) - 1,
           height: (UIConstants.getPostWidth(context) / 3) - 1,
-          child: Hero(
-            tag: post.id,
-            child: InkWell(
-              onTap: () {
-                _navigateToPost(post);
-              },
+          child: InkWell(
+            onTap: () {
+              _navigateToPost(post);
+            },
+            child: Hero(
+              tag: post.id,
               child: GridPoll(poll: post),
             ),
           ),

@@ -30,4 +30,8 @@ class PostManager extends ChangeNotifier {
   Future<List<QuerySnapshot>> checkOverlap(DateTime begin, DateTime end) async {
     return await _firebaseManager.checkOverlap(begin, end);
   }
+
+  Stream<DocumentSnapshot> getPostStream(String postID) {
+    return _firebaseManager.getPostStream(postID: postID);
+  }
 }

@@ -184,6 +184,10 @@ class FirebaseManager {
         .get();
   }
 
+  Stream<DocumentSnapshot> getPostStream({required String postID}) {
+    return _firebaseFirestore.collection("posts").doc(postID).snapshots();
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getPosts() {
     return FirebaseFirestore.instance.collection('posts').snapshots();
   }

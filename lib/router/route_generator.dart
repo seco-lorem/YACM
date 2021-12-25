@@ -6,6 +6,7 @@ import 'package:yacm/router/route_names.dart';
 import 'package:yacm/views/common_views/club_profile.dart';
 import 'package:yacm/views/common_views/explore_screen.dart';
 import 'package:yacm/views/common_views/home_screen.dart';
+import 'package:yacm/views/common_views/post_screen.dart';
 import 'package:yacm/views/common_views/profile_screen.dart';
 import 'package:yacm/views/mobile_view/mobile_view.dart';
 import 'package:yacm/views/web_view/web_view.dart';
@@ -46,7 +47,10 @@ class RouteGenerator {
         final postId = settingsUri.queryParameters['id'];
         print("PostId = " + postId.toString());
         return _GeneratePageRoute(
-            widget: ProfileScreen(), routeName: settings.name.toString());
+            widget: PostScreen(
+              postID: postId.toString(),
+            ),
+            routeName: settings.name.toString());
       case RouteNames.home:
         Widget _route;
         if (Platform.isIOS || Platform.isAndroid) {
@@ -57,11 +61,14 @@ class RouteGenerator {
         return _GeneratePageRoute(
             widget: _route, routeName: settings.name.toString());
       default:
+        Widget _route;
+        if (Platform.isIOS || Platform.isAndroid) {
+          _route = MobileView();
+        } else {
+          _route = WebView();
+        }
         return _GeneratePageRoute(
-            widget: ClubProfile(
-              id: "",
-            ),
-            routeName: settings.name.toString());
+            widget: _route, routeName: settings.name.toString());
     }
   }
 }
