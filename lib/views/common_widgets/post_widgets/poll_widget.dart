@@ -83,6 +83,8 @@ class _PollWidgetState extends State<PollWidget> {
               if (!_hasVoted) {
                 totalVotes += 1;
                 _votes[index] += 1;
+                _hasVoted = true;
+                return;
               }
               if (_hasVoted) {
                 _votes[prevChoice] -= 1;
