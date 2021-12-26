@@ -70,7 +70,7 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
               ),
             ),
             Visibility(
-              visible: widget.isAdmin,
+              visible: true,
               child: Positioned(
                   top: 5,
                   right: 5,

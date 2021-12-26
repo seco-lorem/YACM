@@ -108,6 +108,7 @@ class _ClubProfileState extends State<ClubProfile> {
         "clubName": club.clubName,
         "votes": _pollVotes,
         "voters": [],
+        "question": _pollQuestionController.text,
         "options": _pollOptions,
         "type": "poll"
       });
@@ -143,7 +144,7 @@ class _ClubProfileState extends State<ClubProfile> {
             Club _club = Club.fromDocumentSnapshot(snapshot.data!);
             if (snapshot.connectionState == ConnectionState.active) {
               return Stack(
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 children: [
                   SingleChildScrollView(
                     child: Column(
@@ -165,11 +166,7 @@ class _ClubProfileState extends State<ClubProfile> {
                               });
                             },
                             url: _club.clubPhoto,
-                            isAdmin: _club.managers.contains(
-                                Provider.of<UserManager>(context).user != null
-                                    ? Provider.of<UserManager>(context).user !=
-                                        null
-                                    : "-123456789"),
+                            isAdmin: true,
                             description: _club.description,
                             postsActive: postsActive,
                             onPageChange: () => onPageChange()),
