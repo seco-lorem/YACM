@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/post/posts/poll.dart';
@@ -11,12 +13,20 @@ class PollWidget extends StatefulWidget {
   final Language language;
   final Poll post;
   final List<Message> comments;
+  final bool hasVoted;
+  final bool manager;
+  final bool advisor;
+  final bool loggedIn;
 
   const PollWidget(
       {Key? key,
       required this.language,
       required this.post,
-      required this.comments})
+      required this.comments,
+      required this.hasVoted,
+      required this.manager,
+      required this.advisor,
+      required this.loggedIn})
       : super(key: key);
 
   @override
@@ -24,11 +34,11 @@ class PollWidget extends StatefulWidget {
 }
 
 class _PollWidgetState extends State<PollWidget> {
-  bool hasVoted = false;
   List<int> _votes = [];
   int? choice;
   int totalVotes = 0;
   int prevChoice = 0;
+  bool _hasVoted = false;
 
   @override
   initState() {
@@ -45,45 +55,43 @@ class _PollWidgetState extends State<PollWidget> {
         ((width * .8) * (3 / 4) / widget.post.votes.length) * .5;
 
     return SizedBox(
-      width: double.infinity,
+      width: width,
       child: ElevatedButton(
         style: ButtonStyle(
-            padding: MaterialStateProperty.all(hasVoted
+            padding: MaterialStateProperty.all(_hasVoted
                 ? EdgeInsets.zero
                 : EdgeInsets.symmetric(vertical: (height) / 2)),
             backgroundColor:
                 MaterialStateProperty.all(Color.fromRGBO(244, 226, 198, 1)),
-            alignment: !hasVoted ? Alignment.center : Alignment.centerLeft,
+            alignment: !_hasVoted ? Alignment.center : Alignment.centerLeft,
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 side: BorderSide(
                     color: Theme.of(context).own().pollWidgetQuestion),
                 borderRadius:
                     BorderRadius.circular(UIConstants.borderRadius)))),
         onPressed: () {
-          setState(() {
-            if (index == choice) {
-              totalVotes -= 1;
-              _votes[index] -= 1;
-              choice = null;
-              hasVoted = false;
-              return;
-            }
-            if (choice != null) {
-              prevChoice = choice!;
-            }
-            choice = index;
-            if (!hasVoted) {
-              totalVotes += 1;
-              _votes[index] += 1;
-            }
-            if (hasVoted) {
-              _votes[prevChoice] -= 1;
-              _votes[index] += 1;
-            }
-            hasVoted = true;
-          });
+          if (widget.loggedIn) {
+            print("x");
+            setState(() {
+              if (index == choice) {
+                return;
+              }
+              if (choice != null) {
+                prevChoice = choice!;
+              }
+              choice = index;
+              if (!_hasVoted) {
+                totalVotes += 1;
+                _votes[index] += 1;
+              }
+              if (_hasVoted) {
+                _votes[prevChoice] -= 1;
+                _votes[index] += 1;
+              }
+            });
+          }
         },
-        child: !hasVoted
+        child: !_hasVoted
             ? Center(
                 child: Text(widget.post.options[index],
                     style: TextStyle(
@@ -117,7 +125,7 @@ class _PollWidgetState extends State<PollWidget> {
   @override
   Widget build(BuildContext context) {
     final double width = UIConstants.getPostWidth(context);
-
+    print(widget.loggedIn);
     return Container(
         width: width,
         height: width * .9,
@@ -158,7 +166,7 @@ class _PollWidgetState extends State<PollWidget> {
                                 child: Column(
                                   children: [
                                     Visibility(
-                                      visible: hasVoted,
+                                      visible: _hasVoted,
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Padding(
@@ -188,9 +196,9 @@ class _PollWidgetState extends State<PollWidget> {
                     top: 5,
                     right: 5,
                     child: PostSettings(
-                      manager: false,
-                      advisor: false,
-                      loggedIn: true,
+                      manager: widget.manager,
+                      advisor: widget.advisor,
+                      loggedIn: widget.loggedIn,
                     ),
                   )
                 ],

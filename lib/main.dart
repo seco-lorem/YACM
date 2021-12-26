@@ -10,8 +10,10 @@ import 'package:yacm/controllers/hive_manager/managers/user_hive_manager.dart';
 import 'package:yacm/controllers/message_manager/message_manager.dart';
 import 'package:yacm/controllers/post_manager/post_manager.dart';
 import 'package:yacm/controllers/user_manager/user_manager.dart';
+import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/models/user/user.dart';
 import 'package:yacm/router/route_generator.dart';
+import 'package:yacm/views/web_view/not_logged_in/not_logged_in_view.dart';
 import 'controllers/language_controller/language_delegate.dart';
 import 'controllers/language_controller/locale_constant.dart';
 import 'controllers/shared_pref_controller/sp_controller.dart';
@@ -68,29 +70,39 @@ class _MultiProviderAppState extends State<MultiProviderApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<ThemeChanger>(
-          create: (context) => ThemeChanger(_darkMode ?? false),
-        ),
-        ChangeNotifierProvider<UserManager>(
-          create: (context) =>
-              UserManager(UserHiveManager(), FirebaseManager()),
-        ),
-        ChangeNotifierProvider<PostManager>(
-          create: (context) =>
-              PostManager(FirebaseManager(), MessageManager(FirebaseManager())),
-        ),
-        ChangeNotifierProvider<ClubManager>(
-          create: (context) => ClubManager(
-              FirebaseManager(),
-              MessageManager(FirebaseManager()),
-              PostManager(
-                  FirebaseManager(), MessageManager(FirebaseManager()))),
-        )
-      ],
-      child: MyApp(),
-    );
+    return FutureBuilder(
+        future: SPController.getBoolValue("darkMode"),
+        builder: (context, AsyncSnapshot<bool?> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data == null) {
+              SPController.setBoolValue("darkMode", false);
+            }
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider<ThemeChanger>(
+                  create: (context) => ThemeChanger(snapshot.data ?? false),
+                ),
+                ChangeNotifierProvider<UserManager>(
+                  create: (context) =>
+                      UserManager(UserHiveManager(), FirebaseManager()),
+                ),
+                ChangeNotifierProvider<PostManager>(
+                  create: (context) => PostManager(
+                      FirebaseManager(), MessageManager(FirebaseManager())),
+                ),
+                ChangeNotifierProvider<ClubManager>(
+                  create: (context) => ClubManager(
+                      FirebaseManager(),
+                      MessageManager(FirebaseManager()),
+                      PostManager(FirebaseManager(),
+                          MessageManager(FirebaseManager()))),
+                )
+              ],
+              child: MyApp(),
+            );
+          }
+          return Container();
+        });
   }
 }
 
@@ -106,7 +118,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Locale? _locale;
-  Language? _language;
+  bool _loggedIn = false;
+  Widget? _home;
 
   @override
   void initState() {
@@ -125,7 +138,6 @@ class _MyAppState extends State<MyApp> {
     getLocale().then((locale) {
       setState(() {
         _locale = locale;
-        _language = Language.of(context);
       });
     });
     super.didChangeDependencies();
@@ -133,20 +145,27 @@ class _MyAppState extends State<MyApp> {
 
   void getLocaleFromCache() async {
     Locale tempLocale = await getLocale();
+    bool loggedIn = await SPController.getBoolValue("loggedIn") ?? false;
+
+    if (loggedIn) {
+      await Provider.of<UserManager>(context, listen: false).getOwnData();
+    }
     setState(() {
       _locale = tempLocale;
+      _loggedIn = loggedIn;
+      _home = _loggedIn ? AppView() : NotLoggedIn();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
-    print("de");
     return MaterialApp(
       locale: _locale,
       title: 'YACM',
-      home: AppView(),
+      home: _home,
       theme: _themeChanger.getTheme(),
+      supportedLocales: const [Locale('tr'), Locale('en')],
       localizationsDelegates: <LocalizationsDelegate>[
         LanguageDelegate(),
         GlobalMaterialLocalizations.delegate,

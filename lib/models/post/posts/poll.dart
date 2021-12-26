@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:yacm/models/post/post.dart';
 
 class Poll implements Post {
-  late String _author;
+  late String _clubName;
   late String _clubID;
   late bool _commentsOn;
   late String _message;
@@ -13,7 +13,7 @@ class Poll implements Post {
   late PostType _type = PostType.POLL;
   late String _id;
 
-  String get author => _author;
+  String get clubName => _clubName;
   String get clubID => _clubID;
   String get message => _message;
   bool get commentsOn => _commentsOn;
@@ -24,7 +24,7 @@ class Poll implements Post {
   PostType get type => _type;
   String get id => _id;
 
-  Poll(this._author, this._clubID, this._commentsOn, this._message,
+  Poll(this._clubName, this._clubID, this._commentsOn, this._message,
       this._publishDate, this._options, this._votes, this._question, this._id);
 
   Poll.fromDocumentSnapshot(DocumentSnapshot data) {
@@ -36,7 +36,7 @@ class Poll implements Post {
     for (int vote in data.get("votes")) {
       tempVotes.add(vote);
     }
-    _author = "";
+    _clubName = data.get("clubName");
     _clubID = data.get("clubID");
     _commentsOn = data.get("commentsOn");
     _message = data.get("message");
@@ -49,7 +49,7 @@ class Poll implements Post {
 
   Map<String, dynamic> toMap() {
     return {
-      "author": _author,
+      "author": _clubName,
       "clubID": _clubID,
       "message": _message,
       "commentsOn": _commentsOn,

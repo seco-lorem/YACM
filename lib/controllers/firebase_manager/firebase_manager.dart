@@ -169,7 +169,7 @@ class FirebaseManager {
   // should return boolean
   Future<bool> createEventPost(
       {required Map<String, dynamic> postData,
-      required List<File> photos}) async {
+      required List<File?> photos}) async {
     postData['postType'] = 'event';
     // Add post to posts collection
     String? postId = await createPostInFirestore(postData);
@@ -213,38 +213,48 @@ class FirebaseManager {
     await FirebaseFirestore.instance
         .collection('posts')
         .add(postData)
-        .then((value) => (postId = value.id));
+        .then((value) async {
+      await _firebaseFirestore
+          .collection("posts")
+          .doc(value.id)
+          .update({"id": value.id});
+    });
     return postId;
   }
 
   ///  This must the be tested with the real application
   ///  Can't read files directly from OS
   Future<List<String>> _addPostPhotosToStorage(
-      String postId, String clubName, List<File> files) async {
+      String postId, String clubName, List<File?> files) async {
     String basePath = "postPhotos/$clubName/$postId";
     List<String> _photoURLs = [];
 
     for (var i = 0; i < files.length; i++) {
-      String destination = basePath + "photo" + i.toString();
-      await FirebaseStorage.instance
-          .ref(destination)
-          .putFile(io.File(files[i].path))
-          .then((data) async {
-        String url = await data.ref.getDownloadURL();
-        _photoURLs.add(url);
-      });
+      if (files[i] != null) {
+        String destination = basePath + "photo" + i.toString();
+        await FirebaseStorage.instance
+            .ref(destination)
+            .putFile(io.File(files[i]!.path))
+            .then((data) async {
+          String url = await data.ref.getDownloadURL();
+          _photoURLs.add(url);
+        });
+      }
     }
     return _photoURLs;
   }
 
-  Future<bool> createPollPost(
-      {String? clubName, Map<String, dynamic>? pollPostData}) async {
+  Future<bool> createPollPost({Map<String, dynamic>? pollPostData}) async {
     try {
-      pollPostData!['clubName'] = clubName;
-      pollPostData['postType'] = 'poll';
-      pollPostData['voterUIDs'] = [];
-
-      await FirebaseFirestore.instance.collection('posts').add(pollPostData);
+      await FirebaseFirestore.instance
+          .collection('posts')
+          .add(pollPostData!)
+          .then((value) async {
+        await _firebaseFirestore
+            .collection("posts")
+            .doc(value.id)
+            .update({"id": value.id});
+      });
     } catch (e) {
       return false;
     }
@@ -527,7 +537,8 @@ class FirebaseManager {
               club["managers"],
               club["members"],
               club["mutedMembers"],
-              club["clubName"]));
+              club["clubName"],
+              club["description"]));
         });
       });
 

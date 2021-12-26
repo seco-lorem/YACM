@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 
@@ -51,6 +52,7 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
 
   @override
   Widget build(BuildContext context) {
+    Language? _language = Language.of(context);
     return Column(
       children: [
         Stack(
@@ -103,11 +105,11 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
                             children: [
                               _child(
                                   visible: true,
-                                  setting: "Create Post",
+                                  setting: _language!.createPost,
                                   onTap: widget.onCreatePost),
                               _child(
                                   visible: true,
-                                  setting: "Kick Members",
+                                  setting: _language.kickMembers,
                                   onTap: widget.onKickMembers)
                             ],
                           ),
@@ -134,7 +136,7 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
           children: [
             InkWell(
               onTap: widget.onPageChange,
-              child: Text("Posts",
+              child: Text(_language.posts,
                   style: TextStyle(
                       color: Theme.of(context).own().yacmLogoColor,
                       fontWeight: widget.postsActive
@@ -143,7 +145,7 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
             ),
             InkWell(
               onTap: widget.onPageChange,
-              child: Text("Chat",
+              child: Text(_language.chat,
                   style: TextStyle(
                       color: Theme.of(context).own().yacmLogoColor,
                       fontWeight: !widget.postsActive

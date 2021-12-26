@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_io/io.dart';
 import 'package:yacm/controllers/firebase_manager/firebase_manager.dart';
 import 'package:yacm/controllers/message_manager/message_manager.dart';
 import 'package:yacm/models/message/message.dart';
@@ -19,10 +20,6 @@ class PostManager extends ChangeNotifier {
     return await _firebaseManager.deletePost(id);
   }
 
-  Future<bool> publishPost(Post post) async {
-    return await _firebaseManager.publishPost(post);
-  }
-
   Future<bool> commentPost(String id, Message message) async {
     return await _messageManager.sendToPost(message, id);
   }
@@ -33,5 +30,14 @@ class PostManager extends ChangeNotifier {
 
   Stream<DocumentSnapshot> getPostStream(String postID) {
     return _firebaseManager.getPostStream(postID: postID);
+  }
+
+  Future<bool> createEventPost(
+      Map<String, dynamic> data, List<File?> photos) async {
+    return _firebaseManager.createEventPost(postData: data, photos: photos);
+  }
+
+  Future<bool> createPollPost(Map<String, dynamic> data) async {
+    return await _firebaseManager.createPollPost(pollPostData: data);
   }
 }

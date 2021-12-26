@@ -5,6 +5,7 @@ import 'package:yacm/controllers/theme_controller/theme_changer.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
+import 'package:yacm/views/common_widgets/get_language.dart';
 import 'package:yacm/views/common_widgets/get_theme.dart';
 
 /// This is a screen for user profile page
@@ -24,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   final TextEditingController _newPasswordController2 = TextEditingController();
   bool changeThemeVisible = false;
   late bool _theme = false;
+  bool changeLanguageVisible = false;
   Language? language;
 
   @override
@@ -72,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 style: TextStyle(color: Colors.grey[700]),
                 cursorColor: Theme.of(context).own().yacmLogoColor,
                 decoration: InputDecoration(
-                    hintText: "Type Here",
+                    hintText: language!.typeHere,
                     hintStyle: TextStyle(
                         color: Colors.grey[700]!.withOpacity(.8),
                         fontStyle: FontStyle.italic),
@@ -96,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   BorderRadius.circular(UIConstants.borderRadius / 2)),
           child: Center(
             child: Text(
-              "Change Password",
+              language!.changePassword,
               style: TextStyle(
                   fontSize: 16,
                   color: Theme.of(context).own().background,
@@ -129,9 +131,13 @@ class _ProfileScreenState extends State<ProfileScreen>
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      changeLanguageVisible = !changeLanguageVisible;
+                    });
+                  },
                   child: Text(
-                    "Change Language",
+                    language!.changeLanguage,
                     style: TextStyle(
                         color: Colors.grey[700],
                         fontWeight: FontWeight.bold,
@@ -145,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     });
                   },
                   child: Text(
-                    "Change Theme",
+                    language!.changeTheme,
                     style: TextStyle(
                         color: Colors.grey[700],
                         fontWeight: FontWeight.bold,
@@ -190,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       SizedBox(
                         width: UIConstants.getPostWidth(context),
                         child: Text(
-                          "Current Password",
+                          language!.currentPassword,
                           textAlign: TextAlign.start,
                           style: TextStyle(
                               color: Theme.of(context).own().yacmLogoColor,
@@ -204,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       SizedBox(
                         width: UIConstants.getPostWidth(context),
                         child: Text(
-                          "New Password",
+                          language!.newPassword,
                           textAlign: TextAlign.start,
                           style: TextStyle(
                               color: Theme.of(context).own().yacmLogoColor,
@@ -243,6 +249,21 @@ class _ProfileScreenState extends State<ProfileScreen>
                   onContine: () {
                     setState(() {
                       changeThemeVisible = !changeThemeVisible;
+                    });
+                  }),
+            ),
+            Visibility(
+              visible: changeLanguageVisible,
+              child: GetLanguage(
+                  language: language!,
+                  onClose: () {
+                    setState(() {
+                      changeLanguageVisible = !changeLanguageVisible;
+                    });
+                  },
+                  onContine: () {
+                    setState(() {
+                      changeLanguageVisible = !changeLanguageVisible;
                     });
                   }),
             )

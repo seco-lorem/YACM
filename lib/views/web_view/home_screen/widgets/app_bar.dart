@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yacm/models/language/language.dart';
 
 import 'app_bar_menu_item.dart';
 
@@ -7,6 +8,7 @@ class LeftAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Language? _language = Language.of(context);
     return Container(
         width: 200,
         height: MediaQuery.of(context).size.height - 150,
@@ -28,34 +30,42 @@ class LeftAppBar extends StatelessWidget {
           ),
           const Spacer(),
           MenuItem(
-              title: "Home",
+              title: _language!.home,
               ontap: () {},
-              icon: Icon(Icons.home_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+              icon: Icon(Icons.home_outlined,
+                  color: Color.fromRGBO(94, 119, 3, 1)),
               boldIcon: Icon(Icons.home, color: Color.fromRGBO(94, 119, 3, 1)),
               selected: true),
           MenuItem(
-              title: "Pinned",
+              title: _language.pinned,
               ontap: () {},
-              icon: Icon(Icons.pin_drop_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-              boldIcon: Icon(Icons.pin_drop, color: Color.fromRGBO(94, 119, 3, 1)),
+              icon: Icon(Icons.pin_drop_outlined,
+                  color: Color.fromRGBO(94, 119, 3, 1)),
+              boldIcon:
+                  Icon(Icons.pin_drop, color: Color.fromRGBO(94, 119, 3, 1)),
               selected: false),
           MenuItem(
-              title: "Explore",
+              title: _language.explore,
               ontap: () {},
-              icon: Icon(Icons.explore_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-              boldIcon: Icon(Icons.explore, color: Color.fromRGBO(94, 119, 3, 1)),
+              icon: Icon(Icons.explore_outlined,
+                  color: Color.fromRGBO(94, 119, 3, 1)),
+              boldIcon:
+                  Icon(Icons.explore, color: Color.fromRGBO(94, 119, 3, 1)),
               selected: false),
           MenuItem(
-              title: "Subscription",
+              title: _language.subscription,
               ontap: () {},
-              icon: Icon(Icons.save_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
+              icon: Icon(Icons.save_outlined,
+                  color: Color.fromRGBO(94, 119, 3, 1)),
               boldIcon: Icon(Icons.save, color: Color.fromRGBO(94, 119, 3, 1)),
               selected: false),
           MenuItem(
-              title: "Edit Profile",
+              title: _language.profile,
               ontap: () {},
-              icon: Icon(Icons.settings_outlined, color: Color.fromRGBO(94, 119, 3, 1)),
-              boldIcon: Icon(Icons.settings, color: Color.fromRGBO(94, 119, 3, 1)),
+              icon: Icon(Icons.settings_outlined,
+                  color: Color.fromRGBO(94, 119, 3, 1)),
+              boldIcon:
+                  Icon(Icons.settings, color: Color.fromRGBO(94, 119, 3, 1)),
               selected: false),
           const Spacer()
         ]));

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 
@@ -41,6 +42,7 @@ class _PostSettingsState extends State<PostSettings> {
 
   @override
   Widget build(BuildContext context) {
+    Language? _language = Language.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -66,11 +68,18 @@ class _PostSettingsState extends State<PostSettings> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _child(visible: widget.manager, setting: "Edit", onTap: () {}),
                 _child(
-                    visible: widget.manager, setting: "Delete", onTap: () {}),
-                _child(visible: widget.advisor, setting: "Veto", onTap: () {}),
-                _child(visible: widget.loggedIn, setting: "Sub", onTap: () {})
+                    visible: widget.manager,
+                    setting: _language!.delete,
+                    onTap: () {}),
+                _child(
+                    visible: widget.advisor,
+                    setting: _language.veto,
+                    onTap: () {}),
+                _child(
+                    visible: widget.loggedIn,
+                    setting: _language.sub,
+                    onTap: () {})
               ],
             ),
           ),
