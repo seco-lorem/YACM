@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_io/io.dart';
 import 'package:yacm/controllers/club_manager/club_manager.dart';
 import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/club/club.dart';
@@ -44,6 +46,8 @@ class _ClubProfileState extends State<ClubProfile> {
     TextEditingController(),
     TextEditingController()
   ];
+  late ClubManager _clubManager;
+  List<File?> _photos = [null, null, null, null, null, null, null, null];
 
   final Map<String, String> _members = {
     "1": "Deniz Berkant Demirörs",
@@ -58,87 +62,70 @@ class _ClubProfileState extends State<ClubProfile> {
     "10": "Deniz Berkant Demirörs",
   };
 
-  final List<Post> _posts = [
-    Poll(
-        "club",
-        "club",
-        true,
-        "message",
-        DateTime.now(),
-        ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"],
-        [1, 1, 1, 1, 1],
-        "This is a sample question,",
-        "234"),
-    Event(
-        "author",
-        "club",
-        true,
-        "message",
-        DateTime.now(),
-        [
-          "https://lh3.googleusercontent.com/proxy/LIId8Z2wWUFCjKrZbmfGiMxg5AahvgT4dIGOjcrdNh3exKa2dXbbObsUyHKyBckm3y8NbNvIbpfvmntyMPDcl9l7UpM22He5ikEYoCyVYeq7GVGlIzOgWqf6RGwsPyG9",
-          "https://image.shutterstock.com/image-photo/view-valley-castle-hohenschwangau-600w-103574675.jpg",
-          "https://image.shutterstock.com/image-photo/fairy-forest-covered-snow-moon-600w-744558304.jpg"
-        ],
-        DateTime.now().subtract(Duration(days: 1)),
-        DateTime.now().add(Duration(days: 1)),
-        [],
-        "234"),
-    Poll(
-        "club",
-        "club",
-        true,
-        "message",
-        DateTime.now(),
-        ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"],
-        [1, 1, 1, 1, 1],
-        "This is a sample question,",
-        ""),
-    Event(
-        "author",
-        "club",
-        true,
-        "message",
-        DateTime.now(),
-        [
-          "https://lh3.googleusercontent.com/proxy/LIId8Z2wWUFCjKrZbmfGiMxg5AahvgT4dIGOjcrdNh3exKa2dXbbObsUyHKyBckm3y8NbNvIbpfvmntyMPDcl9l7UpM22He5ikEYoCyVYeq7GVGlIzOgWqf6RGwsPyG9",
-          "https://image.shutterstock.com/image-photo/view-valley-castle-hohenschwangau-600w-103574675.jpg",
-          "https://image.shutterstock.com/image-photo/fairy-forest-covered-snow-moon-600w-744558304.jpg"
-        ],
-        DateTime.now().subtract(Duration(days: 1)),
-        DateTime.now().add(Duration(days: 1)),
-        [],
-        ""),
-    Poll(
-        "club",
-        "club",
-        true,
-        "message",
-        DateTime.now(),
-        ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"],
-        [1, 1, 1, 1, 1],
-        "This is a sample question,",
-        ""),
-    Event(
-        "author",
-        "club",
-        true,
-        "message",
-        DateTime.now(),
-        [
-          "https://lh3.googleusercontent.com/proxy/LIId8Z2wWUFCjKrZbmfGiMxg5AahvgT4dIGOjcrdNh3exKa2dXbbObsUyHKyBckm3y8NbNvIbpfvmntyMPDcl9l7UpM22He5ikEYoCyVYeq7GVGlIzOgWqf6RGwsPyG9",
-          "https://image.shutterstock.com/image-photo/view-valley-castle-hohenschwangau-600w-103574675.jpg",
-          "https://image.shutterstock.com/image-photo/fairy-forest-covered-snow-moon-600w-744558304.jpg"
-        ],
-        DateTime.now().subtract(Duration(days: 1)),
-        DateTime.now().add(Duration(days: 1)),
-        [],
-        "")
-  ];
-
   void onPageChange() {
     setState(() {
       postsActive = !postsActive;
+    });
+  }
+
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    _clubManager = Provider.of<ClubManager>(context);
+  }
+
+  Future<void> onPublish(Club club) async {
+    if (addPostType) {
+      await _clubManager.createEventPost({
+        "message": _descriptionController.text,
+        "commentsOn": commentsOn,
+        "publishDate": DateTime.now(),
+        "beginDate": DateTime.now(),
+        "endDate": DateTime.now(),
+        "prerequisites": [],
+        "managers": club.managers,
+        "advisor": club.advisor,
+        "clubID": club.id,
+        "clubName": club.clubName,
+        "type": "event"
+      }, _photos);
+    } else {
+      List<String> _pollOptions = [];
+      List<int> _pollVotes = [];
+      for (TextEditingController controller in _options) {
+        if (controller.text.isNotEmpty) {
+          _pollOptions.add(controller.text);
+          _pollVotes.add(0);
+        }
+      }
+      await _clubManager.createPollPost({
+        "message": _descriptionController.text,
+        "commentsOn": commentsOn,
+        "publishDate": DateTime.now(),
+        "managers": club.managers,
+        "advisor": club.advisor,
+        "clubID": club.id,
+        "clubName": club.clubName,
+        "votes": _pollVotes,
+        "voters": [],
+        "options": _pollOptions,
+        "type": "poll"
+      });
+    }
+
+    setState(() {
+      postsActive = true;
+      commentsOn = true;
+      addPostType = true;
+      _addPostVisible = false;
+      _descriptionController.clear();
+      _pollQuestionController.clear();
+      _photos = [null, null, null, null, null, null, null, null];
+      _options[0].clear();
+      _options[1].clear();
+      _options[2].clear();
+      _options[3].clear();
+      _options[4].clear();
     });
   }
 
@@ -154,126 +141,149 @@ class _ClubProfileState extends State<ClubProfile> {
               .getClubStream(widget.id),
           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
             Club _club = Club.fromDocumentSnapshot(snapshot.data!);
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      ClubProfileHeader(
-                          onViewMembers: () {
-                            setState(() {
-                              _viewMembersVisible = !_viewMembersVisible;
-                            });
-                          },
-                          onKickMembers: () {
-                            setState(() {
-                              _kickMembersVisible = !_kickMembersVisible;
-                            });
-                          },
-                          onCreatePost: () {
-                            setState(() {
-                              _addPostVisible = !_addPostVisible;
-                            });
-                          },
-                          url: _club.clubPhoto,
-                          isAdmin: true,
-                          description: "This is a sample description",
-                          postsActive: postsActive,
-                          onPageChange: () => onPageChange()),
-                      postsActive
-                          ? StreamBuilder(
-                              stream: Provider.of<ClubManager>(context)
-                                  .getClubPosts(widget.id),
-                              builder: (context,
-                                  AsyncSnapshot<QuerySnapshot> stream) {
-                                List<Post> posts = [];
-                                if (stream.hasData) {
-                                  for (DocumentSnapshot post
-                                      in stream.data!.docs) {
-                                    if (post.get("type") == "event") {
-                                      posts.add(
-                                          Event.fromDocumentSnapshot(post));
-                                    } else if (post.get("type") == "poll") {
-                                      posts
-                                          .add(Poll.fromDocumentSnapshot(post));
+            if (snapshot.connectionState == ConnectionState.active) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        ClubProfileHeader(
+                            onViewMembers: () {
+                              setState(() {
+                                _viewMembersVisible = !_viewMembersVisible;
+                              });
+                            },
+                            onKickMembers: () {
+                              setState(() {
+                                _kickMembersVisible = !_kickMembersVisible;
+                              });
+                            },
+                            onCreatePost: () {
+                              setState(() {
+                                _addPostVisible = !_addPostVisible;
+                              });
+                            },
+                            url: _club.clubPhoto,
+                            isAdmin: _club.managers.contains(
+                                Provider.of<UserManager>(context).user != null
+                                    ? Provider.of<UserManager>(context).user !=
+                                        null
+                                    : "-123456789"),
+                            description: _club.description,
+                            postsActive: postsActive,
+                            onPageChange: () => onPageChange()),
+                        postsActive
+                            ? StreamBuilder(
+                                stream: Provider.of<ClubManager>(context)
+                                    .getClubPosts(widget.id),
+                                builder: (context,
+                                    AsyncSnapshot<QuerySnapshot> stream) {
+                                  List<Post> posts = [];
+                                  if (stream.connectionState ==
+                                      ConnectionState.active) {
+                                    for (DocumentSnapshot post
+                                        in stream.data!.docs) {
+                                      if (post.get("type") == "event") {
+                                        posts.add(
+                                            Event.fromDocumentSnapshot(post));
+                                      } else if (post.get("type") == "poll") {
+                                        posts.add(
+                                            Poll.fromDocumentSnapshot(post));
+                                      }
                                     }
                                   }
-                                }
-                                return GridPost(posts: posts);
-                              },
-                            )
-                          : ClubProfileMessages(
-                              isAdmin: false, messages: Helper.comments),
-                      Visibility(
-                        visible: !postsActive,
-                        child: ClubProfileSendMessage(),
-                      )
-                    ],
-                  ),
-                ),
-                Visibility(
-                  visible: _viewMembersVisible,
-                  child: ViewMembers(members: _club.members),
-                ),
-                Visibility(
-                  visible: _kickMembersVisible,
-                  child: KickMembers(members: _members),
-                ),
-                Visibility(
-                    visible: _addPostVisible,
-                    child: AddPost(
-                        onPublish: () {},
-                        postChoice: addPostType,
-                        onPostTypeChange: () {
-                          setState(() {
-                            addPostType = !addPostType;
-                          });
-                        },
-                        photos: [],
-                        addPhoto: (index) {
-                          print(index);
-                        },
-                        options: _options,
-                        pollQuestionController: _pollQuestionController,
-                        descriptionController: _descriptionController,
-                        commentsOn: commentsOn,
-                        changeCommentsOn: (data) {
-                          setState(() {
-                            commentsOn = data;
-                          });
-                        })),
-                Visibility(
-                  visible: _addPostVisible ||
-                      _kickMembersVisible ||
-                      _viewMembersVisible,
-                  child: Positioned(
-                    right: 5,
-                    top: 5,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.close,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _descriptionController.clear();
-                          _pollQuestionController.clear();
-                          _options.forEach((TextEditingController element) {
-                            element.clear();
-                          });
-                          commentsOn = true;
-                          addPostType = true;
-                          _addPostVisible = false;
-                          _kickMembersVisible = false;
-                          _viewMembersVisible = false;
-                        });
-                      },
+                                  return GridPost(posts: posts);
+                                },
+                              )
+                            : ClubProfileMessages(
+                                isAdmin: false, messages: Helper.comments),
+                        Visibility(
+                          visible: !postsActive,
+                          child: ClubProfileSendMessage(),
+                        )
+                      ],
                     ),
                   ),
-                )
-              ],
-            );
+                  Visibility(
+                    visible: _viewMembersVisible,
+                    child: ViewMembers(members: _club.members),
+                  ),
+                  Visibility(
+                    visible: _kickMembersVisible,
+                    child: KickMembers(members: _members),
+                  ),
+                  Visibility(
+                      visible: _addPostVisible,
+                      child: AddPost(
+                          onPublish: () {
+                            onPublish(_club);
+                          },
+                          postChoice: addPostType,
+                          onPostTypeChange: () {
+                            setState(() {
+                              addPostType = !addPostType;
+                            });
+                          },
+                          photos: [],
+                          addPhoto: (index) async {
+                            XFile? _tempPhoto = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (_tempPhoto != null) {
+                              var _tempPhotoForWeb =
+                                  await _tempPhoto.readAsBytes();
+                              setState(() {
+                                if (Platform.isIOS || Platform.isAndroid) {
+                                  _photos[index] = File(_tempPhoto.path);
+                                } else {
+                                  _photos[index] =
+                                      File.fromRawPath(_tempPhotoForWeb);
+                                }
+                              });
+                            }
+                          },
+                          options: _options,
+                          pollQuestionController: _pollQuestionController,
+                          descriptionController: _descriptionController,
+                          commentsOn: commentsOn,
+                          changeCommentsOn: (data) {
+                            setState(() {
+                              commentsOn = data;
+                            });
+                          })),
+                  Visibility(
+                    visible: _addPostVisible ||
+                        _kickMembersVisible ||
+                        _viewMembersVisible,
+                    child: Positioned(
+                      right: 5,
+                      top: 5,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _descriptionController.clear();
+                            _pollQuestionController.clear();
+                            _options.forEach((TextEditingController element) {
+                              element.clear();
+                            });
+                            commentsOn = true;
+                            addPostType = true;
+                            _addPostVisible = false;
+                            _kickMembersVisible = false;
+                            _viewMembersVisible = false;
+                          });
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              );
+            }
+            return Container();
           }),
     ));
   }

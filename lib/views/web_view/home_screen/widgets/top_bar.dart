@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:yacm/controllers/theme_controller/theme_changer.dart';
+import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 import 'package:yacm/views/web_view/home_screen/widgets/app_bar_menu_item.dart';
@@ -47,6 +48,14 @@ class _TopBarState extends State<TopBar>
     curve: Curves.easeIn,
   ));
 
+  Language? _language;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _language = Language.of(context);
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -75,8 +84,9 @@ class _TopBarState extends State<TopBar>
                   style: TextStyle(color: Colors.grey[700]),
                   cursorColor: Theme.of(context).own().yacmLogoColor,
                   decoration: InputDecoration(
-                      hintText: "Search",
+                      hintText: _language!.search,
                       border: InputBorder.none,
+                      hintStyle: TextStyle(color: Colors.grey[700]),
                       contentPadding:
                           EdgeInsets.only(bottom: 15, left: 8, right: 8)),
                   onChanged: (value) {
@@ -104,7 +114,7 @@ class _TopBarState extends State<TopBar>
                       child: widget.isSmall
                           ? Icon(Icons.close, color: Colors.grey[700])
                           : Text(
-                              "cancel",
+                              _language!.cancel,
                               style: TextStyle(color: Colors.grey[700]),
                             ),
                     )),
@@ -137,7 +147,7 @@ class _TopBarState extends State<TopBar>
                           color: Theme.of(context).own().yacmLogoColor,
                         )
                       : Text(
-                          "Notifications",
+                          _language!.notifications,
                           style: TextStyle(
                               color: Theme.of(context).own().yacmLogoColor,
                               fontWeight: FontWeight.bold,
@@ -153,7 +163,7 @@ class _TopBarState extends State<TopBar>
                   color: Colors.grey[700],
                 )
               : Text(
-                  "Sign Out",
+                  _language!.signOut,
                   style: TextStyle(
                       color: Colors.grey[700],
                       fontWeight: FontWeight.bold,
@@ -198,7 +208,7 @@ class _TopBarState extends State<TopBar>
                   ),
                 ),
                 MenuItem(
-                    title: "Home",
+                    title: _language!.home,
                     icon: Icon(
                       Icons.home_outlined,
                       color: Theme.of(context).own().yacmLogoColor,
@@ -212,7 +222,7 @@ class _TopBarState extends State<TopBar>
                       widget.onPageChange(0);
                     }),
                 MenuItem(
-                    title: "Pinned",
+                    title: _language!.pinned,
                     icon: Icon(
                       Icons.pin_drop_outlined,
                       color: Theme.of(context).own().yacmLogoColor,
@@ -226,7 +236,7 @@ class _TopBarState extends State<TopBar>
                       widget.onPageChange(1);
                     }),
                 MenuItem(
-                    title: "Explore",
+                    title: _language!.explore,
                     icon: Icon(
                       Icons.explore_outlined,
                       color: Theme.of(context).own().yacmLogoColor,
@@ -240,7 +250,7 @@ class _TopBarState extends State<TopBar>
                       widget.onPageChange(2);
                     }),
                 MenuItem(
-                    title: "Subscription",
+                    title: _language!.subscription,
                     icon: Icon(
                       CupertinoIcons.heart,
                       color: Theme.of(context).own().yacmLogoColor,
@@ -254,7 +264,7 @@ class _TopBarState extends State<TopBar>
                       widget.onPageChange(3);
                     }),
                 MenuItem(
-                    title: "Profile",
+                    title: _language!.profile,
                     icon: Icon(
                       CupertinoIcons.person,
                       color: Theme.of(context).own().yacmLogoColor,
@@ -271,7 +281,7 @@ class _TopBarState extends State<TopBar>
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
-                    "Suggested",
+                    _language!.suggested,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,

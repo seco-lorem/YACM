@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../post.dart';
 
 class Event implements Post {
-  late String _author;
+  late String _clubName;
   late String _clubID;
   late bool _commentsOn;
   late String _message;
@@ -15,7 +15,7 @@ class Event implements Post {
   late List<List<String>> _prerequisites;
   late String _id;
 
-  String get author => _author;
+  String get clubName => _clubName;
   String get clubID => _clubID;
   String get message => _message;
   bool get commentsOn => _commentsOn;
@@ -28,7 +28,7 @@ class Event implements Post {
   String get id => _id;
 
   Event(
-      this._author,
+      this._clubName,
       this._clubID,
       this._commentsOn,
       this._message,
@@ -40,21 +40,26 @@ class Event implements Post {
       this._id);
 
   Event.fromDocumentSnapshot(DocumentSnapshot data) {
-    _author = data.get("author");
+    List<List<String>> _pre = [];
+    List<String> _tempImages = [];
+    for (String image in data.get("images")) {
+      _tempImages.add(image);
+    }
+    _clubName = data.get("clubName");
     _clubID = data.get("clubID");
     _commentsOn = data.get("commentsOn");
     _message = data.get("message");
-    _publishDate = data.get("publishDate");
-    _images = data.get("images");
-    _beginDate = data.get("beginDate");
-    _endDate = data.get("endDate");
-    _prerequisites = data.get("prerequisites") as List<List<String>>;
+    _publishDate = DateTime.parse(data.get("publishDate").toDate().toString());
+    _images = _tempImages;
+    _beginDate = DateTime.parse(data.get("beginDate").toDate().toString());
+    _endDate = DateTime.parse(data.get("endDate").toDate().toString());
+    _prerequisites = _pre;
     _id = data.get("id");
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "author": _author,
+      "author": _clubName,
       "clubID": _clubID,
       "message": _message,
       "commentsOn": _commentsOn,

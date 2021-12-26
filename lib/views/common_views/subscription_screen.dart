@@ -42,10 +42,38 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
                   if (post.get("type") == "event") {
                     _posts.add(EvenWidget(
                         language: widget.language,
+                        loggedIn: Provider.of<UserManager>(context).user !=
+                            null,
+                        manager:
+                            Provider.of<UserManager>(context).user != null &&
+                                post.get("managers").contains(
+                                    Provider.of<UserManager>(context).user!.id),
+                        advisor:
+                            Provider.of<UserManager>(context).user != null &&
+                                post.get("advisor").compareTo(
+                                        Provider.of<UserManager>(context)
+                                            .user!
+                                            .id) ==
+                                    0,
                         post: Event.fromDocumentSnapshot(post),
                         comments: []));
                   } else if (post.get("type") == "poll") {
                     _posts.add(PollWidget(
+                        loggedIn:
+                            Provider.of<UserManager>(context).user != null,
+                        manager: Provider.of<UserManager>(context).user != null &&
+                            post.get("managers").contains(
+                                Provider.of<UserManager>(context).user!.id),
+                        advisor: Provider.of<UserManager>(context).user != null &&
+                            post.get("advisor").compareTo(
+                                    Provider.of<UserManager>(context)
+                                        .user!
+                                        .id) ==
+                                0,
+                        hasVoted:
+                            Provider.of<UserManager>(context).user != null &&
+                                !post.get("voters").contains(
+                                    Provider.of<UserManager>(context).user!.id),
                         language: widget.language,
                         post: Poll.fromDocumentSnapshot(post),
                         comments: []));

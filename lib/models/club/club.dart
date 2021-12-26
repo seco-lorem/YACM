@@ -5,6 +5,7 @@ class Club {
   late String _advisor;
   late String _clubPhoto;
   late String _clubName;
+  late String _description;
   late bool _enrollable;
   late List<String> _members;
   late List<String> _managers;
@@ -14,13 +15,22 @@ class Club {
   String get advisor => _advisor;
   String get clubPhoto => _clubPhoto;
   String get clubName => _clubName;
+  String get description => _description;
   bool get enrollable => _enrollable;
   List<String> get members => _members;
   List<String> get managers => _managers;
   List<String> get mutedMembers => _mutedMembers;
 
-  Club(this._id, this._advisor, this._clubPhoto, this._clubName,
-      this._enrollable, this._managers, this._members, this._mutedMembers);
+  Club(
+      this._id,
+      this._advisor,
+      this._clubPhoto,
+      this._clubName,
+      this._enrollable,
+      this._managers,
+      this._members,
+      this._mutedMembers,
+      this._description);
 
   Club.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     List<String> tempManagers = [];
@@ -41,6 +51,7 @@ class Club {
     _clubPhoto = snapshot.get("clubPhoto");
     _clubName = snapshot.get("clubName");
     _enrollable = snapshot.get("enrollable");
+    _description = snapshot.get("description");
     _managers = tempManagers;
     _mutedMembers = tempMutedMembers;
     _members = tempMembers;
@@ -55,7 +66,8 @@ class Club {
       "enrollable": _enrollable,
       "members": _members,
       "managers": _managers,
-      "mutedMembers": _mutedMembers
+      "mutedMembers": _mutedMembers,
+      "description": _description
     };
   }
 }

@@ -42,6 +42,11 @@ class UserManager extends ChangeNotifier {
     return false;
   }
 
+  Future<void> getOwnData() async {
+    _user = await _userHiveManager.read(BOX_NAME, _firebaseManager.getUserID());
+    notifyListeners();
+  }
+
   Future<bool> signUp(String email, String password, List<String> interests,
       File photo, String name, String schoolID) async {
     await _firebaseManager.registerUser(

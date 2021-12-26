@@ -11,12 +11,18 @@ class EvenWidget extends StatefulWidget {
   final Language language;
   final Event post;
   final List<Message> comments;
+  final bool manager;
+  final bool advisor;
+  final bool loggedIn;
 
   const EvenWidget(
       {Key? key,
       required this.language,
       required this.post,
-      required this.comments})
+      required this.comments,
+      required this.manager,
+      required this.advisor,
+      required this.loggedIn})
       : super(key: key);
 
   @override
@@ -124,7 +130,9 @@ class _EvenWidgetState extends State<EvenWidget> {
                       top: 5,
                       right: 5,
                       child: PostSettings(
-                          manager: true, advisor: true, loggedIn: true))
+                          manager: widget.manager,
+                          advisor: widget.advisor,
+                          loggedIn: widget.loggedIn))
                 ],
               ),
             ),

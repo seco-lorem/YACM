@@ -81,7 +81,7 @@ class _NotLoggedInState extends State<NotLoggedIn> {
                                         .yacmLogoColor
                                         .withOpacity(.7)),
                             child: Text(
-                              "Sign In",
+                              _language!.loginPageLogin,
                               style: TextStyle(
                                   fontWeight: FontWeight.normal,
                                   fontSize: 18,
@@ -104,6 +104,23 @@ class _NotLoggedInState extends State<NotLoggedIn> {
                             _posts.add(Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: EvenWidget(
+                                  loggedIn: Provider.of<UserManager>(context)
+                                          .user !=
+                                      null,
+                                  manager:
+                                      Provider.of<UserManager>(context).user !=
+                                              null &&
+                                          post.get("managers").contains(
+                                              Provider.of<UserManager>(context)
+                                                  .user!
+                                                  .id),
+                                  advisor: Provider.of<UserManager>(context).user !=
+                                          null &&
+                                      post.get("advisor").compareTo(
+                                              Provider.of<UserManager>(context)
+                                                  .user!
+                                                  .id) ==
+                                          0,
                                   language: _language!,
                                   post: Event.fromDocumentSnapshot(post),
                                   comments: []),
@@ -112,6 +129,22 @@ class _NotLoggedInState extends State<NotLoggedIn> {
                             _posts.add(Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: PollWidget(
+                                  loggedIn: Provider.of<UserManager>(context).user !=
+                                      null,
+                                  manager:
+                                      Provider.of<UserManager>(context).user != null &&
+                                          post.get("managers").contains(
+                                              Provider.of<UserManager>(context)
+                                                  .user!
+                                                  .id),
+                                  advisor: Provider.of<UserManager>(context).user !=
+                                          null &&
+                                      post.get("advisor").compareTo(Provider.of<UserManager>(context).user!.id) ==
+                                          0,
+                                  hasVoted: Provider.of<UserManager>(context).user !=
+                                          null &&
+                                      !post.get("voters").contains(
+                                          Provider.of<UserManager>(context).user!.id),
                                   language: _language!,
                                   post: Poll.fromDocumentSnapshot(post),
                                   comments: []),
@@ -155,6 +188,8 @@ class _NotLoggedInState extends State<NotLoggedIn> {
                         _languageChosen = !_languageChosen;
                       });
                     },
+                    onChanged: () {},
+                    dark: false,
                     onContine: () {
                       setState(() {
                         _themeChosen = !_themeChosen;

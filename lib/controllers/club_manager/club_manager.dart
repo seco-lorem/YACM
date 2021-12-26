@@ -15,8 +15,13 @@ class ClubManager extends ChangeNotifier {
 
   ClubManager(this._firebaseManager, this._messageManager, this._postManager);
 
-  Future<bool> publishPost(Post post) async {
-    return await _postManager.publishPost(post);
+  Future<bool> createPollPost(Map<String, dynamic> post) async {
+    return await _postManager.createPollPost(post);
+  }
+
+  Future<bool> createEventPost(
+      Map<String, dynamic> post, List<File?> photos) async {
+    return await _postManager.createEventPost(post, photos);
   }
 
   Future<bool> startEvent(Club club) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 
@@ -22,6 +23,7 @@ class _KickMembersState extends State<KickMembers> {
 
   @override
   Widget build(BuildContext context) {
+    Language? _language = Language.of(context);
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -80,7 +82,7 @@ class _KickMembersState extends State<KickMembers> {
                           EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                       child: Center(
                         child: Text(
-                          "Kick Members",
+                          _language!.kickMembers,
                           style: TextStyle(
                               color: Theme.of(context).own().background,
                               fontSize: 16),

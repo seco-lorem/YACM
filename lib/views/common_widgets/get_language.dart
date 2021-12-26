@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yacm/controllers/language_controller/language_delegate.dart';
+import 'package:yacm/controllers/language_controller/locale_constant.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
@@ -73,6 +74,9 @@ class _GetLanguageState extends State<GetLanguage> {
                         groupValue: _choice,
                         onChanged: (value) {
                           setState(() {
+                            print(LanguageDelegate.languages[index]);
+                            changeLanguage(
+                                context, LanguageDelegate.languages[index]);
                             _choice = index;
                           });
                         }))

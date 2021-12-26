@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
+import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 
@@ -33,6 +34,7 @@ class AddPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Language? _language = Language.of(context);
     Widget _photo(int index, String? photo) {
       return InkWell(
         onTap: () => addPhoto(index),
@@ -77,7 +79,7 @@ class AddPost extends StatelessWidget {
             decoration: InputDecoration(
                 border: InputBorder.none,
                 counterText: "",
-                hintText: "Option (will be ignored if empty)",
+                hintText: _language!.option,
                 hintStyle: TextStyle(
                     color: Theme.of(context).own().optionText.withOpacity(.9),
                     fontSize: 16))),
@@ -110,7 +112,7 @@ class AddPost extends StatelessWidget {
             decoration: InputDecoration(
               border: InputBorder.none,
               counterText: "",
-              hintText: "Type Question",
+              hintText: _language!.typeQuestion,
               hintStyle: TextStyle(color: Colors.grey[600], fontSize: 16),
             )),
       ];
@@ -129,7 +131,7 @@ class AddPost extends StatelessWidget {
     Widget addDescription() {
       return ListTile(
         title: Text(
-          "Description",
+          _language!.description,
           style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -144,7 +146,7 @@ class AddPost extends StatelessWidget {
           decoration: InputDecoration(
             border: InputBorder.none,
             counterText: "",
-            hintText: "Type Description",
+            hintText: _language.typeDescription,
             hintStyle: TextStyle(color: Colors.grey[600], fontSize: 15),
           ),
         ),
@@ -153,7 +155,7 @@ class AddPost extends StatelessWidget {
 
     Widget addCommentsOn() {
       return ListTile(
-        leading: Text("Enable Comments",
+        leading: Text(_language!.enableComments,
             style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -175,7 +177,7 @@ class AddPost extends StatelessWidget {
               borderRadius: BorderRadius.circular(UIConstants.borderRadius)),
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: Center(
-              child: Text("Publish",
+              child: Text(_language!.publish,
                   style: TextStyle(
                       color: Theme.of(context).own().background,
                       fontSize: 16))),
@@ -205,7 +207,7 @@ class AddPost extends StatelessWidget {
                     TextButton(
                         onPressed: onPostTypeChange,
                         child: Text(
-                          "Event",
+                          _language!.event,
                           style: TextStyle(
                               color: Theme.of(context).own().optionColor,
                               fontWeight: postChoice
@@ -216,7 +218,7 @@ class AddPost extends StatelessWidget {
                     TextButton(
                         onPressed: onPostTypeChange,
                         child: Text(
-                          "Poll",
+                          _language.poll,
                           style: TextStyle(
                               color: Theme.of(context).own().optionColor,
                               fontWeight: !postChoice

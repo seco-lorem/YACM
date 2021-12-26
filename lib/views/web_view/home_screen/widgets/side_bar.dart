@@ -43,13 +43,13 @@ class SideBar extends StatelessWidget {
                       child: Column(
                         children: [
                           MenuItem(
-                              title: "Home",
+                              title: language.home,
                               icon: Icon(
                                 Icons.home_outlined,
                                 color: Theme.of(context).own().yacmLogoColor,
                               ),
                               boldIcon: Icon(
-                                Icons.home_filled,
+                                Icons.home,
                                 color: Theme.of(context).own().yacmLogoColor,
                               ),
                               selected: currentPage == 0,
@@ -57,7 +57,7 @@ class SideBar extends StatelessWidget {
                                 onPageChange(0);
                               }),
                           MenuItem(
-                              title: "Pinned",
+                              title: language.pinned,
                               icon: Icon(
                                 Icons.pin_drop_outlined,
                                 color: Theme.of(context).own().yacmLogoColor,
@@ -71,7 +71,7 @@ class SideBar extends StatelessWidget {
                                 onPageChange(1);
                               }),
                           MenuItem(
-                              title: "Explore",
+                              title: language.explore,
                               icon: Icon(
                                 Icons.explore_outlined,
                                 color: Theme.of(context).own().yacmLogoColor,
@@ -85,7 +85,7 @@ class SideBar extends StatelessWidget {
                                 onPageChange(2);
                               }),
                           MenuItem(
-                              title: "Subscription",
+                              title: language.subscription,
                               icon: Icon(
                                 CupertinoIcons.heart,
                                 color: Theme.of(context).own().yacmLogoColor,
@@ -99,7 +99,7 @@ class SideBar extends StatelessWidget {
                                 onPageChange(3);
                               }),
                           MenuItem(
-                              title: "Profile",
+                              title: language.profile,
                               icon: Icon(
                                 CupertinoIcons.person,
                                 color: Theme.of(context).own().yacmLogoColor,
@@ -128,7 +128,7 @@ class SideBar extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 16.0),
                           child: Text(
-                            "Suggested",
+                            language.suggested,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/message/message.dart';
 
 class ClubProfileMessages extends StatelessWidget {
@@ -10,6 +11,7 @@ class ClubProfileMessages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Language? _language = Language.of(context);
     return SizedBox(
       height: MediaQuery.of(context).size.height - 340 > 200
           ? MediaQuery.of(context).size.height - 340
@@ -29,7 +31,7 @@ class ClubProfileMessages extends StatelessWidget {
               child: InkWell(
                 onTap: () {},
                 child: Text(
-                  "Mute",
+                  _language!.mute,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),

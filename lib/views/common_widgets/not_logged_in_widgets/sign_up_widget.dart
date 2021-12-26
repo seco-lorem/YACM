@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_io/io.dart' as u;
+import 'package:yacm/controllers/shared_pref_controller/sp_controller.dart';
 import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
@@ -101,6 +102,7 @@ class _SignUpState extends State<SignUp> {
         _mailController.text, _passwordController.text);
 
     if (result) {
+      await SPController.setBoolValue("loggedIn", true);
       Navigator.popAndPushNamed(context, RouteNames.home);
     }
   }
