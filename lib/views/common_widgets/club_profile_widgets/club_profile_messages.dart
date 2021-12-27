@@ -32,26 +32,18 @@ class ClubProfileMessages extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(
-                      snapshot.data!.docs[index]["senderName"],
+                      snapshot.data!
+                              .docs[snapshot.data!.docs.length - 1 - index]
+                          ["senderName"],
                       style: TextStyle(
                           color: Theme.of(context).own().yacmLogoColor,
                           fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
-                      snapshot.data!.docs[index]["message"],
+                      snapshot.data!
+                              .docs[snapshot.data!.docs.length - 1 - index]
+                          ["message"],
                       style: TextStyle(color: Colors.grey[600]),
-                    ),
-                    trailing: Visibility(
-                      visible: isAdmin,
-                      child: InkWell(
-                        onTap: () {},
-                        child: Text(
-                          _language!.mute,
-                          style: TextStyle(
-                              color: Theme.of(context).own().yacmLogoColor,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
                     ),
                   );
                 },

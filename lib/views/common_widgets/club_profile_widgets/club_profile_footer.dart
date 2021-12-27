@@ -41,10 +41,10 @@ class _ClubProfileSendMessageState extends State<ClubProfileSendMessage> {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.only(
-          left: 8,
-          right: 8,
-          top: 8,
-          bottom: MediaQuery.of(context).padding.bottom + 8),
+        left: 8,
+        right: 8,
+        top: 8,
+      ),
       decoration: BoxDecoration(
         border: Border(
             top: BorderSide(
@@ -96,7 +96,7 @@ class _ClubProfileSendMessageState extends State<ClubProfileSendMessage> {
               padding: const EdgeInsets.only(left: 8.0),
               child: InkWell(
                 onTap: () async {
-                  bool result = await _clubManager!.sendMessage(
+                  _clubManager!.sendMessage(
                       Message(
                           _textEditingController.text,
                           _userManager!.user!.name,
@@ -104,12 +104,8 @@ class _ClubProfileSendMessageState extends State<ClubProfileSendMessage> {
                           DateTime.now().toString(),
                           _userManager!.user!.id),
                       widget.clubID);
-                  if (result) {
-                    setState(() {
-                      _textEditingController.clear();
-                      _writing = false;
-                    });
-                  }
+                  _textEditingController.clear();
+                  _writing = false;
                 },
                 child: Container(
                   decoration: BoxDecoration(

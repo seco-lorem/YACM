@@ -769,6 +769,7 @@ class FirebaseManager {
         .collection("clubs")
         .doc(clubID)
         .collection("messages")
+        .orderBy("sentDate")
         .snapshots();
   }
 }

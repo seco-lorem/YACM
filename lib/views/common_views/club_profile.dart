@@ -145,7 +145,7 @@ class _ClubProfileState extends State<ClubProfile> {
       backgroundColor: Theme.of(context).own().background,
       body: Container(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).padding.bottom + 8,
+          bottom: MediaQuery.of(context).padding.bottom,
         ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -157,40 +157,37 @@ class _ClubProfileState extends State<ClubProfile> {
               Club _club = Club.fromDocumentSnapshot(snapshot.data!);
               if (snapshot.connectionState == ConnectionState.active) {
                 return Stack(
-                  alignment: Alignment.topCenter,
                   children: [
-                    SingleChildScrollView(
-                      child: Column(
-                        children: <Widget>[
-                          ClubProfileHeader(
-                              clubID: _club.id,
-                              onViewMembers: () {
-                                setState(() {
-                                  _viewMembersVisible = !_viewMembersVisible;
-                                });
-                              },
-                              onKickMembers: () {
-                                setState(() {
-                                  _kickMembersVisible = !_kickMembersVisible;
-                                });
-                              },
-                              onCreatePost: () {
-                                setState(() {
-                                  _addPostVisible = !_addPostVisible;
-                                });
-                              },
-                              url: _club.clubPhoto,
-                              isAdmin:
-                                  Provider.of<UserManager>(context).user != null
-                                      ? _club.managers.contains(
-                                          Provider.of<UserManager>(context)
-                                              .user!
-                                              .id)
-                                      : false,
-                              description: _club.description,
-                              postsActive: postsActive,
-                              onPageChange: () => onPageChange()),
-                          postsActive
+                    Column(
+                      children: <Widget>[
+                        ClubProfileHeader(
+                            clubID: _club.id,
+                            onViewMembers: () {
+                              setState(() {
+                                _viewMembersVisible = !_viewMembersVisible;
+                              });
+                            },
+                            onKickMembers: () {
+                              setState(() {
+                                _kickMembersVisible = !_kickMembersVisible;
+                              });
+                            },
+                            onCreatePost: () {
+                              setState(() {
+                                _addPostVisible = !_addPostVisible;
+                              });
+                            },
+                            url: _club.clubPhoto,
+                            isAdmin: Provider.of<UserManager>(context).user !=
+                                    null
+                                ? _club.managers.contains(
+                                    Provider.of<UserManager>(context).user!.id)
+                                : false,
+                            description: _club.description,
+                            postsActive: postsActive,
+                            onPageChange: () => onPageChange()),
+                        Expanded(
+                          child: postsActive
                               ? StreamBuilder(
                                   stream: Provider.of<ClubManager>(context)
                                       .getClubPosts(widget.id),
@@ -224,12 +221,12 @@ class _ClubProfileState extends State<ClubProfile> {
                                                   .id)
                                           : false,
                                   clubID: _club.id),
-                          Visibility(
-                            visible: !postsActive,
-                            child: ClubProfileSendMessage(clubID: _club.id),
-                          )
-                        ],
-                      ),
+                        ),
+                        Visibility(
+                          visible: !postsActive,
+                          child: ClubProfileSendMessage(clubID: _club.id),
+                        )
+                      ],
                     ),
                     Visibility(
                       visible: _viewMembersVisible,
