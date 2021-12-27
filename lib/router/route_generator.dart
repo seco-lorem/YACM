@@ -9,6 +9,7 @@ import 'package:yacm/views/common_views/home_screen.dart';
 import 'package:yacm/views/common_views/post_screen.dart';
 import 'package:yacm/views/common_views/profile_screen.dart';
 import 'package:yacm/views/mobile_view/mobile_view.dart';
+import 'package:yacm/views/web_view/not_logged_in/not_logged_in_view.dart';
 import 'package:yacm/views/web_view/web_view.dart';
 
 class _GeneratePageRoute extends PageRouteBuilder {
@@ -60,20 +61,20 @@ class RouteGenerator {
             routeName: settings.name.toString());
       case RouteNames.home:
         Widget _route;
-        if (Platform.isIOS || Platform.isAndroid) {
-          _route = MobileView();
-        } else {
-          _route = WebView();
-        }
+
+        _route = WebView();
+        return _GeneratePageRoute(
+            widget: _route, routeName: settings.name.toString());
+      case RouteNames.notLoggedIn:
+        Widget _route;
+
+        _route = NotLoggedIn();
         return _GeneratePageRoute(
             widget: _route, routeName: settings.name.toString());
       default:
         Widget _route;
-        if (Platform.isIOS || Platform.isAndroid) {
-          _route = MobileView();
-        } else {
-          _route = WebView();
-        }
+
+        _route = WebView();
         return _GeneratePageRoute(
             widget: _route, routeName: settings.name.toString());
     }

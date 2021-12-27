@@ -64,7 +64,6 @@ class FirebaseManager {
       required File photo,
       required String name,
       required String schoolID}) async {
-    print(" i am in");
     UserCredential userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
 
@@ -72,14 +71,12 @@ class FirebaseManager {
 
     String? photoURL;
 
-    print("photo upload");
     await _firebaseStorage
         .ref('userPhotos/${user!.uid}.png')
         .putFile(io.File(photo.path))
         .then((data) async {
       photoURL = await data.ref.getDownloadURL();
     });
-    print("done with upload");
     Map<String, dynamic> userData = {
       "id": user.uid,
       "mail": email,
@@ -92,7 +89,7 @@ class FirebaseManager {
       "schoolID": schoolID
     };
 
-    await createUserInFirestore(userData);
+    bool r = await createUserInFirestore(userData);
 
     // send the verification mail
     if (!user.emailVerified) {
@@ -111,11 +108,10 @@ class FirebaseManager {
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userData['uid'])
+          .doc(userData['id'])
           .set(userData);
       return true;
     } catch (e) {
-      print(e.toString());
       return false;
     }
   }
@@ -135,7 +131,6 @@ class FirebaseManager {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email!, password: password!);
     } on FirebaseAuthException catch (error) {
-      print(error.toString());
       return false;
     }
     return true;
@@ -170,7 +165,7 @@ class FirebaseManager {
   Future<bool> createEventPost(
       {required Map<String, dynamic> postData,
       required List<File?> photos}) async {
-    postData['postType'] = 'event';
+    postData['type'] = 'event';
     // Add post to posts collection
     String? postId = await createPostInFirestore(postData);
 
@@ -181,7 +176,7 @@ class FirebaseManager {
     await FirebaseFirestore.instance
         .collection("posts")
         .doc(postId)
-        .update({"photos": _urls});
+        .update({"images": _urls});
 
     return true;
   }
@@ -203,7 +198,45 @@ class FirebaseManager {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getPosts() {
-    return FirebaseFirestore.instance.collection('posts').snapshots();
+    return FirebaseFirestore.instance
+        .collection('posts')
+        .orderBy("publishDate")
+        .snapshots();
+  }
+
+  Future<bool> subToClub(String clubID) async {
+    if (_firebaseAuth.currentUser == null) return false;
+
+    DocumentSnapshot temp =
+        await _firebaseFirestore.collection("clubs").doc(clubID).get();
+    QuerySnapshot _posts = await _firebaseFirestore
+        .collection("posts")
+        .where("clubID", isEqualTo: clubID)
+        .get();
+
+    if (temp.get("members").contains(_firebaseAuth.currentUser!.uid)) {
+      await _firebaseFirestore.collection("clubs").doc(clubID).update({
+        "members": FieldValue.arrayRemove([_firebaseAuth.currentUser!.uid])
+      });
+
+      await Future.forEach(_posts.docs, (QueryDocumentSnapshot post) async {
+        await _firebaseFirestore.collection("posts").doc(post.id).update({
+          "members": FieldValue.arrayRemove([_firebaseAuth.currentUser!.uid])
+        });
+      });
+      return true;
+    }
+
+    await _firebaseFirestore.collection("clubs").doc(clubID).update({
+      "members": FieldValue.arrayUnion([_firebaseAuth.currentUser!.uid])
+    });
+    await Future.forEach(_posts.docs, (QueryDocumentSnapshot post) async {
+      await _firebaseFirestore.collection("posts").doc(post.id).update({
+        "members": FieldValue.arrayUnion([_firebaseAuth.currentUser!.uid])
+      });
+    });
+
+    return true;
   }
 
   /// Returns the document id which will be used as post id
@@ -233,7 +266,7 @@ class FirebaseManager {
       if (files[i] != null) {
         String destination = basePath + "photo" + i.toString();
         await FirebaseStorage.instance
-            .ref(destination)
+            .ref()
             .putFile(io.File(files[i]!.path))
             .then((data) async {
           String url = await data.ref.getDownloadURL();
@@ -274,7 +307,6 @@ class FirebaseManager {
 
       await posts.doc(postId).collection("comments").add(message.toMap());
     } catch (e) {
-      print(e.toString());
       return false;
     }
     return true;
@@ -293,7 +325,6 @@ class FirebaseManager {
           .doc(eventId)
           .update({"participants": FieldValue.arrayUnion(tmp)});
     } catch (e) {
-      print(e.toString());
       return false;
     }
     return true;
@@ -315,7 +346,6 @@ class FirebaseManager {
           .doc(clubId)
           .update({"members": FieldValue.arrayUnion(tmp1)});
     } catch (e) {
-      print(e.toString());
       return false;
     }
     return true;
@@ -337,7 +367,6 @@ class FirebaseManager {
           .doc(clubId)
           .update({"members": FieldValue.arrayRemove(tmp1)});
     } catch (e) {
-      print(e.toString());
       return false;
     }
     return true;
@@ -359,7 +388,6 @@ class FirebaseManager {
       });
       return true;
     } catch (e) {
-      print(e.toString());
       return false;
     }
   }
@@ -370,16 +398,16 @@ class FirebaseManager {
       // check whether the user is signed in or not
       if (_firebaseAuth.currentUser == null) return false;
 
-      _firebaseFirestore
-          .collection("clubChats")
+      await _firebaseFirestore
+          .collection("clubs")
           .doc(clubId)
           .collection("messages")
           .add(message.toMap());
+
+      return true;
     } catch (e) {
-      print(e.toString());
       return false;
     }
-    return true;
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? getClubChatMessages(
@@ -391,7 +419,6 @@ class FirebaseManager {
           .collection('messages')
           .snapshots();
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
@@ -405,7 +432,6 @@ class FirebaseManager {
           .collection('polls')
           .snapshots();
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
@@ -419,7 +445,6 @@ class FirebaseManager {
           .collection('messages')
           .snapshots();
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
@@ -432,7 +457,6 @@ class FirebaseManager {
           .doc(eventPostId)
           .set(messageData!);
     } catch (e) {
-      print(e.toString());
       return false;
     }
 
@@ -447,7 +471,6 @@ class FirebaseManager {
           .doc(eventPostId)
           .set(pollData!);
     } catch (e) {
-      print(e.toString());
       return false;
     }
 
@@ -458,7 +481,6 @@ class FirebaseManager {
     try {
       return _firebaseFirestore.collection('clubs').snapshots();
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
@@ -471,12 +493,46 @@ class FirebaseManager {
 
       String? uid = _firebaseAuth.currentUser?.uid;
 
+      DocumentSnapshot _data =
+          await _firebaseFirestore.collection("posts").doc(postId).get();
+
+      if (_data.get("userPinned").contains(uid)) {
+        await _firebaseFirestore.collection('posts').doc(postId).update({
+          "userPinned": FieldValue.arrayRemove([uid])
+        });
+        return true;
+      }
+
       await _firebaseFirestore.collection('posts').doc(postId).update({
         "userPinned": FieldValue.arrayUnion([uid])
       });
       return true;
     } catch (e) {
-      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> attendPost({String? postId}) async {
+    try {
+      if (_firebaseAuth.currentUser == null) return false;
+
+      String? uid = _firebaseAuth.currentUser?.uid;
+
+      DocumentSnapshot _data =
+          await _firebaseFirestore.collection("posts").doc(postId).get();
+
+      if (_data.get("attenders").contains(uid)) {
+        await _firebaseFirestore.collection('posts').doc(postId).update({
+          "attenders": FieldValue.arrayRemove([uid])
+        });
+        return true;
+      }
+
+      await _firebaseFirestore.collection('posts').doc(postId).update({
+        "attenders": FieldValue.arrayUnion([uid])
+      });
+      return true;
+    } catch (e) {
       return false;
     }
   }
@@ -495,9 +551,16 @@ class FirebaseManager {
           .where("userPinned", arrayContains: uid)
           .snapshots();
     } catch (e) {
-      print(e.toString());
       return null;
     }
+  }
+
+  Stream<QuerySnapshot> getSubbedClubPosts() {
+    String? uid = _firebaseAuth.currentUser?.uid;
+    return _firebaseFirestore
+        .collection("posts")
+        .where("members", arrayContains: uid)
+        .snapshots();
   }
 
   /// returns a list of posts
@@ -509,12 +572,29 @@ class FirebaseManager {
 
       return _firebaseFirestore
           .collection('posts')
-          .where("members", arrayContains: uid)
+          .where("attenders", arrayContains: uid)
           .snapshots();
     } catch (e) {
-      print(e.toString());
       return null;
     }
+  }
+
+  Future<bool> vote(String postID, int index) async {
+    if (FirebaseAuth.instance.currentUser == null) return false;
+    DocumentSnapshot post =
+        await _firebaseFirestore.collection("posts").doc(postID).get();
+    if (post.get("voters").contains(FirebaseAuth.instance.currentUser!.uid)) {
+      return true;
+    }
+    List updatedVotes = post.get("votes");
+    updatedVotes[index][updatedVotes[index].length.toString()] =
+        _firebaseAuth.currentUser!.uid;
+    _firebaseFirestore.collection("posts").doc(postID).update({
+      "voters": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
+      "votes": updatedVotes
+    });
+
+    return true;
   }
 
   /// returns a list of suggested clubs
@@ -544,7 +624,6 @@ class FirebaseManager {
 
       return clubs;
     } catch (e) {
-      print(e.toString());
       return clubs as Future<List<Club>>;
     }
   }
@@ -682,6 +761,14 @@ class FirebaseManager {
     return _firebaseFirestore
         .collection("notifications")
         .where("userID", isEqualTo: _firebaseAuth.currentUser!.uid)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getClubMessages(String clubID) {
+    return _firebaseFirestore
+        .collection("clubs")
+        .doc(clubID)
+        .collection("messages")
         .snapshots();
   }
 }

@@ -129,7 +129,10 @@ class _WebViewState extends State<WebView> {
         return false;
       },
       child: Scaffold(
-        body: _body(),
+        backgroundColor: Theme.of(context).own().background,
+        body: SafeArea(
+          child: _body(),
+        ),
       ),
     );
   }

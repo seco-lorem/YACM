@@ -58,7 +58,7 @@ class PostWidget extends StatelessWidget {
                                     Navigator.pushNamed(
                                         context, "/club?id=${post.clubID}");
                                   },
-                                text: post.clubID + " ",
+                                text: post.clubName + " ",
                                 style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,

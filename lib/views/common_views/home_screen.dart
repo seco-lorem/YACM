@@ -22,6 +22,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
@@ -31,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen>
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: StreamBuilder(
-            stream: Provider.of<UserManager>(context).getSubbedPosts(),
+            stream: Provider.of<UserManager>(context).getSubbedClubPosts(),
             builder: (context, AsyncSnapshot<QuerySnapshot> stream) {
               if (stream.connectionState == ConnectionState.active) {
                 List<Widget> _posts = [

@@ -44,7 +44,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                   _posts.add(Poll.fromDocumentSnapshot(post));
                 }
               }
-              return GridPost(posts: _posts);
+              return GridPost(posts: _posts.reversed.toList());
             }
             return CircularProgressIndicator();
           },

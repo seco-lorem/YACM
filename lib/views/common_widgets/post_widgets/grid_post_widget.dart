@@ -59,16 +59,19 @@ class _GridPostState extends State<GridPost> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-        ),
-        Container(
-          width: UIConstants.getPostWidth(context),
-          child: Wrap(runSpacing: 1, spacing: 1, children: _posts()),
-        ),
-      ],
+    return SingleChildScrollView(
+      controller: ScrollController(),
+      child: Column(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+          ),
+          Container(
+            width: UIConstants.getPostWidth(context),
+            child: Wrap(runSpacing: 1, spacing: 1, children: _posts()),
+          ),
+        ],
+      ),
     );
   }
 }

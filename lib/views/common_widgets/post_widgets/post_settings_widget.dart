@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/post_manager/post_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
@@ -7,11 +9,13 @@ class PostSettings extends StatefulWidget {
   final bool manager;
   final bool advisor;
   final bool loggedIn;
+  final String clubID;
   const PostSettings(
       {Key? key,
       required this.manager,
       required this.advisor,
-      required this.loggedIn})
+      required this.loggedIn,
+      required this.clubID})
       : super(key: key);
 
   @override
@@ -20,6 +24,18 @@ class PostSettings extends StatefulWidget {
 
 class _PostSettingsState extends State<PostSettings> {
   bool _settingsVisible = false;
+  PostManager? _postManager;
+
+  @override
+  initState() {
+    super.initState();
+    _postManager = Provider.of<PostManager>(context, listen: false);
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
 
   Widget _child(
       {required bool visible,
@@ -79,7 +95,9 @@ class _PostSettingsState extends State<PostSettings> {
                 _child(
                     visible: widget.loggedIn,
                     setting: _language.sub,
-                    onTap: () {})
+                    onTap: () async {
+                      await _postManager!.subToClub(widget.clubID);
+                    })
               ],
             ),
           ),

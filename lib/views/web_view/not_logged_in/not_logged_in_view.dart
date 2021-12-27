@@ -37,179 +37,185 @@ class _NotLoggedInState extends State<NotLoggedIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          color: Theme.of(context).own().background,
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "YACM",
-                          style: GoogleFonts.pacifico(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).own().yacmLogoColor),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _signUpVisible = !_signUpVisible;
-                            });
-                          },
-                          onHover: (value) {
-                            setState(() {
-                              _mouseHoverOnSignIn = value;
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    UIConstants.borderRadius / 2),
-                                color: _mouseHoverOnSignIn
-                                    ? Theme.of(context).own().yacmLogoColor
-                                    : Theme.of(context)
-                                        .own()
-                                        .yacmLogoColor
-                                        .withOpacity(.7)),
-                            child: Text(
-                              _language!.loginPageLogin,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 18,
-                                  color: Theme.of(context).own().background),
-                            ),
+      backgroundColor: Theme.of(context).own().background,
+      body: SafeArea(
+        child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: Theme.of(context).own().background,
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "YACM",
+                            style: GoogleFonts.pacifico(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).own().yacmLogoColor),
                           ),
-                        )
-                      ],
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _signUpVisible = !_signUpVisible;
+                              });
+                            },
+                            onHover: (value) {
+                              setState(() {
+                                _mouseHoverOnSignIn = value;
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      UIConstants.borderRadius / 2),
+                                  color: _mouseHoverOnSignIn
+                                      ? Theme.of(context).own().yacmLogoColor
+                                      : Theme.of(context)
+                                          .own()
+                                          .yacmLogoColor
+                                          .withOpacity(.7)),
+                              child: Text(
+                                _language!.loginPageLogin,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 18,
+                                    color: Theme.of(context).own().background),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  StreamBuilder(
-                    stream: Provider.of<UserManager>(context).getPosts(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> stream) {
-                      if (stream.hasData) {
-                        List<Widget> _posts = [
-                          SizedBox(width: MediaQuery.of(context).size.width)
-                        ];
-                        for (DocumentSnapshot post in stream.data!.docs) {
-                          if (post.get("type") == "event") {
-                            _posts.add(Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: EvenWidget(
-                                  loggedIn: Provider.of<UserManager>(context)
-                                          .user !=
-                                      null,
-                                  manager:
-                                      Provider.of<UserManager>(context).user !=
-                                              null &&
-                                          post.get("managers").contains(
-                                              Provider.of<UserManager>(context)
-                                                  .user!
-                                                  .id),
-                                  advisor: Provider.of<UserManager>(context).user !=
-                                          null &&
-                                      post.get("advisor").compareTo(
-                                              Provider.of<UserManager>(context)
-                                                  .user!
-                                                  .id) ==
-                                          0,
-                                  language: _language!,
-                                  post: Event.fromDocumentSnapshot(post),
-                                  comments: []),
-                            ));
-                          } else if (post.get("type") == "poll") {
-                            _posts.add(Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: PollWidget(
-                                  loggedIn: Provider.of<UserManager>(context).user !=
-                                      null,
-                                  manager:
-                                      Provider.of<UserManager>(context).user != null &&
-                                          post.get("managers").contains(
-                                              Provider.of<UserManager>(context)
-                                                  .user!
-                                                  .id),
-                                  advisor: Provider.of<UserManager>(context).user !=
-                                          null &&
-                                      post.get("advisor").compareTo(Provider.of<UserManager>(context).user!.id) ==
-                                          0,
-                                  hasVoted: Provider.of<UserManager>(context).user !=
-                                          null &&
-                                      !post.get("voters").contains(
-                                          Provider.of<UserManager>(context).user!.id),
-                                  language: _language!,
-                                  post: Poll.fromDocumentSnapshot(post),
-                                  comments: []),
-                            ));
+                    StreamBuilder(
+                      stream: Provider.of<UserManager>(context).getPosts(),
+                      builder: (context, AsyncSnapshot<QuerySnapshot> stream) {
+                        if (stream.hasData) {
+                          List<Widget> _posts = [
+                            SizedBox(width: MediaQuery.of(context).size.width)
+                          ];
+                          for (DocumentSnapshot post in stream.data!.docs) {
+                            if (post.get("type") == "event") {
+                              _posts.add(Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: EvenWidget(
+                                    loggedIn: Provider.of<UserManager>(context)
+                                            .user !=
+                                        null,
+                                    manager: Provider.of<UserManager>(context).user !=
+                                            null &&
+                                        post.get("managers").contains(
+                                            Provider.of<UserManager>(context)
+                                                .user!
+                                                .id),
+                                    advisor: Provider.of<UserManager>(context).user !=
+                                            null &&
+                                        post.get("advisor").compareTo(
+                                                Provider.of<UserManager>(context)
+                                                    .user!
+                                                    .id) ==
+                                            0,
+                                    language: _language!,
+                                    post: Event.fromDocumentSnapshot(post),
+                                    comments: []),
+                              ));
+                            } else if (post.get("type") == "poll") {
+                              _posts.add(Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: PollWidget(
+                                    loggedIn:
+                                        Provider.of<UserManager>(context).user !=
+                                            null,
+                                    manager: Provider.of<UserManager>(context).user != null &&
+                                        post.get("managers").contains(
+                                            Provider.of<UserManager>(context)
+                                                .user!
+                                                .id),
+                                    advisor: Provider.of<UserManager>(context).user !=
+                                            null &&
+                                        post.get("advisor").compareTo(Provider.of<UserManager>(context).user!.id) ==
+                                            0,
+                                    hasVoted: Provider.of<UserManager>(context).user !=
+                                            null &&
+                                        !post.get("voters").contains(
+                                            Provider.of<UserManager>(context).user!.id),
+                                    language: _language!,
+                                    post: Poll.fromDocumentSnapshot(post),
+                                    comments: []),
+                              ));
+                            }
                           }
-                        }
-                        return Expanded(
-                          child: SingleChildScrollView(
-                            controller: ScrollController(),
-                            child: Column(
-                              children: _posts,
+                          return Expanded(
+                            child: SingleChildScrollView(
+                              controller: ScrollController(),
+                              child: Column(
+                                children: _posts.reversed.toList(),
+                              ),
                             ),
-                          ),
+                          );
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(),
                         );
-                      }
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                  )
-                ],
-              ),
-              Visibility(
-                visible: _signUpVisible,
-                child: SignUp(
-                  language: _language!,
-                  onClose: () {
-                    setState(() {
-                      _signUpVisible = !_signUpVisible;
-                    });
-                  },
+                      },
+                    )
+                  ],
                 ),
-              ),
-              Visibility(
-                visible: !_themeChosen,
-                child: GetTheme(
+                Visibility(
+                  visible: _signUpVisible,
+                  child: SignUp(
                     language: _language!,
                     onClose: () {
                       setState(() {
-                        _themeChosen = !_themeChosen;
-                        _languageChosen = !_languageChosen;
+                        _signUpVisible = !_signUpVisible;
                       });
                     },
-                    onChanged: () {},
-                    dark: false,
-                    onContine: () {
-                      setState(() {
-                        _themeChosen = !_themeChosen;
-                        _languageChosen = !_languageChosen;
-                      });
-                    }),
-              ),
-              Visibility(
-                visible: !_languageChosen,
-                child: GetLanguage(
-                    language: _language!,
-                    onClose: () {
-                      setState(() {
-                        _languageChosen = !_languageChosen;
-                      });
-                    },
-                    onContine: () {}),
-              )
-            ],
-          )),
+                  ),
+                ),
+                Visibility(
+                  visible: !_themeChosen,
+                  child: GetTheme(
+                      language: _language!,
+                      onClose: () {
+                        setState(() {
+                          _themeChosen = !_themeChosen;
+                          _languageChosen = !_languageChosen;
+                        });
+                      },
+                      onChanged: () {},
+                      dark: false,
+                      onContine: () {
+                        setState(() {
+                          _themeChosen = !_themeChosen;
+                          _languageChosen = !_languageChosen;
+                        });
+                      }),
+                ),
+                Visibility(
+                  visible: !_languageChosen,
+                  child: GetLanguage(
+                      language: _language!,
+                      onClose: () {
+                        setState(() {
+                          _languageChosen = !_languageChosen;
+                        });
+                      },
+                      onContine: () {
+                        setState(() {
+                          _languageChosen = !_languageChosen;
+                        });
+                      }),
+                )
+              ],
+            )),
+      ),
     );
   }
 }

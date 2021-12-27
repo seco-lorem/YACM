@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:yacm/controllers/post_manager/post_manager.dart';
 import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/message/message.dart';
@@ -34,19 +37,39 @@ class PollWidget extends StatefulWidget {
 }
 
 class _PollWidgetState extends State<PollWidget> {
-  List<int> _votes = [];
   int? choice;
-  int totalVotes = 0;
-  int prevChoice = 0;
   bool _hasVoted = false;
+
+  PostManager? _postManager;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  void initHasVoted() async {
+    DocumentSnapshot temp = await FirebaseFirestore.instance
+        .collection("posts")
+        .doc(widget.post.id)
+        .get();
+    setState(() {
+      if (FirebaseAuth.instance.currentUser != null) {
+        _hasVoted =
+            temp.get("voters").contains(FirebaseAuth.instance.currentUser!.uid);
+      }
+    });
+  }
 
   @override
   initState() {
     super.initState();
-    for (int i in widget.post.votes) {
-      totalVotes += i;
-    }
-    _votes = widget.post.votes;
+    initHasVoted();
+    _postManager = Provider.of<PostManager>(context, listen: false);
+  }
+
+  @override
+  dispose() {
+    super.dispose();
   }
 
   Widget _poll(int index) {
@@ -54,72 +77,71 @@ class _PollWidgetState extends State<PollWidget> {
     final double height =
         ((width * .8) * (3 / 4) / widget.post.votes.length) * .5;
 
+    bool contains = false;
+    if (widget.post.votes[index].containsValue(
+        FirebaseAuth.instance.currentUser != null
+            ? FirebaseAuth.instance.currentUser!.uid
+            : "adwkmadwmkdawkmdaw")) {
+      contains = true;
+    }
+
     return SizedBox(
       width: width,
-      child: ElevatedButton(
-        style: ButtonStyle(
-            padding: MaterialStateProperty.all(_hasVoted
-                ? EdgeInsets.zero
-                : EdgeInsets.symmetric(vertical: (height) / 2)),
-            backgroundColor:
-                MaterialStateProperty.all(Color.fromRGBO(244, 226, 198, 1)),
-            alignment: !_hasVoted ? Alignment.center : Alignment.centerLeft,
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                side: BorderSide(
-                    color: Theme.of(context).own().pollWidgetQuestion),
-                borderRadius:
-                    BorderRadius.circular(UIConstants.borderRadius)))),
-        onPressed: () {
+      child: InkWell(
+        onTap: () async {
           if (widget.loggedIn) {
-            print("x");
-            setState(() {
-              if (index == choice) {
-                return;
-              }
-              if (choice != null) {
-                prevChoice = choice!;
-              }
-              choice = index;
-              if (!_hasVoted) {
-                totalVotes += 1;
-                _votes[index] += 1;
+            bool result = await _postManager!.votePost(widget.post.id, index);
+            if (result && !_hasVoted) {
+              print("in");
+              setState(() {
+                choice = index;
                 _hasVoted = true;
-                return;
-              }
-              if (_hasVoted) {
-                _votes[prevChoice] -= 1;
-                _votes[index] += 1;
-              }
-            });
+              });
+            }
+            print("voted $result");
           }
         },
-        child: !_hasVoted
-            ? Center(
-                child: Text(widget.post.options[index],
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).own().pollWidgetOption)))
-            : Stack(
-                children: [
-                  AnimatedContainer(
-                    padding: EdgeInsets.only(left: 8),
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(UIConstants.borderRadius),
-                        color: index == choice
-                            ? Theme.of(context).own().pollWidgetOption
-                            : Theme.of(context)
-                                .own()
-                                .pollWidgetOption
-                                .withOpacity(.5)),
-                    curve: Curves.easeIn,
-                    height: height,
-                    duration: const Duration(milliseconds: 250),
-                    width: width * _votes[index] / totalVotes,
-                  ),
-                ],
-              ),
+        child: Container(
+          padding: _hasVoted
+              ? EdgeInsets.zero
+              : EdgeInsets.symmetric(vertical: (height) / 2),
+          alignment: !_hasVoted ? Alignment.center : Alignment.centerLeft,
+          decoration: BoxDecoration(
+            border:
+                Border.all(color: Theme.of(context).own().pollWidgetQuestion),
+            borderRadius: BorderRadius.circular(UIConstants.borderRadius),
+            color: Color.fromRGBO(244, 226, 198, 1),
+          ),
+          child: !_hasVoted
+              ? Center(
+                  child: Text(widget.post.options[index],
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).own().pollWidgetOption)))
+              : Stack(
+                  children: [
+                    AnimatedContainer(
+                      padding: EdgeInsets.only(left: 8),
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(UIConstants.borderRadius),
+                          color: contains
+                              ? Theme.of(context).own().pollWidgetOption
+                              : Theme.of(context)
+                                  .own()
+                                  .pollWidgetOption
+                                  .withOpacity(.5)),
+                      curve: Curves.easeIn,
+                      height: height,
+                      duration: const Duration(milliseconds: 250),
+                      width: width *
+                          widget.post.votes[index].length /
+                          widget.post.voters.length,
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }
@@ -127,7 +149,6 @@ class _PollWidgetState extends State<PollWidget> {
   @override
   Widget build(BuildContext context) {
     final double width = UIConstants.getPostWidth(context);
-    print(widget.loggedIn);
     return Container(
         width: width,
         height: width * .9,
@@ -198,6 +219,7 @@ class _PollWidgetState extends State<PollWidget> {
                     top: 5,
                     right: 5,
                     child: PostSettings(
+                      clubID: widget.post.clubID,
                       manager: widget.manager,
                       advisor: widget.advisor,
                       loggedIn: widget.loggedIn,
@@ -214,12 +236,14 @@ class _PollWidgetState extends State<PollWidget> {
                   comments: widget.comments,
                   icons: [
                     Icon(
-                      Icons.attachment,
+                      Icons.pin_drop,
                       color: Theme.of(context).own().postWidgetIcons,
                     ),
                   ],
                   onIconTaps: [
-                    () {}
+                    () async {
+                      await _postManager!.pinPost(widget.post.id);
+                    }
                   ]),
             )
           ],

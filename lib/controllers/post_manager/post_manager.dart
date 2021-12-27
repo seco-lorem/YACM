@@ -16,6 +16,10 @@ class PostManager extends ChangeNotifier {
     return await _firebaseManager.vetoPost(id);
   }
 
+  Future<bool> votePost(String postID, int index) async {
+    return await _firebaseManager.vote(postID, index);
+  }
+
   Future<bool> deletePost(String id) async {
     return await _firebaseManager.deletePost(id);
   }
@@ -39,5 +43,17 @@ class PostManager extends ChangeNotifier {
 
   Future<bool> createPollPost(Map<String, dynamic> data) async {
     return await _firebaseManager.createPollPost(pollPostData: data);
+  }
+
+  Future<bool> pinPost(String postID) async {
+    return await _firebaseManager.pinPost(postId: postID);
+  }
+
+  Future<bool> attendPost(String postID) async {
+    return await _firebaseManager.attendPost(postId: postID);
+  }
+
+  Future<bool> subToClub(String clubID) async {
+    return await _firebaseManager.subToClub(clubID);
   }
 }

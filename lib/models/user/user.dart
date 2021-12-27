@@ -18,17 +18,20 @@ class User extends HiveObject {
   late List<String> _clubs;
   @HiveField(6)
   late List<String> _interests;
+  @HiveField(7)
+  late String _name;
 
   String get id => _id;
   String get mail => _mail;
   String get photoURL => _photoURL;
+  String get name => this._name;
   List<String> get pinnedPosts => _pinnedPosts;
   List<String> get events => _events;
   List<String> get clubs => _clubs;
   List<String> get interests => _interests;
 
   User(this._id, this._mail, this._photoURL, this._pinnedPosts, this._events,
-      this._clubs, this._interests);
+      this._clubs, this._interests, this._name);
 
   User.fromMap(Map<String, dynamic> data) {
     List<String> posts = [];
@@ -47,6 +50,7 @@ class User extends HiveObject {
     for (var data in data["interests"]) {
       interests.add(data);
     }
+    _name = data["name"];
     _id = data["id"];
     _mail = data["mail"];
     _photoURL = data["photoURL"];
@@ -64,6 +68,7 @@ class User extends HiveObject {
     _events = other.events;
     _clubs = other.clubs;
     _interests = other.interests;
+    _name = other.name;
   }
 
   void update(Map<String, dynamic> data) {
@@ -90,6 +95,9 @@ class User extends HiveObject {
           break;
         case "interests":
           _interests = data["interests"] as List<String>;
+          break;
+        case "name":
+          _name = data["name"];
           break;
       }
     }

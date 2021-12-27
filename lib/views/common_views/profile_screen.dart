@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yacm/controllers/shared_pref_controller/sp_controller.dart';
 import 'package:yacm/controllers/theme_controller/theme_changer.dart';
+import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
@@ -27,6 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   late bool _theme = false;
   bool changeLanguageVisible = false;
   Language? language;
+  UserManager? _userManager;
 
   @override
   dispose() {
@@ -53,6 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   didChangeDependencies() {
     super.didChangeDependencies();
     language = Language.of(context);
+    _userManager = Provider.of<UserManager>(context);
   }
 
   Widget _inputBox(TextEditingController controller) => Container(
@@ -119,8 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               onTap: () {},
               child: CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage(
-                    "https://image.shutterstock.com/image-photo/view-modern-skyscrapers-abstract-architecture-600w-1323075257.jpg"),
+                backgroundImage: NetworkImage(_userManager!.user!.photoURL),
               ),
             ),
           ),

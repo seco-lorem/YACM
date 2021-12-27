@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
 import 'package:yacm/controllers/firebase_manager/firebase_manager.dart';
 import 'package:yacm/controllers/hive_manager/managers/user_hive_manager.dart';
+import 'package:yacm/controllers/shared_pref_controller/sp_controller.dart';
 import 'package:yacm/models/club/club.dart';
 import 'package:yacm/models/user/user.dart';
 
@@ -27,6 +28,8 @@ class UserManager extends ChangeNotifier {
 
     DocumentSnapshot<Map<String, dynamic>> tempData =
         await _firebaseManager.getUserData(id);
+
+    print(tempData);
 
     if (result) {
       User temp = await _userHiveManager.create(
@@ -64,6 +67,7 @@ class UserManager extends ChangeNotifier {
     setLoading(true);
     await _userHiveManager.delete(BOX_NAME, _user!.id);
     await _firebaseManager.signOut();
+    await SPController.setBoolValue("loggedIn", false);
     _user = null;
     notifyListeners();
     setLoading(false);
@@ -100,6 +104,10 @@ class UserManager extends ChangeNotifier {
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? getSubbedPosts() {
     return _firebaseManager.getSubbedPosts();
+  }
+
+  Stream<QuerySnapshot> getSubbedClubPosts() {
+    return _firebaseManager.getSubbedClubPosts();
   }
 
   Future<List<Club>> getSuggestedClubs() {

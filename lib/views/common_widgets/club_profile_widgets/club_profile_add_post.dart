@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
+import 'dart:io' as io;
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
@@ -45,9 +46,9 @@ class AddPost extends StatelessWidget {
             borderRadius: BorderRadius.circular(UIConstants.borderRadius),
             color: Colors.transparent.withOpacity(.1),
           ),
-          child: photo != null
-              ? Image.network(
-                  photo,
+          child: photos[index] != null
+              ? Image.file(
+                  io.File(photos[index]!.path),
                   fit: BoxFit.fill,
                 )
               : Center(

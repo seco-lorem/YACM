@@ -24,6 +24,10 @@ class ClubManager extends ChangeNotifier {
     return await _postManager.createEventPost(post, photos);
   }
 
+  Future<bool> subToClub(String clubID) async {
+    return await _firebaseManager.subToClub(clubID);
+  }
+
   Future<bool> startEvent(Club club) async {
     return _firebaseManager.startEvent(club);
   }
@@ -79,5 +83,9 @@ class ClubManager extends ChangeNotifier {
 
   Stream<QuerySnapshot> getClubPosts(String clubID) {
     return _firebaseManager.getClubPosts(clubID);
+  }
+
+  Stream<QuerySnapshot> getClubMessages(String clubID) {
+    return _firebaseManager.getClubMessages(clubID);
   }
 }

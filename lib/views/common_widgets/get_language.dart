@@ -33,6 +33,7 @@ class _GetLanguageState extends State<GetLanguage> {
               borderRadius: BorderRadius.circular(UIConstants.borderRadius)))),
       onPressed: () {
         onTap();
+        changeLanguage(context, LanguageDelegate.languages[_choice]);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -46,7 +47,7 @@ class _GetLanguageState extends State<GetLanguage> {
       ));
 
   Widget _languagesWidget() => SizedBox(
-        height: 75,
+        height: 150,
         width: UIConstants.getWidth(context),
         child: ListView.builder(
           itemCount: LanguageDelegate.languagesExpanded.length,
@@ -74,7 +75,6 @@ class _GetLanguageState extends State<GetLanguage> {
                         groupValue: _choice,
                         onChanged: (value) {
                           setState(() {
-                            print(LanguageDelegate.languages[index]);
                             changeLanguage(
                                 context, LanguageDelegate.languages[index]);
                             _choice = index;

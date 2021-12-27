@@ -63,18 +63,11 @@ class _SignUpState extends State<SignUp> {
       return;
     }
 
-    bool result;
-
     if (u.Platform.isIOS || u.Platform.isAndroid) {
-      result = await _userManager.signUp(
-          _mailController.text,
-          _passwordController.text,
-          _interests,
-          _photo!,
-          _nameController.text,
-          _idController.text);
+      await _userManager.signUp(_mailController.text, _passwordController.text,
+          _interests, _photo!, _nameController.text, _idController.text);
     } else {
-      result = await _userManager.signUp(
+      await _userManager.signUp(
           _mailController.text,
           _passwordController.text,
           _interests,
@@ -82,10 +75,7 @@ class _SignUpState extends State<SignUp> {
           _nameController.text,
           _idController.text);
     }
-
-    if (result) {
-      Navigator.popAndPushNamed(context, RouteNames.home);
-    }
+    widget.onClose();
   }
 
   Future<void> _signInFunction() async {
@@ -381,8 +371,8 @@ class _SignUpState extends State<SignUp> {
                       maxLength: 100,
                       controller: _nameController),
                   const SizedBox(height: 10),
-                  _getInterests(),
-                  const SizedBox(height: 10),
+                  //_getInterests(),
+                  //const SizedBox(height: 10),
                   _textInputField(
                       header: widget.language.loginPageMail,
                       obscureText: false,
@@ -413,7 +403,6 @@ class _SignUpState extends State<SignUp> {
                     onTap: () async {
                       XFile? _tempPhoto = await ImagePicker()
                           .pickImage(source: ImageSource.gallery);
-                      print("a");
                       if (_tempPhoto != null) {
                         var _tempPhotoForWeb = await _tempPhoto.readAsBytes();
                         setState(() {
@@ -463,41 +452,44 @@ class _SignUpState extends State<SignUp> {
       height: MediaQuery.of(context).size.height,
       color: Colors.black.withOpacity(.7),
       padding: EdgeInsets.all(8),
-      child: Stack(
-        children: [
-          Center(
-            child: Container(
-              width: UIConstants.getPostWidth(context),
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Theme.of(context).own().background,
-                borderRadius: BorderRadius.circular(UIConstants.borderRadius),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Stack(
+          children: [
+            Center(
+              child: Container(
+                width: UIConstants.getPostWidth(context),
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).own().background,
+                  borderRadius: BorderRadius.circular(UIConstants.borderRadius),
+                ),
+                child: _pages(),
               ),
-              child: _pages(),
             ),
-          ),
-          Positioned(
-            top: 5,
-            right: 5,
-            child: IconButton(
-                onPressed: widget.onClose,
-                icon: Icon(Icons.close, color: Colors.white)),
-          ),
-          Visibility(
-            visible: _userManager.loading,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: Colors.black.withOpacity(.4),
-              child: Center(
-                  child: u.Platform.isIOS || u.Platform.isMacOS
-                      ? CupertinoActivityIndicator(
-                          radius: 30,
-                        )
-                      : CircularProgressIndicator()),
+            Positioned(
+              top: 5,
+              right: 5,
+              child: IconButton(
+                  onPressed: widget.onClose,
+                  icon: Icon(Icons.close, color: Colors.white)),
             ),
-          )
-        ],
+            Visibility(
+              visible: _userManager.loading,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: Colors.black.withOpacity(.4),
+                child: Center(
+                    child: u.Platform.isIOS || u.Platform.isMacOS
+                        ? CupertinoActivityIndicator(
+                            radius: 30,
+                          )
+                        : CircularProgressIndicator()),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

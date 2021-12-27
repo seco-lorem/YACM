@@ -50,6 +50,8 @@ class _GetThemeState extends State<GetTheme> {
               borderRadius: BorderRadius.circular(UIConstants.borderRadius)))),
       onPressed: () {
         onTap();
+        Provider.of<ThemeChanger>(context, listen: false)
+            .setTheme(_choice == 1);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -63,7 +65,7 @@ class _GetThemeState extends State<GetTheme> {
       ));
 
   Widget _themesWidget() => SizedBox(
-        height: 75,
+        height: 150,
         width: UIConstants.getWidth(context),
         child: ListView.builder(
           itemCount: _themes.length,

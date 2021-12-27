@@ -32,7 +32,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: StreamBuilder(
-            stream: Provider.of<UserManager>(context).getPinnedPosts(),
+            stream: Provider.of<UserManager>(context).getSubbedPosts(),
             builder: (context, AsyncSnapshot<QuerySnapshot> stream) {
               if (stream.connectionState == ConnectionState.active) {
                 List<Widget> _posts = [

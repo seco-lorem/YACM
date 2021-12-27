@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/post_manager/post_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/post/posts/event.dart';
@@ -47,10 +49,23 @@ class _EvenWidgetState extends State<EvenWidget> {
     return _images;
   }
 
+  PostManager? _postManager;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
   @override
   void dispose() {
     super.dispose();
     _pageController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _postManager = Provider.of<PostManager>(context, listen: false);
   }
 
   void _nextPhoto() {
@@ -130,6 +145,7 @@ class _EvenWidgetState extends State<EvenWidget> {
                       top: 5,
                       right: 5,
                       child: PostSettings(
+                          clubID: widget.post.clubID,
                           manager: widget.manager,
                           advisor: widget.advisor,
                           loggedIn: widget.loggedIn))
@@ -153,8 +169,12 @@ class _EvenWidgetState extends State<EvenWidget> {
                     ),
                   ],
                   onIconTaps: [
-                    () {},
-                    () {}
+                    () async {
+                      await _postManager!.attendPost(widget.post.id);
+                    },
+                    () async {
+                      await _postManager!.pinPost(widget.post.id);
+                    }
                   ]),
             )
           ],

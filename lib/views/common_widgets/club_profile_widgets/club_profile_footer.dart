@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/club_manager/club_manager.dart';
+import 'package:yacm/controllers/user_manager/user_manager.dart';
+import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 
 /// This is a stateful widget that implements the
 /// sendind message functionality for club profile page
 class ClubProfileSendMessage extends StatefulWidget {
-  const ClubProfileSendMessage({
-    Key? key,
-  }) : super(key: key);
+  final String clubID;
+  const ClubProfileSendMessage({Key? key, required this.clubID})
+      : super(key: key);
 
   @override
   State<ClubProfileSendMessage> createState() => _ClubProfileSendMessageState();
@@ -16,11 +20,20 @@ class ClubProfileSendMessage extends StatefulWidget {
 class _ClubProfileSendMessageState extends State<ClubProfileSendMessage> {
   final TextEditingController _textEditingController = TextEditingController();
   bool _writing = false;
+  ClubManager? _clubManager;
+  UserManager? _userManager;
 
   @override
   dispose() {
     _textEditingController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _clubManager = Provider.of<ClubManager>(context);
+    _userManager = Provider.of<UserManager>(context);
   }
 
   @override
@@ -82,7 +95,22 @@ class _ClubProfileSendMessageState extends State<ClubProfileSendMessage> {
             child: Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: InkWell(
-                onTap: () {},
+                onTap: () async {
+                  bool result = await _clubManager!.sendMessage(
+                      Message(
+                          _textEditingController.text,
+                          _userManager!.user!.name,
+                          _userManager!.user!.photoURL,
+                          DateTime.now().toString(),
+                          _userManager!.user!.id),
+                      widget.clubID);
+                  if (result) {
+                    setState(() {
+                      _textEditingController.clear();
+                      _writing = false;
+                    });
+                  }
+                },
                 child: Container(
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,

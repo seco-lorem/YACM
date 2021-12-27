@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/club_manager/club_manager.dart';
+import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
@@ -12,6 +15,7 @@ class ClubProfileHeader extends StatefulWidget {
   final VoidCallback onCreatePost;
   final VoidCallback onKickMembers;
   final VoidCallback onViewMembers;
+  final String clubID;
   const ClubProfileHeader(
       {Key? key,
       required this.url,
@@ -21,7 +25,8 @@ class ClubProfileHeader extends StatefulWidget {
       required this.onPageChange,
       required this.onCreatePost,
       required this.onKickMembers,
-      required this.onViewMembers})
+      required this.onViewMembers,
+      required this.clubID})
       : super(key: key);
 
   @override
@@ -70,7 +75,7 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
               ),
             ),
             Visibility(
-              visible: widget.isAdmin,
+              visible: Provider.of<UserManager>(context).user != null,
               child: Positioned(
                   top: 5,
                   right: 5,
@@ -106,10 +111,18 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
                             children: [
                               _child(
                                   visible: true,
-                                  setting: _language!.createPost,
+                                  setting: _language!.sub,
+                                  onTap: () async {
+                                    await Provider.of<ClubManager>(context,
+                                            listen: false)
+                                        .subToClub(widget.clubID);
+                                  }),
+                              _child(
+                                  visible: widget.isAdmin,
+                                  setting: _language.createPost,
                                   onTap: widget.onCreatePost),
                               _child(
-                                  visible: true,
+                                  visible: widget.isAdmin,
                                   setting: _language.kickMembers,
                                   onTap: widget.onKickMembers)
                             ],

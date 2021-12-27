@@ -24,13 +24,14 @@ class UserAdapter extends TypeAdapter<User> {
       (fields[4] as List).cast<String>(),
       (fields[5] as List).cast<String>(),
       (fields[6] as List).cast<String>(),
+      fields[7] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj._id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(5)
       ..write(obj._clubs)
       ..writeByte(6)
-      ..write(obj._interests);
+      ..write(obj._interests)
+      ..writeByte(7)
+      ..write(obj._name);
   }
 
   @override
