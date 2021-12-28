@@ -41,8 +41,13 @@ class _PinnedScreenState extends State<PinnedScreen>
                   SizedBox(width: MediaQuery.of(context).size.width)
                 ];
                 for (DocumentSnapshot post in stream.data!.docs) {
+                  List<String> _managers = [];
+                  for (String id in post.get("managers")) {
+                    _managers.add(id);
+                  }
                   if (post.get("type") == "event") {
                     _posts.add(EvenWidget(
+                        managers: _managers,
                         loggedIn: Provider.of<UserManager>(context).user !=
                             null,
                         manager:
@@ -61,6 +66,7 @@ class _PinnedScreenState extends State<PinnedScreen>
                         comments: []));
                   } else if (post.get("type") == "poll") {
                     _posts.add(PollWidget(
+                      managers: _managers,
                       language: widget.language,
                       post: Poll.fromDocumentSnapshot(post),
                       comments: [],

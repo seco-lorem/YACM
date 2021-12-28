@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +39,7 @@ class _SignUpState extends State<SignUp> {
   late UserManager _userManager;
   u.File? _photo;
   Uint8List? _photoForWeb;
+  bool _loading = false;
 
   @override
   dispose() {
@@ -56,10 +59,69 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future<void> _signUpFunction() async {
-    if (_mailController.text.isEmpty) return;
-    if (_nameController.text.isEmpty) return;
-    if (_idController.text.isEmpty) return;
-    if (_passwordController.text.compareTo(_passwordController2.text) != 0) {
+    setState(() {
+      _loading = true;
+    });
+    if (_passwordController.text != _passwordController2.text) {
+      Fluttertoast.showToast(
+          msg: widget.language.passwordsDontMatch,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
+      setState(() {
+        _loading = false;
+      });
+      return;
+    }
+    if (_passwordController.text.contains(" ") ||
+        _passwordController.text.length < 8) {
+      Fluttertoast.showToast(
+          msg: widget.language.passwordNotValid,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
+      setState(() {
+        _loading = false;
+      });
+      return;
+    }
+    if (_mailController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: widget.language.mailEmpty,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
+      setState(() {
+        _loading = false;
+      });
+      return;
+    }
+    if (_nameController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: widget.language.nameEmpty,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
+      setState(() {
+        _loading = false;
+      });
+      return;
+    }
+    if (_idController.text.isEmpty || _idController.text.length != 8) {
+      Fluttertoast.showToast(
+          msg: widget.language.idEmpty,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
+      setState(() {
+        _loading = false;
+      });
+      return;
+    }
+
+    if (_photo == null) {
+      Fluttertoast.showToast(
+          msg: widget.language.photoEmpty,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
+      setState(() {
+        _loading = false;
+      });
       return;
     }
 
@@ -75,18 +137,27 @@ class _SignUpState extends State<SignUp> {
           _nameController.text,
           _idController.text);
     }
+    setState(() {
+      _loading = false;
+    });
     widget.onClose();
   }
 
   Future<void> _signInFunction() async {
-    if (_mailController.text.isEmpty) return;
-    if (_passwordController.text.isEmpty) {
+    if (_mailController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: widget.language.mailEmpty,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
       return;
     }
-
-    _userManager.setLoading(true);
-
-    _userManager.setLoading(false);
+    if (_passwordController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: widget.language.passwordEmpty,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
+      return;
+    }
 
     bool result = await _userManager.signIn(
         _mailController.text, _passwordController.text);
@@ -201,10 +272,31 @@ class _SignUpState extends State<SignUp> {
             overlayColor:
                 MaterialStateProperty.all<Color>(Colors.black.withOpacity(.1))),
         child: Text(
-          "Sign Up",
+          widget.language.signUp,
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
+              color: Theme.of(context).own().popUpSignUp),
+        ),
+      );
+
+  Widget _resetPassword() => TextButton(
+        onPressed: () {
+          if (_mailController.text.contains("@ug.bilkent.edu.tr") ||
+              _mailController.text.contains("@bilkent.edu.tr")) {
+            FirebaseAuth.instance
+                .sendPasswordResetEmail(email: _mailController.text);
+          }
+        },
+        style: ButtonStyle(
+            overlayColor:
+                MaterialStateProperty.all<Color>(Colors.black.withOpacity(.1))),
+        child: Text(
+          widget.language.sendResetPassword,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
               color: Theme.of(context).own().popUpSignUp),
         ),
       );
@@ -314,6 +406,7 @@ class _SignUpState extends State<SignUp> {
                         duration: Duration(milliseconds: 500),
                         curve: Curves.easeIn);
                   }),
+                  _resetPassword()
                 ],
               ),
             ),
@@ -476,6 +569,20 @@ class _SignUpState extends State<SignUp> {
             ),
             Visibility(
               visible: _userManager.loading,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: Colors.black.withOpacity(.4),
+                child: Center(
+                    child: u.Platform.isIOS || u.Platform.isMacOS
+                        ? CupertinoActivityIndicator(
+                            radius: 30,
+                          )
+                        : CircularProgressIndicator()),
+              ),
+            ),
+            Visibility(
+              visible: _loading,
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,

@@ -10,6 +10,7 @@ import 'package:yacm/models/club/club.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/router/route_names.dart';
+import 'package:yacm/util/helper.dart';
 import 'package:yacm/util/ui_constants.dart';
 import 'package:yacm/views/web_view/home_screen/widgets/app_bar_menu_item.dart';
 
@@ -39,6 +40,7 @@ class _TopBarState extends State<TopBar>
   TextEditingController _searchControlller = TextEditingController();
   bool _notificationsVisible = false;
   bool _searchVisible = false;
+  bool _cancelVisible = false;
 
   late final AnimationController _animationController = AnimationController(
     duration: const Duration(milliseconds: 500),
@@ -99,7 +101,17 @@ class _TopBarState extends State<TopBar>
   Widget _search() {
     return FocusScope(
       child: Focus(
-        onFocusChange: (focus) {},
+        onFocusChange: (focus) {
+          if (focus) {
+            setState(() {
+              _searchVisible = true;
+            });
+          } else {
+            setState(() {
+              _searchVisible = false;
+            });
+          }
+        },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           width: UIConstants.getWidth(context, width: 400, multiplier: .6),
@@ -134,6 +146,7 @@ class _TopBarState extends State<TopBar>
                   onChanged: (value) {
                     setState(() {
                       if (value.isNotEmpty) {
+                        _cancelVisible = true;
                         _searchVisible = true;
                         _searchResults = [];
                         _allClubs.forEach((element) {
@@ -144,7 +157,7 @@ class _TopBarState extends State<TopBar>
                           }
                         });
                       } else {
-                        _searchVisible = false;
+                        _cancelVisible = false;
                         _searchResults = _allClubs;
                       }
                     });
@@ -152,14 +165,15 @@ class _TopBarState extends State<TopBar>
                 ),
               ),
               Visibility(
-                visible: _searchVisible,
+                visible: _cancelVisible,
                 child: Expanded(
                     flex: 1,
                     child: InkWell(
                       onTap: () {
                         setState(() {
-                          _searchVisible = false;
+                          _cancelVisible = false;
                           _searchControlller.clear();
+                          _searchResults = _allClubs;
                         });
                       },
                       child: widget.isSmall
@@ -346,12 +360,15 @@ class _TopBarState extends State<TopBar>
                         color: Theme.of(context).own().yacmLogoColor),
                   ),
                 ),
-                for (Map<String, String> club in widget.recommendedClubs)
+                for (String club in Helper.suggested.keys)
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, top: 4),
                     child: InkWell(
-                      onTap: () {},
-                      child: Text(club["name"]!,
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, RouteNames.club + "?id=$club");
+                      },
+                      child: Text(Helper.suggested[club],
                           textAlign: TextAlign.start,
                           maxLines: null,
                           style: TextStyle(
@@ -380,7 +397,10 @@ class _TopBarState extends State<TopBar>
           club.clubName,
           textAlign: TextAlign.start,
           maxLines: null,
-          style: TextStyle(color: Colors.grey[600]),
+          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[600]),
         ),
       ));
     }

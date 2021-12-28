@@ -12,8 +12,10 @@ class PostManager extends ChangeNotifier {
 
   PostManager(this._firebaseManager, this._messageManager);
 
-  Future<bool> vetoPost(String id) async {
-    return await _firebaseManager.vetoPost(id);
+  Future<bool> vetoPost(String id, String advisorName, String postMessage,
+      List<String> managerIDs) async {
+    return await _firebaseManager.vetoPost(
+        id, advisorName, postMessage, managerIDs);
   }
 
   Future<bool> votePost(String postID, int index) async {

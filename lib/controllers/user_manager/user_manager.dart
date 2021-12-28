@@ -21,26 +21,30 @@ class UserManager extends ChangeNotifier {
 
   Future<bool> signIn(String email, String password) async {
     setLoading(true);
-    bool result =
-        await _firebaseManager.signIn(email: email, password: password);
+    try {
+      bool result =
+          await _firebaseManager.signIn(email: email, password: password);
 
-    String id = _firebaseManager.getUserID();
+      String id = _firebaseManager.getUserID();
 
-    DocumentSnapshot<Map<String, dynamic>> tempData =
-        await _firebaseManager.getUserData(id);
+      DocumentSnapshot<Map<String, dynamic>> tempData =
+          await _firebaseManager.getUserData(id);
 
-    print(tempData);
+      print(tempData);
 
-    if (result) {
-      User temp = await _userHiveManager.create(
-          BOX_NAME, id, User.fromMap(tempData.data()!));
+      if (result) {
+        User temp = await _userHiveManager.create(
+            BOX_NAME, id, User.fromMap(tempData.data()!));
 
-      _user = User.fromUser(temp);
-      notifyListeners();
+        _user = User.fromUser(temp);
+        notifyListeners();
+        setLoading(false);
+        return true;
+      }
+    } catch (e) {
       setLoading(false);
-      return true;
+      return false;
     }
-
     setLoading(false);
     return false;
   }
@@ -120,6 +124,10 @@ class UserManager extends ChangeNotifier {
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? getPosts() {
     return _firebaseManager.getPosts();
+  }
+
+  Future<int> resetPassword(String currentPassword, String newPassword) async {
+    return await _firebaseManager.resetPassword(currentPassword, newPassword);
   }
 
   void setLoading(bool loading) {

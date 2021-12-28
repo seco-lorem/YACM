@@ -17,6 +17,8 @@ class EvenWidget extends StatefulWidget {
   final bool manager;
   final bool advisor;
   final bool loggedIn;
+  final bool popOnDelete;
+  final List<String> managers;
 
   const EvenWidget(
       {Key? key,
@@ -25,7 +27,9 @@ class EvenWidget extends StatefulWidget {
       required this.comments,
       required this.manager,
       required this.advisor,
-      required this.loggedIn})
+      required this.loggedIn,
+      required this.managers,
+      this.popOnDelete = false})
       : super(key: key);
 
   @override
@@ -148,6 +152,9 @@ class _EvenWidgetState extends State<EvenWidget> {
                       top: 5,
                       right: 5,
                       child: PostSettings(
+                          popOnDelete: widget.popOnDelete,
+                          managers: widget.managers,
+                          post: widget.post,
                           clubID: widget.post.clubID,
                           manager: widget.manager,
                           advisor: widget.advisor,

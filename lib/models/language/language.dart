@@ -5,6 +5,23 @@ abstract class Language {
     return Localizations.of<Language>(context, Language);
   }
 
+  String get photoEmpty;
+  String get passwordEmpty;
+  String get mailEmpty;
+  String get nameEmpty;
+  String get idEmpty;
+  String get currentPasswordEmpty;
+  String get passwordNotValid;
+  String get passwordsDontMatch;
+  String get sendResetPassword;
+  String get chooseTheme;
+  String get signUp;
+  String get chooseLanguage;
+  String get somethingWentWrong;
+  String get weakPassword;
+  String get wrongPassword;
+  String get notLoggedIn;
+  String get passworChanged;
   String get home;
   String get pinned;
   String get subscription;

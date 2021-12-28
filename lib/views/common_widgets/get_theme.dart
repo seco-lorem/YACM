@@ -127,7 +127,7 @@ class _GetThemeState extends State<GetTheme> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Please Choose Your Theme Preference",
+                    Text(widget.language.chooseTheme,
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,

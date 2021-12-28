@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:yacm/controllers/theme_controller/theme_changer.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
+import 'package:yacm/router/route_names.dart';
+import 'package:yacm/util/helper.dart';
 import 'package:yacm/views/web_view/home_screen/widgets/app_bar_menu_item.dart';
 
 class SideBar extends StatelessWidget {
@@ -135,12 +137,15 @@ class SideBar extends StatelessWidget {
                                 color: Theme.of(context).own().yacmLogoColor),
                           ),
                         ),
-                        for (Map<String, String> club in suggestedClubs)
+                        for (String club in Helper.suggested.keys)
                           Padding(
                             padding: const EdgeInsets.only(left: 16.0, top: 4),
                             child: InkWell(
-                              onTap: () {},
-                              child: Text(club["name"]!,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, RouteNames.club + "?id=$club");
+                              },
+                              child: Text(Helper.suggested[club],
                                   textAlign: TextAlign.start,
                                   maxLines: null,
                                   style: TextStyle(

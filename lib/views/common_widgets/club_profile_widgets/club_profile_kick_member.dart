@@ -30,6 +30,9 @@ class _KickMembersState extends State<KickMembers> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _clubManager = Provider.of<ClubManager>(context);
+    for (int i = 0; i < widget.members.length; i++) {
+      kicked.add(false);
+    }
   }
 
   @override

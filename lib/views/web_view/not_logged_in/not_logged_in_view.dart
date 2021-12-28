@@ -102,10 +102,15 @@ class _NotLoggedInState extends State<NotLoggedIn> {
                             SizedBox(width: MediaQuery.of(context).size.width)
                           ];
                           for (DocumentSnapshot post in stream.data!.docs) {
+                            List<String> _managers = [];
+                            for (String id in post.get("managers")) {
+                              _managers.add(id);
+                            }
                             if (post.get("type") == "event") {
                               _posts.add(Padding(
                                 padding: const EdgeInsets.only(bottom: 8.0),
                                 child: EvenWidget(
+                                    managers: _managers,
                                     loggedIn: Provider.of<UserManager>(context)
                                             .user !=
                                         null,
@@ -130,6 +135,7 @@ class _NotLoggedInState extends State<NotLoggedIn> {
                               _posts.add(Padding(
                                 padding: const EdgeInsets.only(bottom: 8.0),
                                 child: PollWidget(
+                                    managers: _managers,
                                     loggedIn:
                                         Provider.of<UserManager>(context).user !=
                                             null,

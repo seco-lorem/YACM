@@ -31,6 +31,7 @@ class PostWidget extends StatelessWidget {
       width: width,
       height: width * .1,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Expanded(
             child: Container(
@@ -99,19 +100,6 @@ class PostWidget extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: ListView.builder(
-              itemCount: comments.length,
-              itemBuilder: (context, index) {
-                return CommentWidget(
-                    imageURL: comments[index].senderPhotoURL,
-                    name: comments[index].senderName,
-                    comment: comments[index].message,
-                    sentDate: comments[index].sentDate);
-              },
-            ),
-          )
         ],
       ),
     );

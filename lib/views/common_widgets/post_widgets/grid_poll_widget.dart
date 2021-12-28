@@ -18,6 +18,7 @@ class GridPoll extends StatelessWidget {
       child: Center(
         child: Text(
           _poll.question,
+          textAlign: TextAlign.center,
           style: TextStyle(color: Theme.of(context).own().gridPostText),
         ),
       ),

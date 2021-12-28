@@ -44,8 +44,13 @@ class _HomeScreenState extends State<HomeScreen>
                   SizedBox(width: MediaQuery.of(context).size.width)
                 ];
                 for (DocumentSnapshot post in stream.data!.docs) {
+                  List<String> _managers = [];
+                  for (String id in post.get("managers")) {
+                    _managers.add(id);
+                  }
                   if (post.get("type") == "event") {
                     _posts.add(EvenWidget(
+                        managers: _managers,
                         loggedIn: Provider.of<UserManager>(context).user !=
                             null,
                         manager:
@@ -64,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen>
                         comments: []));
                   } else if (post.get("type") == "poll") {
                     _posts.add(PollWidget(
+                        managers: _managers,
                         loggedIn:
                             Provider.of<UserManager>(context).user != null,
                         manager: Provider.of<UserManager>(context).user != null &&

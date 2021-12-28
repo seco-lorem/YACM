@@ -135,7 +135,8 @@ class _WebViewState extends State<WebView> {
         backgroundColor: Theme.of(context).own().background,
         body: GestureDetector(
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-          child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: _body(),
           ),
         ),

@@ -20,17 +20,21 @@ class PollWidget extends StatefulWidget {
   final bool manager;
   final bool advisor;
   final bool loggedIn;
+  final bool popOnDelete;
+  final List<String> managers;
 
-  const PollWidget(
-      {Key? key,
-      required this.language,
-      required this.post,
-      required this.comments,
-      required this.hasVoted,
-      required this.manager,
-      required this.advisor,
-      required this.loggedIn})
-      : super(key: key);
+  const PollWidget({
+    Key? key,
+    required this.language,
+    required this.post,
+    required this.comments,
+    required this.hasVoted,
+    required this.manager,
+    required this.advisor,
+    required this.loggedIn,
+    required this.managers,
+    this.popOnDelete = false,
+  }) : super(key: key);
 
   @override
   _PollWidgetState createState() => _PollWidgetState();
@@ -92,13 +96,11 @@ class _PollWidgetState extends State<PollWidget> {
           if (widget.loggedIn) {
             bool result = await _postManager!.votePost(widget.post.id, index);
             if (result && !_hasVoted) {
-              print("in");
               setState(() {
                 choice = index;
                 _hasVoted = true;
               });
             }
-            print("voted $result");
           }
         },
         child: Container(
@@ -219,6 +221,9 @@ class _PollWidgetState extends State<PollWidget> {
                     top: 5,
                     right: 5,
                     child: PostSettings(
+                      popOnDelete: widget.popOnDelete,
+                      post: widget.post,
+                      managers: widget.managers,
                       clubID: widget.post.clubID,
                       manager: widget.manager,
                       advisor: widget.advisor,

@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_io/io.dart';
 import 'package:yacm/controllers/shared_pref_controller/sp_controller.dart';
 import 'package:yacm/controllers/theme_controller/theme_changer.dart';
 import 'package:yacm/controllers/user_manager/user_manager.dart';
@@ -27,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   bool changeThemeVisible = false;
   late bool _theme = false;
   bool changeLanguageVisible = false;
+  bool _changingPassword = false;
   Language? language;
   UserManager? _userManager;
 
@@ -90,8 +94,78 @@ class _ProfileScreenState extends State<ProfileScreen>
         ),
       );
 
+  Future<void> _changePasswordFunc() async {
+    if (_currentPasswordController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: language!.currentPasswordEmpty,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
+      return;
+    }
+    if (_newPasswordController.text != _newPasswordController2.text) {
+      Fluttertoast.showToast(
+          msg: language!.passwordsDontMatch,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
+      return;
+    }
+    if (_newPasswordController.text.contains(" ") ||
+        _newPasswordController.text.length < 8) {
+      Fluttertoast.showToast(
+          msg: language!.passwordNotValid,
+          backgroundColor: Theme.of(context).own().yacmLogoColor,
+          textColor: Theme.of(context).own().background);
+      return;
+    }
+    int result = await _userManager!.resetPassword(
+        _currentPasswordController.text, _newPasswordController.text);
+    switch (result) {
+      case 1:
+        Fluttertoast.showToast(
+            msg: language!.passworChanged,
+            backgroundColor: Theme.of(context).own().yacmLogoColor,
+            textColor: Theme.of(context).own().background);
+        _currentPasswordController.clear();
+        _newPasswordController.clear();
+        _newPasswordController2.clear();
+        break;
+      case -1:
+        Fluttertoast.showToast(
+            msg: language!.wrongPassword,
+            backgroundColor: Theme.of(context).own().yacmLogoColor,
+            textColor: Theme.of(context).own().background);
+        break;
+      case -2:
+        Fluttertoast.showToast(
+            msg: language!.weakPassword,
+            backgroundColor: Theme.of(context).own().yacmLogoColor,
+            textColor: Theme.of(context).own().background);
+        break;
+      case -10:
+        Fluttertoast.showToast(
+            msg: language!.notLoggedIn,
+            backgroundColor: Theme.of(context).own().yacmLogoColor,
+            textColor: Theme.of(context).own().background);
+        break;
+      case -100:
+        Fluttertoast.showToast(
+            msg: language!.somethingWentWrong,
+            backgroundColor: Theme.of(context).own().yacmLogoColor,
+            textColor: Theme.of(context).own().background);
+        break;
+    }
+  }
+
   Widget _changePassword() => InkWell(
-        onTap: () {},
+        onTap: () async {
+          setState(() {
+            _changingPassword = true;
+          });
+          await _changePasswordFunc();
+          setState(() {
+            _changingPassword = false;
+          });
+        },
         child: Container(
           width: UIConstants.getPostWidth(context),
           height: 35,
@@ -269,6 +343,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                       changeLanguageVisible = !changeLanguageVisible;
                     });
                   }),
+            ),
+            Visibility(
+              visible: _changingPassword,
+              child: Expanded(
+                child: Center(
+                  child: Platform.isIOS || Platform.isMacOS
+                      ? CupertinoActivityIndicator(
+                          radius: 34,
+                        )
+                      : CircularProgressIndicator(),
+                ),
+              ),
             )
           ],
         ),

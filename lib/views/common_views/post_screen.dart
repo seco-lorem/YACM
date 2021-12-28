@@ -23,9 +23,9 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: Platform.isAndroid || Platform.isIOS ? AppBar(
-          backgroundColor: Theme.of(context).own().background
-        ) : null,
+        appBar: Platform.isAndroid || Platform.isIOS
+            ? AppBar(backgroundColor: Theme.of(context).own().background)
+            : null,
         backgroundColor: Theme.of(context).own().background,
         body: SafeArea(
           child: Container(
@@ -37,9 +37,16 @@ class _PostScreenState extends State<PostScreen> {
                 stream: Provider.of<PostManager>(context, listen: false)
                     .getPostStream(widget.postID),
                 builder: (context, AsyncSnapshot<DocumentSnapshot> stream) {
+                  if (!stream.data!.exists) return SizedBox();
                   if (stream.connectionState == ConnectionState.active) {
+                    List<String> _managers = [];
+                    for (String id in stream.data!.get("managers")) {
+                      _managers.add(id);
+                    }
                     if (stream.data!.get("type") == "event") {
                       return EvenWidget(
+                          popOnDelete: true,
+                          managers: _managers,
                           loggedIn: Provider.of<UserManager>(context).user !=
                               null,
                           manager: Provider.of<UserManager>(context).user !=
@@ -58,6 +65,8 @@ class _PostScreenState extends State<PostScreen> {
                           comments: []);
                     } else if (stream.data!.get("type") == "poll") {
                       return PollWidget(
+                          popOnDelete: true,
+                          managers: _managers,
                           loggedIn: Provider.of<UserManager>(context).user !=
                               null,
                           manager: Provider.of<UserManager>(context).user !=

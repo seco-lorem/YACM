@@ -61,10 +61,6 @@ class ClubManager extends ChangeNotifier {
         clubId: clubID, newPhoto: photo);
   }
 
-  Future<bool> vetoPost(String postID) async {
-    return await _postManager.vetoPost(postID);
-  }
-
   Future<bool> deletePost(String postID) async {
     return await _postManager.deletePost(postID);
   }

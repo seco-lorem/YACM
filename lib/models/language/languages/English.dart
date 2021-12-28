@@ -77,7 +77,7 @@ class English extends Language {
   String get signOut => "Sign Out";
 
   @override
-  String get subscription => "Subscription";
+  String get subscription => "Attend";
 
   @override
   String get suggested => "Suggested";
@@ -129,4 +129,52 @@ class English extends Language {
 
   @override
   String get currentPassword => "Current Password";
+
+  @override
+  String get notLoggedIn => "Not Logged In";
+
+  @override
+  String get passworChanged => "Password Changed";
+
+  @override
+  String get somethingWentWrong => "Something Went Wrong";
+
+  @override
+  String get weakPassword => "Weak Password";
+
+  @override
+  String get wrongPassword => "Wrong Password";
+
+  @override
+  String get signUp => "Sign Up";
+
+  @override
+  String get chooseLanguage => "Please Choose A Language";
+
+  @override
+  String get chooseTheme => "Please Choose A Theme";
+
+  @override
+  String get sendResetPassword => "Reset Password (Fill Bilkent Mail)";
+
+  @override
+  String get currentPasswordEmpty => "Current Password Can Not Be Empty";
+
+  @override
+  String get passwordNotValid =>
+      "Passwords Can Not Contain Spaces and Can Not Be Shorter Than Eight Characters";
+
+  @override
+  String get passwordsDontMatch => "Passwords Should Match";
+
+  @override
+  String get mailEmpty => "Mail Can Not Be Empty";
+  @override
+  String get nameEmpty => "İsim Can Not Be Empty";
+  @override
+  String get idEmpty => "ID Can Not Be Empty";
+  @override
+  String get passwordEmpty => "Password Can Not Be Empty";
+  @override
+  String get photoEmpty => "Please Pick A Profile Picture";
 }

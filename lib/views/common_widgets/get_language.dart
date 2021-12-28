@@ -108,7 +108,7 @@ class _GetLanguageState extends State<GetLanguage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Please Choose Your Language Preference",
+                    Text(widget.language.chooseLanguage,
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,

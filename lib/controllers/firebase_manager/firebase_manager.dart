@@ -728,9 +728,17 @@ class FirebaseManager {
     }
   }
 
-  Future<bool> vetoPost(String postID) async {
+  Future<bool> vetoPost(String postID, String advisorName, String postMessage,
+      List<String> managerIDs) async {
     try {
       await _firebaseFirestore.collection("posts").doc(postID).delete();
+      for (String id in managerIDs) {
+        _firebaseFirestore.collection("notifications").doc().set({
+          "title": postMessage,
+          "subtitle": "$advisorName has vetoed this post",
+          "uid": id
+        });
+      }
       return true;
     } catch (e) {
       return false;
@@ -808,5 +816,45 @@ class FirebaseManager {
         .collection("messages")
         .orderBy("sentDate")
         .snapshots();
+  }
+
+  /// code 1: success
+  ///
+  /// error code -1: wrong-password
+  ///
+  /// error code -2: weak-password
+  ///
+  /// error code -10: not logged in
+  ///
+  /// error code -100: general error
+  Future<int> resetPassword(String currentPassword, String newPassword) async {
+    if (_firebaseAuth.currentUser == null) return -10;
+
+    AuthCredential _credential = EmailAuthProvider.credential(
+        email: _firebaseAuth.currentUser!.email!, password: currentPassword);
+    try {
+      await _firebaseAuth.currentUser!
+          .reauthenticateWithCredential(_credential);
+    } on FirebaseAuthException catch (e) {
+      switch (e.message) {
+        case "wrong-password":
+          return -1;
+        default:
+          return -100;
+      }
+    }
+
+    try {
+      await _firebaseAuth.currentUser!.updatePassword(newPassword);
+    } on FirebaseAuthException catch (error) {
+      switch (error.message) {
+        case 'weak-password':
+          return -2;
+      }
+    }
+    await _firebaseAuth.signInWithEmailAndPassword(
+        email: _firebaseAuth.currentUser!.email!, password: newPassword);
+
+    return 1;
   }
 }

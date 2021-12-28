@@ -77,7 +77,7 @@ class Turkish extends Language {
   String get signOut => "Çıkış Yap";
 
   @override
-  String get subscription => "Üyelikler";
+  String get subscription => "Katıl";
 
   @override
   String get suggested => "Önerilen";
@@ -129,4 +129,53 @@ class Turkish extends Language {
 
   @override
   String get currentPassword => "Güncel Şifre";
+
+  @override
+  String get notLoggedIn => "Not Logged In";
+
+  @override
+  String get passworChanged => "Şifre Değiştirildi";
+
+  @override
+  String get somethingWentWrong => "Bir Hata Oluştu";
+
+  @override
+  String get weakPassword => "Zayıf Şifre";
+
+  @override
+  String get wrongPassword => "Yanlış Şifre";
+
+  @override
+  String get signUp => "Kaydol";
+
+  @override
+  String get chooseLanguage => "Lütfen Bir Dil Seç";
+
+  @override
+  String get chooseTheme => "Lütfen Bir Tema Seç";
+
+  @override
+  String get sendResetPassword =>
+      "Şifreyi Sıfırla (Bilkent Mail Kısmını Doldur)";
+
+  @override
+  String get currentPasswordEmpty => "Mevcut Şifre Boş Bırakılamaz";
+
+  @override
+  String get passwordNotValid =>
+      "Şifre boşluk içermemeli ve sekiz karakterden kısa olmamalıdır.";
+
+  @override
+  String get passwordsDontMatch => "Şifreler Eşleşmelidir";
+
+  @override
+  String get mailEmpty => "Mail Boş Bırakılamaz";
+  @override
+  String get nameEmpty => "İsim Boş Bırakılamaz";
+  @override
+  String get idEmpty => "ID Boş Bırakılamaz";
+  @override
+  String get passwordEmpty => "Şifre Boş Bırakılamaz";
+  @override
+  String get photoEmpty => "Lütfen Bir Profil Fotoğrafı Seç";
 }

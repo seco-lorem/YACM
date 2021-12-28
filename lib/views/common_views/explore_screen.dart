@@ -31,7 +31,8 @@ class _ExploreScreenState extends State<ExploreScreen>
       color: Theme.of(context).own().background,
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      child: Center(
+      child: Align(
+        alignment: Alignment.topCenter,
         child: StreamBuilder(
           stream: Provider.of<UserManager>(context).getPosts(),
           builder: (context, AsyncSnapshot<QuerySnapshot> stream) {

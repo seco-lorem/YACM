@@ -92,7 +92,7 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
                         },
                         icon: Icon(
                           Icons.more_vert,
-                          color: Colors.white,
+                          color: Colors.grey[600],
                         ),
                       ),
                       Visibility(

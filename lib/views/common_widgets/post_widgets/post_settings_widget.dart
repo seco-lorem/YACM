@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:yacm/controllers/post_manager/post_manager.dart';
 import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/language/language.dart';
+import 'package:yacm/models/post/post.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 
@@ -10,14 +11,20 @@ class PostSettings extends StatefulWidget {
   final bool manager;
   final bool advisor;
   final bool loggedIn;
+  final bool popOnDelete;
   final String clubID;
-  const PostSettings(
-      {Key? key,
-      required this.manager,
-      required this.advisor,
-      required this.loggedIn,
-      required this.clubID})
-      : super(key: key);
+  final Post post;
+  final List<String> managers;
+  const PostSettings({
+    Key? key,
+    required this.manager,
+    required this.advisor,
+    required this.loggedIn,
+    required this.clubID,
+    required this.post,
+    required this.managers,
+    required this.popOnDelete,
+  }) : super(key: key);
 
   @override
   _PostSettingsState createState() => _PostSettingsState();
@@ -90,11 +97,20 @@ class _PostSettingsState extends State<PostSettings> {
                 _child(
                     visible: widget.manager,
                     setting: _language!.delete,
-                    onTap: () {}),
+                    onTap: () async {
+                      bool result =
+                          await _postManager!.deletePost(widget.post.id);
+                    }),
                 _child(
                     visible: widget.advisor,
                     setting: _language.veto,
-                    onTap: () {}),
+                    onTap: () async {
+                      bool result = await _postManager!.vetoPost(
+                          widget.post.id,
+                          _userManager.user!.name,
+                          widget.post.message,
+                          widget.managers);
+                    }),
                 _child(
                     visible: widget.loggedIn,
                     setting: _language.sub,
