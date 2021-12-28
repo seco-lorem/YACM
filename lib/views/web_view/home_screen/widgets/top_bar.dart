@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:yacm/controllers/club_manager/club_manager.dart';
 import 'package:yacm/controllers/theme_controller/theme_changer.dart';
 import 'package:yacm/controllers/user_manager/user_manager.dart';
+import 'package:yacm/models/club/club.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/router/route_names.dart';
@@ -50,12 +53,41 @@ class _TopBarState extends State<TopBar>
     curve: Curves.easeIn,
   ));
 
+  List<Club> _allClubs = [];
+  List<Club> _searchResults = [];
+
+  Future<void> getClubs() async {
+    QuerySnapshot _clubs =
+        await Provider.of<ClubManager>(context, listen: false).getClubs();
+
+    List<Club> _tempAllClubs = [];
+
+    for (DocumentSnapshot club in _clubs.docs) {
+      _tempAllClubs.add(Club.fromDocumentSnapshot(club));
+    }
+
+    setState(() {
+      _allClubs = _tempAllClubs;
+      _searchResults = _tempAllClubs;
+    });
+  }
+
   Language? _language;
+  UserManager? _userManager;
+  ClubManager? _clubManager;
+
+  @override
+  void initState() {
+    super.initState();
+    getClubs();
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _language = Language.of(context);
+    _userManager = Provider.of<UserManager>(context);
+    _clubManager = Provider.of<ClubManager>(context);
   }
 
   @override
@@ -68,15 +100,23 @@ class _TopBarState extends State<TopBar>
     return FocusScope(
       child: Focus(
         onFocusChange: (focus) {},
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
           width: UIConstants.getWidth(context, width: 400, multiplier: .6),
           height: 35,
           alignment: Alignment.center,
           decoration: BoxDecoration(
               border: Border.all(color: Theme.of(context).own().yacmLogoColor),
-              borderRadius:
-                  BorderRadius.circular(UIConstants.borderRadius * 2 / 3),
-              color: Colors.transparent.withOpacity(.05)),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(UIConstants.borderRadius * 2 / 3),
+                  topRight: Radius.circular(UIConstants.borderRadius * 2 / 3),
+                  bottomLeft: _searchVisible
+                      ? Radius.zero
+                      : Radius.circular(UIConstants.borderRadius * 2 / 3),
+                  bottomRight: _searchVisible
+                      ? Radius.zero
+                      : Radius.circular(UIConstants.borderRadius * 2 / 3)),
+              color: Theme.of(context).own().background),
           child: Row(
             children: [
               Expanded(
@@ -95,8 +135,17 @@ class _TopBarState extends State<TopBar>
                     setState(() {
                       if (value.isNotEmpty) {
                         _searchVisible = true;
+                        _searchResults = [];
+                        _allClubs.forEach((element) {
+                          if (element.clubName
+                              .toLowerCase()
+                              .contains(value.toLowerCase())) {
+                            _searchResults.add(element);
+                          }
+                        });
                       } else {
                         _searchVisible = false;
+                        _searchResults = _allClubs;
                       }
                     });
                   },
@@ -319,6 +368,106 @@ class _TopBarState extends State<TopBar>
     );
   }
 
+  Widget _suggestions() {
+    List<Widget> _results = [];
+
+    for (Club club in _searchResults) {
+      _results.add(InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, RouteNames.club + "?id=${club.id}");
+        },
+        child: Text(
+          club.clubName,
+          textAlign: TextAlign.start,
+          maxLines: null,
+          style: TextStyle(color: Colors.grey[600]),
+        ),
+      ));
+    }
+
+    return Container(
+        width: UIConstants.getWidth(context, width: 400, multiplier: .6),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            border: Border(
+                top: BorderSide(color: Theme.of(context).own().yacmLogoColor),
+                right: BorderSide(color: Theme.of(context).own().yacmLogoColor),
+                left: BorderSide(color: Theme.of(context).own().yacmLogoColor),
+                bottom:
+                    BorderSide(color: Theme.of(context).own().yacmLogoColor)),
+            borderRadius: BorderRadius.only(
+              bottomRight: Radius.circular(UIConstants.borderRadius * 2 / 3),
+              bottomLeft: Radius.circular(UIConstants.borderRadius * 2 / 3),
+            ),
+            color: Theme.of(context).own().background),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, children: _results));
+  }
+
+  Widget _searchSuggestion() {
+    return Visibility(
+      visible: _searchVisible,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          widget.isSmall
+              ? Icon(
+                  Icons.menu,
+                  color: Colors.transparent,
+                )
+              : Text(
+                  "YACM",
+                  style: GoogleFonts.pacifico(
+                      color: Colors.transparent,
+                      fontSize: widget.isSmall ? 18 : 24,
+                      fontWeight: FontWeight.bold),
+                ),
+          Spacer(),
+          _suggestions(),
+          Spacer(),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    widget.isSmall
+                        ? Icon(
+                            Icons.notifications,
+                            color: Colors.transparent,
+                          )
+                        : Text(
+                            _language!.notifications,
+                            style: TextStyle(
+                                color: Colors.transparent,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18),
+                          ),
+                  ],
+                ),
+              ),
+              widget.isSmall
+                  ? Icon(
+                      Icons.exit_to_app,
+                      color: Colors.transparent,
+                    )
+                  : Text(
+                      _language!.signOut,
+                      style: TextStyle(
+                          color: Colors.transparent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<ThemeChanger>(context);
@@ -364,56 +513,73 @@ class _TopBarState extends State<TopBar>
                 ),
                 Stack(
                   children: [
-                    Visibility(
-                      visible: _notificationsVisible,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          width: 250 < MediaQuery.of(context).size.width
-                              ? 250
-                              : MediaQuery.of(context).size.width,
-                          height: widget.notifications.length * 40 < 100
-                              ? widget.notifications.length * 40
-                              : 100,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Theme.of(context).own().yacmLogoColor),
-                              borderRadius: BorderRadius.circular(
-                                  UIConstants.borderRadius / 2),
-                              color: Theme.of(context).own().background),
-                          child: ListView.builder(
-                            itemCount: widget.notifications.length,
-                            itemBuilder: (context, int index) {
-                              return ListTile(
-                                title: Text(
-                                  widget.notifications[index]["title"]!,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: Theme.of(context)
-                                          .own()
-                                          .yacmLogoColor),
-                                ),
-                                subtitle: Text(
-                                  widget.notifications[index]["subtitle"]!,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: Colors.grey[700]),
-                                ),
-                                trailing: IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.close,
-                                    color: Colors.red[700],
+                    _searchSuggestion(),
+                    StreamBuilder(
+                        stream: _userManager!.getNotifications(),
+                        builder:
+                            (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.active) {
+                            return Visibility(
+                              visible: _notificationsVisible,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  width: 250 < MediaQuery.of(context).size.width
+                                      ? 250
+                                      : MediaQuery.of(context).size.width,
+                                  height: widget.notifications.length * 40 < 100
+                                      ? widget.notifications.length * 40
+                                      : 100,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Theme.of(context)
+                                              .own()
+                                              .yacmLogoColor),
+                                      borderRadius: BorderRadius.circular(
+                                          UIConstants.borderRadius / 2),
+                                      color:
+                                          Theme.of(context).own().background),
+                                  child: ListView.builder(
+                                    itemCount: snapshot.data!.docs.length,
+                                    itemBuilder: (context, int index) {
+                                      return ListTile(
+                                        title: Text(
+                                          snapshot.data!.docs[index]["title"],
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Theme.of(context)
+                                                  .own()
+                                                  .yacmLogoColor),
+                                        ),
+                                        subtitle: Text(
+                                          snapshot.data!.docs[index]
+                                              ["subtitle"],
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.grey[700]),
+                                        ),
+                                        trailing: InkWell(
+                                          onTap: () {
+                                            _userManager!.deleteNotification(
+                                                snapshot.data!.docs[index].id);
+                                          },
+                                          child: Icon(
+                                            Icons.close,
+                                            color: Colors.red[700],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    )
+                              ),
+                            );
+                          }
+                          return Container();
+                        })
                   ],
                 )
               ],

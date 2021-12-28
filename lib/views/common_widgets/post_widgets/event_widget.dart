@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yacm/controllers/post_manager/post_manager.dart';
+import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/message/message.dart';
 import 'package:yacm/models/post/posts/event.dart';
@@ -50,10 +51,12 @@ class _EvenWidgetState extends State<EvenWidget> {
   }
 
   PostManager? _postManager;
+  UserManager? _userManager;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _userManager = Provider.of<UserManager>(context);
   }
 
   @override
@@ -170,7 +173,8 @@ class _EvenWidgetState extends State<EvenWidget> {
                   ],
                   onIconTaps: [
                     () async {
-                      await _postManager!.attendPost(widget.post.id);
+                      await _postManager!
+                          .attendPost(widget.post.id, _userManager!.user!.name);
                     },
                     () async {
                       await _postManager!.pinPost(widget.post.id);

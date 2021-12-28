@@ -10,6 +10,7 @@ class Club {
   late List<String> _members;
   late List<String> _managers;
   late List<String> _mutedMembers;
+  late Map<String, dynamic> _memberNames;
 
   String get id => _id;
   String get advisor => _advisor;
@@ -20,6 +21,7 @@ class Club {
   List<String> get members => _members;
   List<String> get managers => _managers;
   List<String> get mutedMembers => _mutedMembers;
+  Map<String, dynamic> get memberNames => _memberNames;
 
   Club(
       this._id,
@@ -30,7 +32,8 @@ class Club {
       this._managers,
       this._members,
       this._mutedMembers,
-      this._description);
+      this._description,
+      this._memberNames);
 
   Club.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     List<String> tempManagers = [];
@@ -55,6 +58,7 @@ class Club {
     _managers = tempManagers;
     _mutedMembers = tempMutedMembers;
     _members = tempMembers;
+    _memberNames = snapshot.get("memberNames");
   }
 
   Map<String, dynamic> toMap() {
@@ -67,7 +71,8 @@ class Club {
       "members": _members,
       "managers": _managers,
       "mutedMembers": _mutedMembers,
-      "description": _description
+      "description": _description,
+      "memberNames": _memberNames
     };
   }
 }

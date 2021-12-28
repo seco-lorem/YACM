@@ -26,6 +26,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: Theme.of(context).own().background,
       body: Container(
           padding: EdgeInsets.only(top: 60),
           color: Theme.of(context).own().background,

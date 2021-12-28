@@ -15,6 +15,10 @@ class ClubManager extends ChangeNotifier {
 
   ClubManager(this._firebaseManager, this._messageManager, this._postManager);
 
+  Future<QuerySnapshot> getClubs() async {
+    return await _firebaseManager.getAllClubs();
+  }
+
   Future<bool> createPollPost(Map<String, dynamic> post) async {
     return await _postManager.createPollPost(post);
   }
@@ -24,8 +28,8 @@ class ClubManager extends ChangeNotifier {
     return await _postManager.createEventPost(post, photos);
   }
 
-  Future<bool> subToClub(String clubID) async {
-    return await _firebaseManager.subToClub(clubID);
+  Future<bool> subToClub(String clubID, String name) async {
+    return await _firebaseManager.subToClub(clubID, name);
   }
 
   Future<bool> startEvent(Club club) async {
@@ -44,8 +48,8 @@ class ClubManager extends ChangeNotifier {
     return await _firebaseManager.unmuteUser(clubID, userID);
   }
 
-  Future<bool> kickUser(String clubID, String userID) async {
-    return await _firebaseManager.muteUser(clubID, userID);
+  Future<bool> kickUsers(String clubID, List<String> ids) async {
+    return await _firebaseManager.kickUsers(clubID, ids);
   }
 
   Future<bool> updateEnrollable(String clubID, bool enrollable) async {

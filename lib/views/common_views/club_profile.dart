@@ -47,31 +47,16 @@ class _ClubProfileState extends State<ClubProfile> {
     TextEditingController()
   ];
   late ClubManager _clubManager;
+  late UserManager _userManager;
   List<File?> _photos = [null, null, null, null, null, null, null, null];
 
-  final Map<String, String> _members = {
-    "1": "Deniz Berkant Demirörs",
-    "2": "Deniz Berkant Demirörs",
-    "3": "Deniz Berkant Demirörs",
-    "4": "Deniz Berkant Demirörs",
-    "5": "Deniz Berkant Demirörs",
-    "6": "Deniz Berkant Demirörs",
-    "7": "Deniz Berkant Demirörs",
-    "8": "Deniz Berkant Demirörs",
-    "9": "Deniz Berkant Demirörs",
-    "10": "Deniz Berkant Demirörs",
-  };
-
-  void onPageChange() {
-    setState(() {
-      postsActive = !postsActive;
-    });
-  }
+  void onPageChange(List<String> members) {}
 
   @override
   didChangeDependencies() {
     super.didChangeDependencies();
     _clubManager = Provider.of<ClubManager>(context);
+    _userManager = Provider.of<UserManager>(context);
   }
 
   Future<void> onPublish(Club club) async {
@@ -89,6 +74,7 @@ class _ClubProfileState extends State<ClubProfile> {
         "clubID": club.id,
         "clubName": club.clubName,
         "userPinned": [],
+        "images": [],
         "type": "event"
       }, _photos);
     } else {
@@ -161,6 +147,7 @@ class _ClubProfileState extends State<ClubProfile> {
                     Column(
                       children: <Widget>[
                         ClubProfileHeader(
+                            name: _userManager.user!.name,
                             clubID: _club.id,
                             onViewMembers: () {
                               setState(() {
@@ -185,7 +172,14 @@ class _ClubProfileState extends State<ClubProfile> {
                                 : false,
                             description: _club.description,
                             postsActive: postsActive,
-                            onPageChange: () => onPageChange()),
+                            onPageChange: () {
+                              if (_club.members
+                                  .contains(_userManager.user!.id)) {
+                                setState(() {
+                                  postsActive = !postsActive;
+                                });
+                              }
+                            }),
                         Expanded(
                           child: postsActive
                               ? StreamBuilder(
@@ -195,7 +189,8 @@ class _ClubProfileState extends State<ClubProfile> {
                                       AsyncSnapshot<QuerySnapshot> stream) {
                                     List<Post> posts = [];
                                     if (stream.connectionState ==
-                                        ConnectionState.active) {
+                                            ConnectionState.active &&
+                                        stream.hasData) {
                                       for (DocumentSnapshot post
                                           in stream.data!.docs) {
                                         if (post.get("type") == "event") {
@@ -230,11 +225,14 @@ class _ClubProfileState extends State<ClubProfile> {
                     ),
                     Visibility(
                       visible: _viewMembersVisible,
-                      child: ViewMembers(members: _club.members),
+                      child: ViewMembers(members: _club.memberNames),
                     ),
                     Visibility(
                       visible: _kickMembersVisible,
-                      child: KickMembers(members: _members),
+                      child: KickMembers(
+                        members: _club.memberNames,
+                        clubID: _club.id,
+                      ),
                     ),
                     Visibility(
                         visible: _addPostVisible,
@@ -252,18 +250,13 @@ class _ClubProfileState extends State<ClubProfile> {
                             addPhoto: (index) async {
                               XFile? _tempPhoto = await ImagePicker()
                                   .pickImage(source: ImageSource.gallery);
-                              print(_tempPhoto == null);
 
                               if (_tempPhoto != null) {
-                                print("in iff");
                                 var _tempPhotoForWeb =
                                     await _tempPhoto.readAsBytes();
                                 setState(() {
                                   if (Platform.isIOS || Platform.isAndroid) {
-                                    print("in mobile");
                                     _photos[index] = File(_tempPhoto.path);
-                                    print(_photos);
-                                    print("end");
                                   } else {
                                     _photos[index] =
                                         File.fromRawPath(_tempPhotoForWeb);

@@ -3,7 +3,7 @@ import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 
 class ViewMembers extends StatelessWidget {
-  final List<String> members;
+  final Map<String, dynamic> members;
   const ViewMembers({Key? key, required this.members}) : super(key: key);
 
   @override
@@ -28,13 +28,13 @@ class ViewMembers extends StatelessWidget {
                   width: UIConstants.getPostWidth(context),
                   height: UIConstants.getPostWidth(context) * .64,
                   child: ListView.builder(
-                    itemCount: members.length,
+                    itemCount: members.values.toList().length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Center(
                             child: Text(
-                          members[index],
+                          members.values.toList()[index],
                           style: TextStyle(
                               color: Theme.of(context).own().yacmLogoColor,
                               fontSize: 16),

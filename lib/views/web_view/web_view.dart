@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/theme_controller/theme_changer.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/router/route_names.dart';
@@ -123,6 +125,7 @@ class _WebViewState extends State<WebView> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ThemeChanger>(context);
     return WillPopScope(
       onWillPop: () async {
         //Navigator.popAndPushNamed(context, RouteNames.home);
@@ -130,8 +133,11 @@ class _WebViewState extends State<WebView> {
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).own().background,
-        body: SafeArea(
-          child: _body(),
+        body: GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: SafeArea(
+            child: _body(),
+          ),
         ),
       ),
     );

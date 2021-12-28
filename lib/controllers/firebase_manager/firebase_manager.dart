@@ -44,6 +44,7 @@ class FirebaseManager {
     return _firebaseFirestore
         .collection("posts")
         .where("clubID", isEqualTo: clubID)
+        .orderBy("publishDate")
         .snapshots();
   }
 
@@ -168,12 +169,16 @@ class FirebaseManager {
     postData['type'] = 'event';
     // Add post to posts collection
     String? postId = await createPostInFirestore(postData);
+    print(postId);
+    print("-a-a-a--a-a-a-a-a--a-a-a--a-a-a-a-a--a-a-a-a--a-a");
 
     // Add post photos to storage
     List<String> _urls =
         await _addPostPhotosToStorage(postId!, postData["clubName"], photos);
 
-    await FirebaseFirestore.instance
+    print("dalwkdwamkdmawllmadwklmk $_urls");
+
+    await _firebaseFirestore
         .collection("posts")
         .doc(postId)
         .update({"images": _urls});
@@ -204,7 +209,7 @@ class FirebaseManager {
         .snapshots();
   }
 
-  Future<bool> subToClub(String clubID) async {
+  Future<bool> subToClub(String clubID, String name) async {
     if (_firebaseAuth.currentUser == null) return false;
 
     DocumentSnapshot temp =
@@ -213,10 +218,13 @@ class FirebaseManager {
         .collection("posts")
         .where("clubID", isEqualTo: clubID)
         .get();
+    Map<String, dynamic> _memberNames = temp.get("memberNames");
 
     if (temp.get("members").contains(_firebaseAuth.currentUser!.uid)) {
+      _memberNames.remove(_firebaseAuth.currentUser!.uid);
       await _firebaseFirestore.collection("clubs").doc(clubID).update({
-        "members": FieldValue.arrayRemove([_firebaseAuth.currentUser!.uid])
+        "members": FieldValue.arrayRemove([_firebaseAuth.currentUser!.uid]),
+        "memberNames": _memberNames
       });
 
       await Future.forEach(_posts.docs, (QueryDocumentSnapshot post) async {
@@ -227,14 +235,32 @@ class FirebaseManager {
       return true;
     }
 
+    _memberNames[_firebaseAuth.currentUser!.uid] = name;
+    print(_memberNames);
+
     await _firebaseFirestore.collection("clubs").doc(clubID).update({
-      "members": FieldValue.arrayUnion([_firebaseAuth.currentUser!.uid])
+      "members": FieldValue.arrayUnion([_firebaseAuth.currentUser!.uid]),
+      "memberNames": _memberNames
     });
     await Future.forEach(_posts.docs, (QueryDocumentSnapshot post) async {
       await _firebaseFirestore.collection("posts").doc(post.id).update({
         "members": FieldValue.arrayUnion([_firebaseAuth.currentUser!.uid])
       });
     });
+
+    return true;
+  }
+
+  Future<bool> kickUsers(String clubID, List<String> ids) async {
+    if (_firebaseAuth.currentUser == null) return false;
+    DocumentSnapshot temp =
+        await _firebaseFirestore.collection("clubs").doc(clubID).get();
+    Map<String, dynamic> _memberNames = temp.get("memberNames");
+    for (String id in ids) {
+      _memberNames.remove(id);
+    }
+    await _firebaseFirestore.collection("clubs").doc(clubID).update(
+        {"members": FieldValue.arrayRemove(ids), "memberNames": _memberNames});
 
     return true;
   }
@@ -251,6 +277,7 @@ class FirebaseManager {
           .collection("posts")
           .doc(value.id)
           .update({"id": value.id});
+      postId = value.id;
     });
     return postId;
   }
@@ -259,21 +286,23 @@ class FirebaseManager {
   ///  Can't read files directly from OS
   Future<List<String>> _addPostPhotosToStorage(
       String postId, String clubName, List<File?> files) async {
-    String basePath = "postPhotos/$clubName/$postId";
     List<String> _photoURLs = [];
 
-    for (var i = 0; i < files.length; i++) {
-      if (files[i] != null) {
-        String destination = basePath + "photo" + i.toString();
+    await Future.forEach(files, (File? file) async {
+      if (file != null) {
         await FirebaseStorage.instance
-            .ref()
-            .putFile(io.File(files[i]!.path))
+            .ref(
+                "postPhotos/$clubName/${DateTime.now().millisecondsSinceEpoch.toString()}")
+            .putFile(io.File(file.path))
             .then((data) async {
+          print("--------------");
           String url = await data.ref.getDownloadURL();
+          print(url);
+          print("--------------");
           _photoURLs.add(url);
         });
       }
-    }
+    });
     return _photoURLs;
   }
 
@@ -477,12 +506,8 @@ class FirebaseManager {
     return true;
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>>? getAllClubs() {
-    try {
-      return _firebaseFirestore.collection('clubs').snapshots();
-    } catch (e) {
-      return null;
-    }
+  Future<QuerySnapshot> getAllClubs() async {
+    return await _firebaseFirestore.collection('clubs').get();
   }
 
   /// user must be logged in to pin a post
@@ -512,7 +537,8 @@ class FirebaseManager {
     }
   }
 
-  Future<bool> attendPost({String? postId}) async {
+  Future<bool> attendPost(
+      {required String postId, required String name}) async {
     try {
       if (_firebaseAuth.currentUser == null) return false;
 
@@ -531,6 +557,16 @@ class FirebaseManager {
       await _firebaseFirestore.collection('posts').doc(postId).update({
         "attenders": FieldValue.arrayUnion([uid])
       });
+      for (String id in _data.get("attenders")) {
+        if (id != uid) {
+          print(id);
+          _firebaseFirestore.collection("notifications").doc().set({
+            "title": _data.get("message"),
+            "subtitle": "$name is attending to this event",
+            "uid": id
+          });
+        }
+      }
       return true;
     } catch (e) {
       return false;
@@ -618,7 +654,8 @@ class FirebaseManager {
               club["members"],
               club["mutedMembers"],
               club["clubName"],
-              club["description"]));
+              club["description"],
+              club["memberNames"]));
         });
       });
 
@@ -760,7 +797,7 @@ class FirebaseManager {
   Stream<QuerySnapshot<Map<String, dynamic>>> getNotifications() {
     return _firebaseFirestore
         .collection("notifications")
-        .where("userID", isEqualTo: _firebaseAuth.currentUser!.uid)
+        .where("uid", isEqualTo: _firebaseAuth.currentUser!.uid)
         .snapshots();
   }
 

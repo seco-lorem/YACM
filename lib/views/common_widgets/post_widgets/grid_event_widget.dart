@@ -13,9 +13,12 @@ class GridEvent extends StatelessWidget {
     return Container(
         width: (UIConstants.getPostWidth(context) / 3) - 1,
         height: (UIConstants.getPostWidth(context) / 3) - 1,
-        child: Image.network(
-          _event.images[0],
-          fit: BoxFit.fill,
-        ));
+        color: Colors.transparent.withOpacity(.03),
+        child: _event.images.isNotEmpty
+            ? Image.network(
+                _event.images.first,
+                fit: BoxFit.fill,
+              )
+            : SizedBox());
   }
 }

@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yacm/controllers/club_manager/club_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
 
 class KickMembers extends StatefulWidget {
-  final Map<String, String> members;
-  const KickMembers({Key? key, required this.members}) : super(key: key);
+  final Map<String, dynamic> members;
+  final String clubID;
+  const KickMembers({Key? key, required this.members, required this.clubID})
+      : super(key: key);
 
   @override
   _KickMembersState createState() => _KickMembersState();
 }
 
 class _KickMembersState extends State<KickMembers> {
+  ClubManager? _clubManager;
   List<bool> kicked = [];
   @override
   void initState() {
@@ -19,6 +24,12 @@ class _KickMembersState extends State<KickMembers> {
     for (int i = 0; i < widget.members.length; i++) {
       kicked.add(false);
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _clubManager = Provider.of<ClubManager>(context);
   }
 
   @override
@@ -70,7 +81,10 @@ class _KickMembersState extends State<KickMembers> {
                 ),
                 SizedBox(height: 10),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    _clubManager!
+                        .kickUsers(widget.clubID, widget.members.keys.toList());
+                  },
                   child: FittedBox(
                     child: Container(
                       decoration: BoxDecoration(

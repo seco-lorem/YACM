@@ -49,11 +49,11 @@ class PostManager extends ChangeNotifier {
     return await _firebaseManager.pinPost(postId: postID);
   }
 
-  Future<bool> attendPost(String postID) async {
-    return await _firebaseManager.attendPost(postId: postID);
+  Future<bool> attendPost(String postID, String name) async {
+    return await _firebaseManager.attendPost(postId: postID, name: name);
   }
 
-  Future<bool> subToClub(String clubID) async {
-    return await _firebaseManager.subToClub(clubID);
+  Future<bool> subToClub(String clubID, String name) async {
+    return await _firebaseManager.subToClub(clubID, name);
   }
 }

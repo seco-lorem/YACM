@@ -16,6 +16,7 @@ class ClubProfileHeader extends StatefulWidget {
   final VoidCallback onKickMembers;
   final VoidCallback onViewMembers;
   final String clubID;
+  final String name;
   const ClubProfileHeader(
       {Key? key,
       required this.url,
@@ -26,7 +27,8 @@ class ClubProfileHeader extends StatefulWidget {
       required this.onCreatePost,
       required this.onKickMembers,
       required this.onViewMembers,
-      required this.clubID})
+      required this.clubID,
+      required this.name})
       : super(key: key);
 
   @override
@@ -115,7 +117,7 @@ class _ClubProfileHeaderState extends State<ClubProfileHeader> {
                                   onTap: () async {
                                     await Provider.of<ClubManager>(context,
                                             listen: false)
-                                        .subToClub(widget.clubID);
+                                        .subToClub(widget.clubID, widget.name);
                                   }),
                               _child(
                                   visible: widget.isAdmin,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yacm/controllers/post_manager/post_manager.dart';
+import 'package:yacm/controllers/user_manager/user_manager.dart';
 import 'package:yacm/models/language/language.dart';
 import 'package:yacm/models/theme/own_theme_fields.dart';
 import 'package:yacm/util/ui_constants.dart';
@@ -25,11 +26,13 @@ class PostSettings extends StatefulWidget {
 class _PostSettingsState extends State<PostSettings> {
   bool _settingsVisible = false;
   PostManager? _postManager;
+  late UserManager _userManager;
 
   @override
   initState() {
     super.initState();
     _postManager = Provider.of<PostManager>(context, listen: false);
+    _userManager = Provider.of<UserManager>(context, listen: false);
   }
 
   @override
@@ -96,7 +99,8 @@ class _PostSettingsState extends State<PostSettings> {
                     visible: widget.loggedIn,
                     setting: _language.sub,
                     onTap: () async {
-                      await _postManager!.subToClub(widget.clubID);
+                      await _postManager!
+                          .subToClub(widget.clubID, _userManager.user!.name);
                     })
               ],
             ),
