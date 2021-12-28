@@ -62,6 +62,7 @@ class _ClubProfileState extends State<ClubProfile> {
   Future<void> onPublish(Club club) async {
     if (addPostType) {
       await _clubManager.createEventPost({
+        "attenders": [],
         "message": _descriptionController.text,
         "commentsOn": commentsOn,
         "publishDate": DateTime.now(),
@@ -129,19 +130,20 @@ class _ClubProfileState extends State<ClubProfile> {
             )
           : null,
       backgroundColor: Theme.of(context).own().background,
-      body: Container(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).padding.bottom,
-        ),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: Theme.of(context).own().background,
-        child: StreamBuilder(
-            stream: Provider.of<ClubManager>(context, listen: false)
-                .getClubStream(widget.id),
-            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-              Club _club = Club.fromDocumentSnapshot(snapshot.data!);
-              if (snapshot.connectionState == ConnectionState.active) {
+      body: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).padding.bottom,
+          ),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          color: Theme.of(context).own().background,
+          child: StreamBuilder(
+              stream: Provider.of<ClubManager>(context, listen: false)
+                  .getClubStream(widget.id),
+              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                Club _club = Club.fromDocumentSnapshot(snapshot.data!);
                 return Stack(
                   children: [
                     Column(
@@ -188,20 +190,18 @@ class _ClubProfileState extends State<ClubProfile> {
                                   builder: (context,
                                       AsyncSnapshot<QuerySnapshot> stream) {
                                     List<Post> posts = [];
-                                    if (stream.connectionState ==
-                                            ConnectionState.active &&
-                                        stream.hasData) {
-                                      for (DocumentSnapshot post
-                                          in stream.data!.docs) {
-                                        if (post.get("type") == "event") {
-                                          posts.add(
-                                              Event.fromDocumentSnapshot(post));
-                                        } else if (post.get("type") == "poll") {
-                                          posts.add(
-                                              Poll.fromDocumentSnapshot(post));
-                                        }
+
+                                    for (DocumentSnapshot post
+                                        in stream.data!.docs) {
+                                      if (post.get("type") == "event") {
+                                        posts.add(
+                                            Event.fromDocumentSnapshot(post));
+                                      } else if (post.get("type") == "poll") {
+                                        posts.add(
+                                            Poll.fromDocumentSnapshot(post));
                                       }
                                     }
+
                                     return GridPost(
                                         posts: posts.reversed.toList());
                                   },
@@ -304,9 +304,8 @@ class _ClubProfileState extends State<ClubProfile> {
                     )
                   ],
                 );
-              }
-              return Container();
-            }),
+              }),
+        ),
       ),
     );
   }

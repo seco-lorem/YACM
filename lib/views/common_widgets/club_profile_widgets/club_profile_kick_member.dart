@@ -82,8 +82,14 @@ class _KickMembersState extends State<KickMembers> {
                 SizedBox(height: 10),
                 InkWell(
                   onTap: () {
-                    _clubManager!
-                        .kickUsers(widget.clubID, widget.members.keys.toList());
+                    List<String> _kickedUsers = [];
+                    for (int i = 0; i < kicked.length; i++) {
+                      if (kicked[i]) {
+                        _kickedUsers.add(widget.members.keys.toList()[i]);
+                        print(widget.members.values.toList()[i]);
+                      }
+                    }
+                    _clubManager!.kickUsers(widget.clubID, _kickedUsers);
                   },
                   child: FittedBox(
                     child: Container(
