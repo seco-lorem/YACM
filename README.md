@@ -17,8 +17,8 @@ YACM is beneficial for every type of person in the Bilkenter club ecosystem. Peo
 
 ## Design Report
 
-[embed]https://github.com/seco-lorem/YACM/tree/main/reports/Design_Report.pdf[/embed]
+![Design Report](https://github.com/seco-lorem/YACM/tree/main/reports/Design_Report.pdf)
 
 ## Analysis Report
 
-[embed]https://github.com/seco-lorem/YACM/tree/main/reports/Analysis_Report.pdf[/embed]
+![Analysis Report](https://github.com/seco-lorem/YACM/tree/main/reports/Analysis_Report.pdf)
